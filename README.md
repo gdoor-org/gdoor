@@ -33,6 +33,7 @@ So it is similar to OOK, but the bit period depends on the bit value.
 
 All data transmission starts with a start bit which contains ~60 sine periods. A one is signaled by ~12 sine periods and a zero is signaled by ~32 sine periods.
 
+## Bits and Bytes
 Data transmission is LSB first and each Byte has an additional 9th odd parity bit.
 The last byte in the transmission is kind of a checksum, literally the sum of all previous bytes.
 
