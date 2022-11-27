@@ -43,6 +43,16 @@ The last byte in the transmission is kind of a checksum, literally the sum of al
 The exact meaning of the bytes is unknown, but certain clues can be made by observing the bus and sending
 to the bus and observing device behavior:
 
+| Byte          | Description   |
+| ------------- | ------------- |
+| ?Length?      | Maybe frame length. Content is 0x01 if no destination fields in frame, otherwise 0x02  |
+| ?Status?      | Unknown, fixed values for different commands  |
+| Action        | The real command, like "open door", "accept call" etc.  |
+| Source        | 3 Byte value with device bus address, unique per device!  |
+| Parameter     | 2 Byte value which e.g. specifies pressed button  |
+| Device Type   | Fixed value for each hardware device type  |
+| Destination   | 3 Byte value with device bus address, unique per device!  |
+
 
 
 
