@@ -53,6 +53,23 @@ to the bus and observing device behavior:
 | Device Type   | Fixed value for each hardware device type  |
 | Destination   | 3 Byte value with device bus address, unique per device!  |
 
+### ?Length?
+| Byte-Value    | Description   |
+| ------------- | ------------- |
+| 0x01          | Frame with 9 Bytes, no destination bytes |
+| 0x02          | Frame with 12 Bytes, incl. destination bytes |
+
+### ?Status?
+| Byte-Value    | Description   |
+| ------------- | ------------- |
+| 0x00          | Often in combination with ?Length? = 0x02 |
+| 0x10          | Often in combination with ?Length? = 0x01 |
+
+### Action
+| Byte-Value    | Description   |
+| ------------- | ------------- |
+
+
 
 
 
