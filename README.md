@@ -23,10 +23,9 @@ each participating bus device decides on its own to:
 The outdoor station can be commanded to send audio to the bus, the indoor stations
 will do this only if a user pressed the "call accept" button.
 
+## Digital Signaling
 ![Example of Bus voltage](https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/busvoltage.png)
 
-
-## Digital Signaling
 The digital bus signal is based on a non standardized modulation scheme, similar to OOK, but not quite OOK.
 A ~ +-2V, 60 kHz sine carrier is turned on and off, where the duration of the carrier indicates a one or zero bit value. These pulses (aka bits) are separated with a fixed length pause (with no carrier signal).
 So it is similar to OOK, but the bit period depends on the bit value.
@@ -34,6 +33,8 @@ So it is similar to OOK, but the bit period depends on the bit value.
 All data transmission starts with a start bit which contains ~60 sine periods. A one is signaled by ~12 sine periods and a zero is signaled by ~32 sine periods.
 
 ## Bits and Bytes
+![Bit stream order](https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/wavedrom-bitstream.png)
+
 Data transmission is LSB first and each Byte has an additional 9th odd parity bit.
 The last byte in the transmission is kind of a checksum, literally the sum of all previous bytes.
 
