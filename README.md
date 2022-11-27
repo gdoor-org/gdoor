@@ -38,4 +38,11 @@ All data transmission starts with a start bit which contains ~60 sine periods. A
 Data transmission is LSB first and each Byte has an additional 9th odd parity bit.
 The last byte in the transmission is kind of a checksum, literally the sum of all previous bytes.
 
+## Bus protocol / Frame
+![Byte Frame](https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/wavedrom-byteframe.png)
+The exact meaning of the bytes is unknown, but certain clues can be made by observing the bus and sending
+to the bus and observing device behavior:
+
+
+
 
