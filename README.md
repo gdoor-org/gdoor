@@ -23,7 +23,7 @@ each participating bus device decides on its own to:
 The outdoor station can be commanded to send audio to the bus, the indoor stations
 will do this only if a user pressed the "call accept" button.
 
-![alt text](http://url/to/img.png)
+![Example of Bus voltage](https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/busvoltage.png)
 
 
 ## Digital Signaling
