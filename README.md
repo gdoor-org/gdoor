@@ -68,8 +68,20 @@ to the bus and observing device behavior:
 ### Action
 | Byte-Value    | Description   |
 | ------------- | ------------- |
-
-
-
+| 0x00          | Programming mode - Stop|
+| 0x01          | Programming mode - Start|
+| 0x02          | Door opener programming - Stop|
+| 0x03          | Door opener programming - Start|
+| 0x04          | Learn doorbell button|
+| 0x05          | Confirm learned doorbell button|
+| 0x08          | Reset device configuration (announcement)|
+| 0x0F          | Confirm learned door opener|
+| 0x11          | Door bell button pressed - which button is send in ?Param?|
+| 0x13          | Floor bell button pressed|
+| 0x20          | Close call|
+| 0x21          | Open call|
+| 0x31          | Open door|
+| 0x41          | Generic button pressed|
+| 0x42          | Unlearned button pressed|
 
 
