@@ -1,4 +1,3 @@
 {signal: [
-    {name: 'Bitstream', wave: '0.3.03.03.03.0|3.03.03.0|4....0..', data: ['startbit', 'Bit0', 'Bit1', 'Bit2', 'Bit7', 'Odd Parity', 'Bit0', 'CRC']},
-  ]}
-  
+  {name: 'Bitstream', wave: '=3.333x..|33.44x..,|444..=', data: ['', 'Start Bit', 'Bit0', 'Bit1', 'Bit2', 'Bit7', 'Odd Parity', 'Bit0', 'Bit1', 'Bit7', 'Odd Parity']},
+]}
