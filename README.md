@@ -5,6 +5,21 @@ These systems are connected via a proprietary two wire bus system.
 
 Contributions are welcome!
 
+# Table of contents
+
+- [Welcome to GDOOR](#welcome-to-gdoor)
+- [Protocol](#protocol)
+  - [Hardware Layer](#hardware-layer)
+  - [Digital Signaling](#digital-signaling)
+  - [Bits and Bytes](#bits-and-bytes)
+  - [Bus protocol / Frame](#bus-protocol--frame)
+- [Messages](#messages)
+  - [Open Door](#open-door)
+  - [Call / Call button](#call--call-button)
+  - [Accept call](#accept-call)
+  - [Close call](#close-call)
+- [CRC Routine - Dummycode](#crc-routine---dummycode)
+
 # Protocol
 ## Hardware Layer
 The bus is formed by two wires and is single ended, meaning one of the wire carries
