@@ -66,6 +66,7 @@ to the bus and observing device behavior:
 | Parameter     | 2 Byte value which e.g. specifies pressed button  |
 | Device Type   | Fixed value for each hardware device type  |
 | Destination   | 3 Byte value with device bus address, unique per device!  |
+| CRC           | Sum of all previous byte (8 bit, without parity bit) values |
 
 ### ?Length?
 | Byte-Value    | Description   |
