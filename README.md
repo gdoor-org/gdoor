@@ -84,4 +84,56 @@ to the bus and observing device behavior:
 | 0x41          | Generic button pressed|
 | 0x42          | Unlearned button pressed|
 
+### Source
+3 Byte of device address
 
+### Parameter
+2 Bytes with parameters for the Action field.
+E.g. a door station with multiple buttons encodes the pressed key number
+
+###
+| Byte-Value    | Description   |
+| ------------- | ------------- |
+| 0xA0          | Door station |
+| 0xA1          | Indoor station|
+| 0xA3          | Controller|
+
+### Destination
+3 Byte of device address
+
+# Messages
+
+## Open Door
+0x02 0x00 0x31 src[0] src[1] src[2] 0x00 0x00 0xA0 dst[0] dst[1] dst[2]
+
+The door opener with address dst ignores src (can be any byte values),
+it also ignores the hardware type (0xA0).
+
+## Call / Call button
+0x01 0x10 0x11 doorstation[0] doorstation[1] doorstation[2] button 0xA0 0xA0
+
+Doorstation button is 0x01, 0x02, 0x03 ...
+
+## Accept call
+0x02 0x00 0x21 indoor[0] indoor[1] indoor[2] 0x00 0x00 0xA1 doorstation[0] doorstation[1] doorstation[2]
+
+Door station ignores indoor byte values and hardware type (0xA1).
+As soon as door station receives this command, it sends analog audio onto the bus.
+
+## Close call
+0x02 0x00 0x20 indoor[0] indoor[1] indoor[2] 0x00 0x00 0xA1 doorstation[0] doorstation[1] doorstation[2]
+
+Door station ignores indoor byte values and hardware type (0xA1).
+As soon as door station receives this command, it stops analog audio onto the bus.
+
+# CRC Routine - Dummycode
+
+´´
+uint8_t crc(uint8_t *command, uint8_t len) {
+    uint8_t crc = 0;
+    for(uint8_t i=0; i<len; i++) {
+        crc += command[i];
+    }
+    return crc;
+}
+´´
