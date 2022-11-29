@@ -128,7 +128,7 @@ As soon as door station receives this command, it stops analog audio onto the bu
 
 # CRC Routine - Dummycode
 
-```
+```C
 uint8_t crc(uint8_t *command, uint8_t len) {
     uint8_t crc = 0;
     for(uint8_t i=0; i<len; i++) {
