@@ -7,7 +7,6 @@ Contributions are welcome!
 
 # Table of contents
 
-- [Welcome to GDOOR](#welcome-to-gdoor)
 - [Protocol](#protocol)
   - [Hardware Layer](#hardware-layer)
   - [Digital Signaling](#digital-signaling)
