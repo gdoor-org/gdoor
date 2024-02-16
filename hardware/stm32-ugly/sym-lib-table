@@ -1,0 +1,5 @@
+(sym_lib_table
+  (lib (name "ESP32_mini")(type "Legacy")(uri "${KIPRJMOD}/ESP32_mini_KiCad_Library/ESP32_mini.lib")(options "")(descr ""))
+  (lib (name "LT1013DD")(type "Legacy")(uri "${KIPRJMOD}/lt1013/LT1013DD.lib")(options "")(descr ""))
+  (lib (name "project")(type "KiCad")(uri "${KIPRJMOD}/project.kicad_sym")(options "")(descr ""))
+)
