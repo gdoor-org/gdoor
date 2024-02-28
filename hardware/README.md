@@ -2,6 +2,9 @@
 Receiving is most easiest: AC couple the bus to an GPIO, clamp the voltages with diodes to not stress the poor GPIO.
 Afterwards just decode the pulse-trains.
 
+## esp32
+Work in progress. Simple adapter board for ESP32mini.
+
 ## stm32-ugly
 This folder contains my very ugly hardware schematic.
 Following bugs:
