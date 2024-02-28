@@ -18,6 +18,7 @@
 #ifndef GDOOR_H
 
 #define GDOOR_H
+#include "defines.h"
 #include "gdoor_rx.h"
 #include "gdoor_tx.h"
 
@@ -26,6 +27,7 @@ namespace GDOOR { //Namespace as we can only use it once
     void loop();
     GDOOR_RX_DATA* read();
     void send(uint8_t *data, uint16_t len);
+    void send(String str);
 };
 
 #endif

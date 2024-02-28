@@ -23,6 +23,7 @@
 
 void setup() {
     Serial.begin(115200);
+    Serial.setTimeout(1);
     GDOOR::setup(PIN_TX, PIN_TX_EN, PIN_RX);
 }
 
@@ -40,6 +41,9 @@ void loop() {
             Serial.print("\nValid: ");
             Serial.print(rx_data->valid);
             Serial.print("\n");
+        } else if (GDOOR_TX::tx_state != STATE_SENDING) {
+            String serialstr = Serial.readString();
+            GDOOR::send(serialstr);
         }
     }
 }

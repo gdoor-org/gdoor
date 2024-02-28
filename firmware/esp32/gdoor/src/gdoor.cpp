@@ -33,4 +33,8 @@ namespace GDOOR {
     void send(uint8_t *data, uint16_t len) {
         GDOOR_TX::send(data, len);
     }
+
+    void send(String str) {
+        GDOOR_TX::send(str);
+    }
 }

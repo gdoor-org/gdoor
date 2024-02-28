@@ -21,8 +21,8 @@
 
 namespace GDOOR_TX {
     uint16_t tx_state = 0;
-
     uint16_t tx_words[MAX_WORDLEN];
+    uint8_t tx_strbuffer[MAX_WORDLEN*2];
     uint16_t bits_len = 0;
     uint16_t bits_ptr = 0;
     uint16_t pulse_cnt = 0;
@@ -34,6 +34,7 @@ namespace GDOOR_TX {
     int pin_tx_en = 0;
 
     hw_timer_t* timer_60khz = NULL;
+    const String hexChars = "0123456789ABCDEF";
 
     static inline uint16_t bit2pulselen(uint16_t bit) {
         if (bit) {
@@ -184,6 +185,40 @@ namespace GDOOR_TX {
             uint8_t crc = GDOOR_UTILS::crc(data, len);
             tx_words[len] = byte2word(crc);
             start_timer();
+        }
+    }
+
+    /*
+    * Function called by user to send out data.
+    * @param hex string data without 0x prefix
+    */
+    void send(String str) {
+        uint16_t index = 0;
+        // String cleanup
+        str.trim();
+        str.toUpperCase();
+
+        // Only if we have enough memory
+        if(str != "" && str.length() < MAX_WORDLEN*2) {
+            // Convert from hex string to raw buffer array
+            for(uint16_t i=0; i<str.length(); i+=2) {
+                if(i < str.length()-1) { //To make sure that i+1 will not lead to overflow
+                    int high = hexChars.indexOf(str[i]);
+                    int low = hexChars.indexOf(str[i+1]);
+                    if (high >= 0 && low >= 0) { // Check if input can be decoded as 8 bit hex value
+                        tx_strbuffer[index] = high << 4 | low;
+                        index++;
+                    } else { // Abort on parse error
+                        index = 0;
+                        break;
+                    }
+                }
+            }
+
+            // If something was converted, transmit it
+            if (index > 0) {
+                send(tx_strbuffer, index);
+            }
         }
     }
 }
