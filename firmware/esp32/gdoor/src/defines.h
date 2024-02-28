@@ -36,4 +36,6 @@
 #define ZERO_PULSENUM 37
 #define PAUSE_PULSENUM 30
 
+#define STATE_SENDING 0x01
+
 #endif

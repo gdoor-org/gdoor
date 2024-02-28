@@ -18,9 +18,6 @@
 #ifndef GDOOR_H
 
 #define GDOOR_H
-
-
-#include "Arduino.h"
 #include "gdoor_rx.h"
 #include "gdoor_tx.h"
 

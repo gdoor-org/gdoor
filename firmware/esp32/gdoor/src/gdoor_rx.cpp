@@ -52,8 +52,8 @@ namespace GDOOR_RX {
         _cnt = _cnt + 1;
         timerWrite(timer_bit_received, 0); //reset timer
         timerWrite(timer_bitstream_received, 0); //reset timer
-        timer_start(timer_bit_received); //Start timer to detect bit is over
-	    timer_start(timer_bitstream_received); //Start timer to detect bistream is over
+        timerStart(timer_bit_received); //Start timer to detect bit is over
+	    timerStart(timer_bitstream_received); //Start timer to detect bistream is over
     }
 
     /*
@@ -64,17 +64,15 @@ namespace GDOOR_RX {
         cnt = _cnt;
         _cnt = 0;
         rx_state |= FLAG_BIT_RECEIVED;
-        timer_stop(timer_bit_received);
+        timerStop(timer_bit_received);
     }
 
     /*
     * If this timer fires, rx bit stream is over
     */
     void ARDUINO_ISR_ATTR isr_timer_bitstream_received() {
-        button2.numberKeyPresses += 1;
-        button2.pressed = true;
-        timer_stop(timer_bitstream_received);
-        timer_stop(timer_bit_received);
+        timerStop(timer_bitstream_received);
+        timerStop(timer_bit_received);
     }
 
     /*
@@ -104,7 +102,7 @@ namespace GDOOR_RX {
     */
     void disable() {
         rx_reset();
-        dettachInterrupt(pin_rx);
+        detachInterrupt(pin_rx);
     }
     
 
@@ -122,24 +120,24 @@ namespace GDOOR_RX {
         retval.data = words;
 
         // Set bit_received timer frequency to 120kHz
-        timer_bit_received = timerBegin(120000);
+        timer_bit_received = timerBegin(0, 667, true);
 
         // Attach isr_timer_bit_received function to bit_received timer.
-        timerAttachInterrupt(timer_bit_received, &isr_timer_bit_received);
+        timerAttachInterrupt(timer_bit_received, &isr_timer_bit_received, true);
 
         // Set alarm to call isr_timer_bit_received function
         // after 20 120kHz Cycles (=10 60kHz Cycles)
-        timerAlarm(timer_bit_received, 20, true, 0);
+        timerAlarmWrite(timer_bit_received, 20, true);
 
         // Set bit_received timer frequency to 120kHz
-        timer_bitstream_received = timerBegin(120000);
+        timer_bitstream_received = timerBegin(1, 667, true);
 
         // Attach isr_timer_bit_received function to bit_received timer.
-        timerAttachInterrupt(timer_bitstream_received, &isr_timer_bitstream_received);
+        timerAttachInterrupt(timer_bitstream_received, &isr_timer_bitstream_received, true);
 
         // Set alarm to call isr_timer_bit_received function
         // after 6*STARTBIT_MIN_LEN 120kHz Cycles (= 3 * STARTBIT_MIN_LEN 60kHz Cycles)
-        timerAlarm(timer_bitstream_received, 6*STARTBIT_MIN_LEN, true, 0);
+        timerAlarmWrite(timer_bitstream_received, 6*STARTBIT_MIN_LEN, true);
 
         // Enable External RX Interrupt
         enable();
@@ -147,8 +145,11 @@ namespace GDOOR_RX {
         // Set Timers to default values, just to be sure
         timerWrite(timer_bit_received, 0); //reset timer
         timerWrite(timer_bitstream_received, 0); //reset timer
-        timer_stop(timer_bitstream_received);
-        timer_stop(timer_bit_received);
+        timerStop(timer_bitstream_received);
+        timerStop(timer_bit_received);
+
+        timerAlarmEnable(timer_bit_received);
+        timerAlarmEnable(timer_bitstream_received);
     }
 
     /*

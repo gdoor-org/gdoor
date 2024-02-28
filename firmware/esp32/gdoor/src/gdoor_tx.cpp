@@ -69,7 +69,7 @@ namespace GDOOR_TX {
         //TX Enable Pin high
         digitalWrite(pin_tx_en, HIGH);
 
-        timer_start(timer_60khz); //Start timer 2 to send out bitstream
+        timerStart(timer_60khz); //Start timer 2 to send out bitstream
     }
 
     static inline void stop_timer() {
@@ -83,7 +83,7 @@ namespace GDOOR_TX {
 
         //TX Enable Pin Low
         digitalWrite(pin_tx_en, LOW);
-        timer_stop(timer_60khz);
+        timerStop(timer_60khz);
         tx_state &= (uint16_t)~STATE_SENDING;
         //Workaround: Enable comparator after sending
         //Better sending scheme is needed
@@ -105,7 +105,7 @@ namespace GDOOR_TX {
                 // Do not send next 60khz pulses, but send pause (nothing)
                 timer_oc_state = 0;
                 pulse_cnt = PAUSE_PULSENUM;
-                ledcWrite(pin_tx, 0); //disable timer pulse output to send pause
+                ledcWrite(1, 0); //disable timer pulse output to send pause
             } else {
                 // Load new tick values
                 if (!startbit_send) { //First bit, is start bit with fixed value
@@ -121,7 +121,7 @@ namespace GDOOR_TX {
                 }
 
                 timer_oc_state = 1; //Signal that we are sending, so next time a pause will happen
-                ledcWrite(pin_tx, 127); //Enable timer pulse output to send pulses forming the bit
+                ledcWrite(1, 127); //Enable timer pulse output to send pulses forming the bit
             }
         } else { // Just update timer ticks, we are not finished yet
             pulse_cnt = pulse_cnt - 1;
@@ -138,14 +138,14 @@ namespace GDOOR_TX {
         pin_tx_en = txenpin;
 
         // Set timer_60khz timer frequency to 60kHz
-        timer_60khz = timerBegin(60000);
+        timer_60khz = timerBegin(2, 1333, true);
 
         // Attach isr_timer_60khz function to timer_60khz timer.
-        timerAttachInterrupt(timer_60khz, &isr_timer_60khz);
+        timerAttachInterrupt(timer_60khz, &isr_timer_60khz, true);
 
         // Set alarm to call isr_timer_60khz function
         // after 1 60kHz Cycles
-        timerAlarm(timer_60khz, 1, true, 0);
+        timerAlarmWrite(timer_60khz, 1, true);
         
         pinMode(pin_tx, OUTPUT);
         pinMode(pin_tx_en, OUTPUT);
@@ -154,10 +154,12 @@ namespace GDOOR_TX {
         digitalWrite(pin_tx, LOW);
 
         //Setup PWM subsystem (LEDC) on pin_tx
-        ledcAttach(pin_tx, 60000, 8);
-        ledcWrite(pin_tx, 0);
+        ledcAttachPin(pin_tx, 1);
+        ledcSetup(1, 60000, 8);
+        ledcWrite(1, 0);
 
         stop_timer();
+        timerAlarmEnable(timer_60khz);
         bits_len = 0;
         tx_state = 0;
     }

@@ -17,9 +17,7 @@
 #ifndef GDOOR_TX_H
 
 #define GDOOR_TX_H
-
-
-#include "Arduino.h"
+#include <Arduino.h>
 
 namespace GDOOR_TX { //Namespace as we can only use it once
     void send(uint8_t *words, uint16_t len);

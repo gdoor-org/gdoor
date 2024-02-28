@@ -18,15 +18,14 @@
 #ifndef GDOOR_RX_H
 
 #define GDOOR_RX_H
-
-
-#include "Arduino.h"
+#include <Arduino.h>
 
 class GDOOR_RX_DATA { // Class/Struct to collect bus related infos
-    uint16_t len;
-	uint8_t *data;
-	uint8_t valid;
-}
+    public:
+        uint16_t len;
+        uint8_t *data;
+        uint8_t valid;
+};
 
 namespace GDOOR_RX { //Namespace as we can only use it once
     void setup( int rxpin);

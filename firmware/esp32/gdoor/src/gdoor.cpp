@@ -19,7 +19,7 @@
 namespace GDOOR {
     void setup(int txpin, int txenpin, int rxpin) {
         GDOOR_RX::setup(rxpin);
-        GDOOR_RX::setup(txpin, txenpin);
+        GDOOR_TX::setup(txpin, txenpin);
     }
 
     void loop() {
