@@ -28,6 +28,7 @@ class GDOOR_RX_DATA { // Class/Struct to collect bus related infos
 };
 
 namespace GDOOR_RX { //Namespace as we can only use it once
+    extern uint16_t rx_state;
     void setup( int rxpin);
     void loop();
     void enable();
