@@ -41,7 +41,7 @@ void loop() {
             Serial.print("\nValid: ");
             Serial.print(rx_data->valid);
             Serial.print("\n");
-        } else if (GDOOR_TX::tx_state == 0 and GDOOR_RX::rx_state == 0) { //Neither RX nor TX active,
+        } else if (!GDOOR::active()) { //Neither RX nor TX active,
             if (Serial.available() > 0) { // let's check the serial port if something is in buffer
                 String serialstr = Serial.readString();
                 GDOOR::send(serialstr);

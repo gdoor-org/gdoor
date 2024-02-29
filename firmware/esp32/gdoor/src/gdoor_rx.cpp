@@ -20,23 +20,14 @@
 
 namespace GDOOR_RX {
 
-    uint16_t debug_bf[MAX_WORDLEN*9];
-    uint8_t words[MAX_WORDLEN];
+    uint16_t counts[MAX_WORDLEN*9]; // Received counter values of bitstream, buffer
+    uint16_t isr_cnt = 0; // Interrupt Counter (Counting RX edges)  
+
+    uint8_t words[MAX_WORDLEN]; //Received words buffer
 
     uint16_t rx_state = 0; // State Machine
 
-    uint16_t _cnt = 0; // Interrupt Counter (Counting RX edges)
-    uint16_t cnt = 0; // Finished interrupt counter value
-
-    uint16_t bit_one_thres = 0; //Dynamic Bit 1/0 threshold, based on length of startpulse
-
-    uint8_t bitcounter = 0; //Current bit index
-
-    uint8_t is_startbit = 1; // Flag to indicate current bit is start bit to determine 1/0 threshold based on its width
-
-    uint16_t wordcounter = 0; //Current word index
-
-    uint8_t current_pulsetrain_valid = 1; //If parity or crc fails, this is set to 0
+    uint8_t bitcounter = 0; //Current bit index, in currently active bitstream
 
     GDOOR_RX_DATA retval;
 
@@ -44,12 +35,14 @@ namespace GDOOR_RX {
     hw_timer_t * timer_bitstream_received = NULL;
 
     int pin_rx = 0;
+    
     /*
     * We received a 60kHz pulse, so start timeout timer (for bit and whole bitstream) and increment bit pulse count,
     * so that logic knows how much pulses were in this bit pulse-train.
     */
     void ARDUINO_ISR_ATTR isr_extint_rx() {
-        _cnt = _cnt + 1;
+        rx_state |= (uint16_t)FLAG_RX_ACTIVE
+        isr_cnt = isr_cnt + 1;
         timerWrite(timer_bit_received, 0); //reset timer
         timerWrite(timer_bitstream_received, 0); //reset timer
         timerStart(timer_bit_received); //Start timer to detect bit is over
@@ -61,9 +54,13 @@ namespace GDOOR_RX {
     * so we should read out how many pulses we got for this bit (to decide 1 or 0)
     */
     void ARDUINO_ISR_ATTR isr_timer_bit_received() {
-        cnt = _cnt;
-        _cnt = 0;
-        rx_state |= FLAG_BIT_RECEIVED;
+        if (bitcounter > MAX_WORDLEN*9) {
+            bitcounter = 0;
+        }
+        counts[bitcounter] = isr_cnt;
+        
+        isr_cnt = 0;
+        bitcounter = bitcounter + 1;
         timerStop(timer_bit_received);
     }
 
@@ -71,6 +68,8 @@ namespace GDOOR_RX {
     * If this timer fires, rx bit stream is over
     */
     void ARDUINO_ISR_ATTR isr_timer_bitstream_received() {
+        rx_state &= (uint16_t)~FLAG_RX_ACTIVE
+        rx_state |= (uint16_t)FLAG_BITSTREAM_RECEIVED;
         timerStop(timer_bitstream_received);
         timerStop(timer_bit_received);
     }
@@ -78,22 +77,16 @@ namespace GDOOR_RX {
     /*
     * Internal function set reset all internal values.
     */
-    void rx_reset() {
-        bit_one_thres = 0;
+    void reset() {
         bitcounter = 0;
-        wordcounter = 0;
-        _cnt = 0;
-        cnt = 0;
-        is_startbit = 1;
-
-        current_pulsetrain_valid = 1;
+        isr_cnt = 0;
     }
 
     /*
     * Function to enable/disable RX, so that during TX we can disable RX to not get our own message
     */
     void enable() {
-        rx_reset();
+        reset();
         attachInterrupt(pin_rx, isr_extint_rx, FALLING);
     }
 
@@ -101,7 +94,7 @@ namespace GDOOR_RX {
     * Function to enable/disable RX, so that during TX we can disable RX to not get our own message
     */
     void disable() {
-        rx_reset();
+        reset();
         detachInterrupt(pin_rx);
     }
     
@@ -111,7 +104,7 @@ namespace GDOOR_RX {
     * @param int rxpin Pin number where pulses from bus are received
     */
     void setup(int rxpin) {
-        rx_reset();
+        reset();
         pin_rx = rxpin;
         pinMode(pin_rx, INPUT);
 
@@ -157,79 +150,82 @@ namespace GDOOR_RX {
     * Needed for the decoding logic.
     */
     void loop() {
-        uint8_t bit = 0;
-        if(rx_state & FLAG_BITSTREAM_RECEIVED) {
-                rx_state &= (uint16_t)~FLAG_BITSTREAM_RECEIVED;
+        uint8_t wordcounter = 0; //Current word index
+        uint8_t current_pulsetrain_valid = 1; //If parity or crc fails, this is set to 0
+        uint16_t bit_one_thres = 0; //Dynamic Bit 1/0 threshold, based on length of startpulse
 
-                if(wordcounter != 0) {
+        if (rx_state & FLAG_BITSTREAM_RECEIVED) {
+            uint8_t bitstream_len = bitcounter; // Number of received bits
+            uint8_t is_startbit = 1; // Flag to indicate current bit is start bit to determine 1/0 threshold based on its width
+            uint8_t bitindex = 0; //Current bit index inside current word, loops from 0 to 8 (9bits per word)
 
-                    //Check last word for crc value
-                    if (GDOOR_UTILS::crc(words, wordcounter-1) != words[wordcounter-1]) {
-                        current_pulsetrain_valid = 0;
+            for (uint8_t i; i<bitstream_len;i++) {
+                uint16_t cnt = counts[i];
+                uint8_t bit = 0;
+
+                // Filter out smaller pulses, just ignore them
+                if (cnt < BIT_MIN_LEN) {
+                    break;
+                }
+
+                // Check that first start bit is at least roughly in our expected range
+                if(is_startbit && cnt < STARTBIT_MIN_LEN) {
+                    break;
+                }
+
+                // First bit is start bit and we use it to determine
+                // length of one bit and zero bit
+                if (is_startbit) {
+                    bit_one_thres = cnt/BIT_ONE_DIV;
+                    is_startbit = 0;
+                } else { //Normal bit
+
+                    // We start new receive word so preset the word with value 0
+                    if (bitindex == 0) {
+                        words[wordcounter] = 0;
                     }
-                    retval.len = wordcounter;
-                    retval.valid = current_pulsetrain_valid;
 
-                    //Signal that new data is available
-                    rx_state |= FLAG_DATA_READY;
-                }
-
-                //Prepare for next receive
-                rx_reset();
-
-            }
-        if (rx_state & FLAG_BIT_RECEIVED) {
-            rx_state &= (uint16_t)~FLAG_BIT_RECEIVED;
-
-            debug_bf[wordcounter*9+bitcounter] = cnt;
-
-            // Avoid overflow, even though it will destroy this rx bitstream,
-            // graceful error :)
-            if (wordcounter > MAX_WORDLEN-1) {
-                wordcounter = 0;
-            }
-
-            // Filter out smaller pulses, just ignore them
-            if (cnt < BIT_MIN_LEN) {
-                return;
-            }
-
-            // Check that first start bit is at least roughly in our expected range
-            if(is_startbit && cnt < STARTBIT_MIN_LEN) {
-                return;
-            }
-
-            // First bit is start bit and we use it to determine
-            // length of one bit and zero bit
-            if (is_startbit) {
-                bit_one_thres = cnt/BIT_ONE_DIV;
-                is_startbit = 0;
-            } else { //Normal bit
-
-                // We start new receive word so preset the word with value 0
-                if (bitcounter == 0) {
-                    words[wordcounter] = 0;
-                }
-
-                //Detect zero or one bit value
-                if (cnt < bit_one_thres) {
-                    bit = 1;
-                }
-
-                // Parity Bit
-                if (bitcounter == 8) {
-                    // Check if parity bit is as expected
-                    if (GDOOR_UTILS::parity_odd(words[wordcounter]) != bit) {
-                        current_pulsetrain_valid = 0;
+                    //Detect zero or one bit value
+                    if (cnt < bit_one_thres) {
+                        bit = 1;
                     }
-                    bitcounter = 0;
-                    wordcounter = wordcounter + 1;
-                } else { // Normal Bits from 0 to 7
-                    words[wordcounter] |= (uint8_t)(bit << bitcounter);
-                    bitcounter = bitcounter + 1;
-                }
 
+                    // Parity Bit
+                    if (bitindex == 8) {
+                        // Check if parity bit is as expected
+                        if (GDOOR_UTILS::parity_odd(words[wordcounter]) != bit) {
+                            current_pulsetrain_valid = 0;
+                        }
+                        bitindex = 0;
+                        wordcounter = wordcounter + 1;
+                    } else { // Normal Bits from 0 to 7
+                        words[wordcounter] |= (uint8_t)(bit << bitindex);
+                        bitindex = bitindex + 1;
+                    }
+
+                }
             }
+            rx_state &= (uint16_t)~FLAG_BITSTREAM_RECEIVED;
+            rx_state |= (uint16_t)FLAG_BITSTREAM_CONVERTED;      
+        }
+        
+        if(rx_state & FLAG_BITSTREAM_CONVERTED) {
+            if(wordcounter != 0) {
+
+                //Check last word for crc value
+                if (GDOOR_UTILS::crc(words, wordcounter-1) != words[wordcounter-1]) {
+                    current_pulsetrain_valid = 0;
+                }
+                retval.len = wordcounter;
+                retval.valid = current_pulsetrain_valid;
+
+                //Signal that new data is available
+                rx_state |= FLAG_DATA_READY;
+            }
+            rx_state &= (uint16_t)~FLAG_BITSTREAM_CONVERTED;
+
+            //Prepare for next receive
+            reset();
         }
     }
 
