@@ -203,11 +203,11 @@ namespace GDOOR_RX {
                         bitindex = bitindex + 1;
                     }
 
-                }
-            }
+                } //End normal bit
+            } //End for
             rx_state &= (uint16_t)~FLAG_BITSTREAM_RECEIVED;
             rx_state |= (uint16_t)FLAG_BITSTREAM_CONVERTED;      
-        }
+        } // End FLAG_BITSTREAM_RECEIVED
         
         if(rx_state & FLAG_BITSTREAM_CONVERTED) {
             if(wordcounter != 0) {
