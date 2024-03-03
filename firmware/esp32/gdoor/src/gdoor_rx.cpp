@@ -165,12 +165,12 @@ namespace GDOOR_RX {
 
                 // Filter out smaller pulses, just ignore them
                 if (cnt < BIT_MIN_LEN) {
-                    break;
+                    continue;
                 }
 
                 // Check that first start bit is at least roughly in our expected range
                 if(is_startbit && cnt < STARTBIT_MIN_LEN) {
-                    break;
+                    continue;
                 }
 
                 // First bit is start bit and we use it to determine
