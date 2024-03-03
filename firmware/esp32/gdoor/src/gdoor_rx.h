@@ -29,7 +29,7 @@ class GDOOR_RX_DATA : public Printable { // Class/Struct to collect bus related 
         size_t printTo(Print& p) const {
             size_t r = 0;
 
-            for(uint16_t i=0; i<rx_data->len; i++) {
+            for(uint16_t i=0; i<len; i++) {
                 r+= p.print("0x");
                 r+= p.print(data[i], HEX);
                 r+= p.print(" ");
