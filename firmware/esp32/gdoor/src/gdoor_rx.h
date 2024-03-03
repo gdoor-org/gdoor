@@ -31,11 +31,11 @@ class GDOOR_RX_DATA : public Printable { // Class/Struct to collect bus related 
 
             for(uint16_t i=0; i<rx_data->len; i++) {
                 r+= p.print("0x");
-                r+= p.print(rx_data->data[i], HEX);
+                r+= p.print(data[i], HEX);
                 r+= p.print(" ");
             }
             r+= p.print("\nValid: ");
-            r+= p.print(rx_data->valid);
+            r+= p.print(valid);
             r+= p.print("\n");
             return r;
        }
