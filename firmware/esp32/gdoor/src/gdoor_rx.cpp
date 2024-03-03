@@ -159,7 +159,7 @@ namespace GDOOR_RX {
             uint8_t is_startbit = 1; // Flag to indicate current bit is start bit to determine 1/0 threshold based on its width
             uint8_t bitindex = 0; //Current bit index inside current word, loops from 0 to 8 (9bits per word)
 
-            for (uint8_t i=0; i<bitstream_len;i++) {
+            for (uint8_t i=0; i<bitstream_len; i++) {
                 uint16_t cnt = counts[i];
                 uint8_t bit = 0;
 
