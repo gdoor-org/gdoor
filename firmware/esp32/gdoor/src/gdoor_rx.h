@@ -26,7 +26,7 @@ class GDOOR_RX_DATA : public Printable { // Class/Struct to collect bus related 
         uint8_t *data;
         uint8_t valid;
 
-        size_t printTo(Print& p) const {
+        virtual size_t printTo(Print& p) const {
             size_t r = 0;
 
             for(uint16_t i=0; i<len; i++) {

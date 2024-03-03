@@ -41,7 +41,7 @@ namespace GDOOR_RX {
     * so that logic knows how much pulses were in this bit pulse-train.
     */
     void ARDUINO_ISR_ATTR isr_extint_rx() {
-        rx_state |= (uint16_t)FLAG_RX_ACTIVE
+        rx_state |= (uint16_t)FLAG_RX_ACTIVE;
         isr_cnt = isr_cnt + 1;
         timerWrite(timer_bit_received, 0); //reset timer
         timerWrite(timer_bitstream_received, 0); //reset timer
@@ -68,7 +68,7 @@ namespace GDOOR_RX {
     * If this timer fires, rx bit stream is over
     */
     void ARDUINO_ISR_ATTR isr_timer_bitstream_received() {
-        rx_state &= (uint16_t)~FLAG_RX_ACTIVE
+        rx_state &= (uint16_t)~FLAG_RX_ACTIVE;
         rx_state |= (uint16_t)FLAG_BITSTREAM_RECEIVED;
         timerStop(timer_bitstream_received);
         timerStop(timer_bit_received);

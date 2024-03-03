@@ -65,7 +65,7 @@ namespace GDOOR {
     * GDOOR activity status
     * @return true: GDOOR RX or TX is active. False: no GDOOR activity.
     */
-    inline bool active() {
+    bool active() {
         return (GDOOR_TX::tx_state != 0 || GDOOR_RX::rx_state != 0);
     }
 }

@@ -28,7 +28,7 @@ namespace GDOOR { //Namespace as we can only use it once
     GDOOR_RX_DATA* read();
     void send(uint8_t *data, uint16_t len);
     void send(String str);
-    inline bool active();
+    bool active();
 };
 
 #endif
