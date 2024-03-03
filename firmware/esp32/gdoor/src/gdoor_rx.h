@@ -20,11 +20,25 @@
 #define GDOOR_RX_H
 #include <Arduino.h>
 
-class GDOOR_RX_DATA { // Class/Struct to collect bus related infos
+class GDOOR_RX_DATA : public Printable { // Class/Struct to collect bus related infos
     public:
         uint16_t len;
         uint8_t *data;
         uint8_t valid;
+
+        size_t printTo(Print& p) const {
+            size_t r = 0;
+
+            for(uint16_t i=0; i<rx_data->len; i++) {
+                r+= p.print("0x");
+                r+= p.print(rx_data->data[i], HEX);
+                r+= p.print(" ");
+            }
+            r+= p.print("\nValid: ");
+            r+= p.print(rx_data->valid);
+            r+= p.print("\n");
+            return r;
+       }
 };
 
 namespace GDOOR_RX { //Namespace as we can only use it once
