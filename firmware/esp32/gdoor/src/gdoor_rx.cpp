@@ -46,7 +46,7 @@ namespace GDOOR_RX {
         timerWrite(timer_bit_received, 0); //reset timer
         timerWrite(timer_bitstream_received, 0); //reset timer
         timerStart(timer_bit_received); //Start timer to detect bit is over
-	    timerStart(timer_bitstream_received); //Start timer to detect bistream is over
+        timerStart(timer_bitstream_received); //Start timer to detect bistream is over
     }
 
     /*
@@ -239,5 +239,5 @@ namespace GDOOR_RX {
             return &retval;
         }
         return NULL;
-}
+    }
 }
