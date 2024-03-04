@@ -113,7 +113,7 @@ namespace GDOOR_RX {
         retval.data = words;
 
         // Set bit_received timer frequency to 120kHz
-        timer_bit_received = timerBegin(0, 667, true);
+        timer_bit_received = timerBegin(0, PRESCALER_120KHZ, true);
 
         // Attach isr_timer_bit_received function to bit_received timer.
         timerAttachInterrupt(timer_bit_received, &isr_timer_bit_received, true);
@@ -123,7 +123,7 @@ namespace GDOOR_RX {
         timerAlarmWrite(timer_bit_received, 20, true);
 
         // Set bit_received timer frequency to 120kHz
-        timer_bitstream_received = timerBegin(1, 667, true);
+        timer_bitstream_received = timerBegin(1, PRESCALER_120KHZ, true);
 
         // Attach isr_timer_bit_received function to bit_received timer.
         timerAttachInterrupt(timer_bitstream_received, &isr_timer_bitstream_received, true);

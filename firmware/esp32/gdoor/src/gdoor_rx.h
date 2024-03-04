@@ -29,14 +29,16 @@ class GDOOR_RX_DATA : public Printable { // Class/Struct to collect bus related 
         virtual size_t printTo(Print& p) const {
             size_t r = 0;
 
+            // Json compatible output
+            r+= p.print("{\"data\": [");
             for(uint16_t i=0; i<len; i++) {
                 r+= p.print("0x");
                 r+= p.print(data[i], HEX);
-                r+= p.print(" ");
+                r+= p.print(", ");
             }
-            r+= p.print("\nValid: ");
+            r+= p.print("], \"valid\": ");
             r+= p.print(valid);
-            r+= p.print("\n");
+            r+= p.print("}\n");
             return r;
        }
 };

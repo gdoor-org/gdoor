@@ -34,7 +34,7 @@ namespace GDOOR_TX {
     int pin_tx_en = 0;
 
     hw_timer_t* timer_60khz = NULL;
-    const String hexChars = "0123456789ABCDEF";
+    const String hexChars =  F("0123456789ABCDEF");
 
     static inline uint16_t bit2pulselen(uint16_t bit) {
         if (bit) {
@@ -139,7 +139,7 @@ namespace GDOOR_TX {
         pin_tx_en = txenpin;
 
         // Set timer_60khz timer frequency to 60kHz
-        timer_60khz = timerBegin(2, 1333, true);
+        timer_60khz = timerBegin(2, PRESCALER_60KHZ, true);
 
         // Attach isr_timer_60khz function to timer_60khz timer.
         timerAttachInterrupt(timer_60khz, &isr_timer_60khz, true);
