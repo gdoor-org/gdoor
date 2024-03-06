@@ -24,6 +24,7 @@ namespace GDOOR_RX {
     uint16_t isr_cnt = 0; // Interrupt Counter (Counting RX edges)  
 
     uint8_t words[MAX_WORDLEN]; //Received words buffer
+    uint16_t raw[MAX_WORDLEN*9]; // Received raw counter values of bitstream
 
     uint16_t rx_state = 0; // State Machine
 
@@ -111,6 +112,7 @@ namespace GDOOR_RX {
         retval.len = 0;
         retval.valid = 0;
         retval.data = words;
+        retval.raw = raw;
 
         // Set bit_received timer frequency to 120kHz
         timer_bit_received = timerBegin(0, PRESCALER_120KHZ, true);
@@ -162,6 +164,7 @@ namespace GDOOR_RX {
             for (uint8_t i=0; i<bitstream_len; i++) {
                 uint16_t cnt = counts[i];
                 uint8_t bit = 0;
+                raw[i] = cnt;
 
                 // Filter out smaller pulses, just ignore them
                 if (cnt < BIT_MIN_LEN) {
