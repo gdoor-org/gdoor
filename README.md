@@ -14,12 +14,12 @@ Contributions are welcome!
   - [Digital Signaling](#digital-signaling)
   - [Bits and Bytes](#bits-and-bytes)
   - [Bus protocol / Frame](#bus-protocol--frame)
-- [Messages](#messages)
+- [Bus Messages](#bus-messages)
   - [Open Door](#open-door)
   - [Call / Call button](#call--call-button)
   - [Accept call](#accept-call)
   - [Close call](#close-call)
-- [CRC Routine - Dummycode](#crc-routine---dummycode)
+- [Bus CRC Routine - Dummycode](#bus-crc-routine---dummycode)
 
 # Bus Adapter Hardware
 Currently work is ongoing to release
@@ -127,7 +127,7 @@ E.g. a door station with multiple buttons encodes the pressed key number
 ### Destination
 3 Byte of device address
 
-# Messages
+# Bus Messages
 
 ## Open Door
 0x02 0x00 0x31 src[0] src[1] src[2] 0x00 0x00 0xA0 dst[0] dst[1] dst[2]
@@ -152,7 +152,7 @@ As soon as door station receives this command, it sends analog audio onto the bu
 Door station ignores indoor byte values and hardware type (0xA1).
 As soon as door station receives this command, it stops analog audio onto the bus.
 
-# CRC Routine - Dummycode
+# Bus CRC Routine - Dummycode
 
 ```C
 uint8_t crc(uint8_t *command, uint8_t len) {
