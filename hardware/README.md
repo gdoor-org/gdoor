@@ -4,7 +4,8 @@ Afterwards just decode the pulse-trains.
 
 ## esp32
 Work in progress. Simple adapter board for ESP32mini.
-There are production files to get nearly fully assembled boards from www.jlcpcb.com under `esp32/production`.
+There are production files to get nearly fully assembled boards from www.http://jlcpcb.com under `esp32/production`.
+A very rough guide how to order on http://jlcpcb.com is under https://www.youtube.com/watch?v=Y2G-SiKUJPk.
 
 Additionally you will need:
 - ESP32 Mini. E.g. from https://www.az-delivery.de/products/esp32-d1-mini
