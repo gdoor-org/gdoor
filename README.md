@@ -6,8 +6,8 @@ These systems are connected via a proprietary two wire bus system.
 Contributions are welcome!
 
 # Table of contents
-- [Hardware](#hardware)
-- [Protocol](#protocol)
+- [Bus Adapter Hardware](#bus-adapter-hardware)
+- [Bus Protocol](#bus-protocol)
   - [Hardware Layer](#hardware-layer)
   - [Digital Signaling](#digital-signaling)
   - [Bits and Bytes](#bits-and-bytes)
@@ -19,7 +19,7 @@ Contributions are welcome!
   - [Close call](#close-call)
 - [CRC Routine - Dummycode](#crc-routine---dummycode)
 
-# Hardware
+# Bus Adapter Hardware
 ![3D Render of ESP32 adapterboard](https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/esp32-pcb.png)
 
 Currently work is ongoing to release
@@ -30,7 +30,7 @@ corresponding firmware in the `firmware` subfolder.
 
 Work is not finished yet.
 
-# Protocol
+# Bus Protocol
 ## Hardware Layer
 The bus is formed by two wires and is single ended, meaning one of the wire carries
 power and data and the other wire is ground.
@@ -117,7 +117,7 @@ to the bus and observing device behavior:
 2 Bytes with parameters for the Action field.
 E.g. a door station with multiple buttons encodes the pressed key number
 
-###
+### Type
 | Byte-Value    | Description   |
 | ------------- | ------------- |
 | 0xA0          | Door station |
