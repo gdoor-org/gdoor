@@ -1,5 +1,5 @@
 # Welcome to GDOOR
-![3D Render of ESP32 adapterboard](https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/esp32-pcb.png | width=100)
+![3D Render of ESP32 adapterboard](https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/esp32-pcb.png|width=100)
 
 GDOOR is a project to collect and document findings about the Gira Door System.
 Gira is a german manufacturer of house appliances, including door systems.
