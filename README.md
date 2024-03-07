@@ -6,7 +6,7 @@ These systems are connected via a proprietary two wire bus system.
 Contributions are welcome!
 
 # Table of contents
-
+- [Hardware](#hardware)
 - [Protocol](#protocol)
   - [Hardware Layer](#hardware-layer)
   - [Digital Signaling](#digital-signaling)
@@ -18,6 +18,17 @@ Contributions are welcome!
   - [Accept call](#accept-call)
   - [Close call](#close-call)
 - [CRC Routine - Dummycode](#crc-routine---dummycode)
+
+# Hardware
+![3D Render of ESP32 adapterboard](https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/esp32-pcb.png)
+
+Currently work is ongoing to release
+a bus ESP32 based adapter, which translates the bus messages to MQTT and vice versa.
+
+Hardware can be found in the `hardware` subfolder,
+corresponding firmware in the `firmware` subfolder.
+
+Work is not finished yet.
 
 # Protocol
 ## Hardware Layer
