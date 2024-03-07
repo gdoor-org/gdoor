@@ -1,4 +1,6 @@
 # Welcome to GDOOR
+![3D Render of ESP32 adapterboard](https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/esp32-pcb.png | width=100)
+
 GDOOR is a project to collect and document findings about the Gira Door System.
 Gira is a german manufacturer of house appliances, including door systems.
 These systems are connected via a proprietary two wire bus system.
@@ -20,8 +22,6 @@ Contributions are welcome!
 - [CRC Routine - Dummycode](#crc-routine---dummycode)
 
 # Bus Adapter Hardware
-![3D Render of ESP32 adapterboard](https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/esp32-pcb.png)
-
 Currently work is ongoing to release
 a bus ESP32 based adapter, which translates the bus messages to MQTT and vice versa.
 
