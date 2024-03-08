@@ -34,9 +34,13 @@ namespace GDOOR_RX {
 
     hw_timer_t * timer_bit_received = NULL;
     hw_timer_t * timer_bitstream_received = NULL;
+    hw_timer_t * timer_adc_300khz = NULL;
 
-    int pin_rx = 0;
-    
+    uint8_t pin_rx = 0;
+    adc_continuos_data_t *adc_data = NULL;
+    int comparator = 0;
+
+        
     /*
     * We received a 60kHz pulse, so start timeout timer (for bit and whole bitstream) and increment bit pulse count,
     * so that logic knows how much pulses were in this bit pulse-train.
@@ -48,6 +52,28 @@ namespace GDOOR_RX {
         timerWrite(timer_bitstream_received, 0); //reset timer
         timerStart(timer_bit_received); //Start timer to detect bit is over
         timerStart(timer_bitstream_received); //Start timer to detect bistream is over
+    }
+
+    /*
+    * As the ESP32 has no comparator input we need to abuse the ADC,
+    * to emulate a comparator.
+    */
+    void ARDUINO_ISR_ATTR isr_adc_read() {
+        int adc_new = 0;
+        if (analogContinuousRead(&adc_data, 0)) {
+            adc_new = adc_data->avg_read_mvolts;
+            if(adc_new > 2000) {
+                if(comparator == 0) { // Detect Rising edge
+                    isr_extint_rx();
+                }
+                comparator = 1;
+
+            }
+
+            if(adc_new < 1800) { // Detect Falling edge
+                comparator = 0;
+            }
+        }
     }
 
     /*
@@ -88,7 +114,8 @@ namespace GDOOR_RX {
     */
     void enable() {
         reset();
-        attachInterrupt(pin_rx, isr_extint_rx, FALLING);
+        //
+        //attachInterrupt(pin_rx, isr_extint_rx, FALLING);
     }
 
      /*
@@ -96,7 +123,8 @@ namespace GDOOR_RX {
     */
     void disable() {
         reset();
-        detachInterrupt(pin_rx);
+        analogContinuousStop();
+        //detachInterrupt(pin_rx);
     }
     
 
@@ -104,10 +132,15 @@ namespace GDOOR_RX {
     * Function called by user to setup everything needed for GDOOR.
     * @param int rxpin Pin number where pulses from bus are received
     */
-    void setup(int rxpin) {
+    void setup(uint8_t rxpin) {
         reset();
         pin_rx = rxpin;
         pinMode(pin_rx, INPUT);
+
+        bool result = analogContinuous(&pin_rx, 1, 1, 300000, isr_adc_read);
+        Serial.println("GDOOR ADC Comparator prepared");
+        Serial.println(result);
+        analogContinuousStart();
 
         retval.len = 0;
         retval.valid = 0;
@@ -115,36 +148,37 @@ namespace GDOOR_RX {
         retval.raw = raw;
 
         // Set bit_received timer frequency to 120kHz
-        timer_bit_received = timerBegin(0, PRESCALER_120KHZ, true);
+        timer_bit_received = timerBegin(120000);
+        Serial.println("timer_bit_received prepared");
 
         // Attach isr_timer_bit_received function to bit_received timer.
-        timerAttachInterrupt(timer_bit_received, &isr_timer_bit_received, true);
+        timerAttachInterrupt(timer_bit_received, &isr_timer_bit_received);
 
         // Set alarm to call isr_timer_bit_received function
         // after 20 120kHz Cycles (=10 60kHz Cycles)
-        timerAlarmWrite(timer_bit_received, 20, true);
+        timerAlarm(timer_bit_received, 20, true, 0);
 
         // Set bit_received timer frequency to 120kHz
-        timer_bitstream_received = timerBegin(1, PRESCALER_120KHZ, true);
+        timer_bitstream_received = timerBegin(120000);
+        Serial.println("timer_bitstream_received prepared");
 
         // Attach isr_timer_bit_received function to bit_received timer.
-        timerAttachInterrupt(timer_bitstream_received, &isr_timer_bitstream_received, true);
+        timerAttachInterrupt(timer_bitstream_received, &isr_timer_bitstream_received);
 
         // Set alarm to call isr_timer_bit_received function
         // after 6*STARTBIT_MIN_LEN 120kHz Cycles (= 3 * STARTBIT_MIN_LEN 60kHz Cycles)
-        timerAlarmWrite(timer_bitstream_received, 6*STARTBIT_MIN_LEN, true);
+        timerAlarm(timer_bitstream_received, 6*STARTBIT_MIN_LEN, true, 0);
 
+        Serial.println("timer_bitstream_received alarm set");
         // Enable External RX Interrupt
         enable();
+        Serial.println("Enabled ADC");
 
         // Set Timers to default values, just to be sure
         timerWrite(timer_bit_received, 0); //reset timer
         timerWrite(timer_bitstream_received, 0); //reset timer
         timerStop(timer_bitstream_received);
         timerStop(timer_bit_received);
-
-        timerAlarmEnable(timer_bit_received);
-        timerAlarmEnable(timer_bitstream_received);
     }
 
     /*

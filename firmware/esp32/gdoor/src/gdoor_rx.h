@@ -52,7 +52,7 @@ class GDOOR_RX_DATA : public Printable { // Class/Struct to collect bus related 
 
 namespace GDOOR_RX { //Namespace as we can only use it once
     extern uint16_t rx_state;
-    void setup( int rxpin);
+    void setup( uint8_t rxpin);
     void loop();
     void enable();
     void disable();
