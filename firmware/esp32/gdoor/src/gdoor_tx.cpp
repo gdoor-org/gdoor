@@ -106,7 +106,7 @@ namespace GDOOR_TX {
                 // Do not send next 60khz pulses, but send pause (nothing)
                 timer_oc_state = 0;
                 pulse_cnt = PAUSE_PULSENUM;
-                ledcWrite(1, 0); //disable timer pulse output to send pause
+                ledcWrite(pin_tx, 0); //disable timer pulse output to send pause
             } else {
                 // Load new tick values
                 if (!startbit_send) { //First bit, is start bit with fixed value
@@ -122,7 +122,7 @@ namespace GDOOR_TX {
                 }
 
                 timer_oc_state = 1; //Signal that we are sending, so next time a pause will happen
-                ledcWrite(1, 127); //Enable timer pulse output to send pulses forming the bit
+                ledcWrite(pin_tx, 127); //Enable timer pulse output to send pulses forming the bit
             }
         } else { // Just update timer ticks, we are not finished yet
             pulse_cnt = pulse_cnt - 1;
@@ -155,8 +155,8 @@ namespace GDOOR_TX {
         digitalWrite(pin_tx, LOW);
 
         //Setup PWM subsystem (LEDC) on pin_tx
-        ledcAttach(pin_tx, 60000, 8);
-        ledcWrite(1, 0);
+        ledcAttach(pin_tx, 50000, 8);
+        ledcWrite(pin_tx, 0);
 
         stop_timer();
         bits_len = 0;
@@ -177,10 +177,12 @@ namespace GDOOR_TX {
 
             for (uint16_t i=0; i<len; i++) {
                 uint8_t byte = data[i];
+                Serial.println(byte, HEX);
                 tx_words[i] = byte2word(byte);
             }
 
             uint8_t crc = GDOOR_UTILS::crc(data, len);
+            Serial.println(crc, HEX);
             tx_words[len] = byte2word(crc);
             start_timer();
         }
@@ -203,6 +205,8 @@ namespace GDOOR_TX {
                 if(i < str.length()-1) { //To make sure that i+1 will not lead to overflow
                     int high = hexChars.indexOf(str[i]);
                     int low = hexChars.indexOf(str[i+1]);
+                    Serial.println(str[i]);
+                    Serial.println(str[i+1]);
                     if (high >= 0 && low >= 0) { // Check if input can be decoded as 8 bit hex value
                         tx_strbuffer[index] = high << 4 | low;
                         index++;
