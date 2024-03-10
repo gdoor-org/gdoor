@@ -23,7 +23,7 @@
 #include "gdoor_tx.h"
 
 namespace GDOOR { //Namespace as we can only use it once
-    void setup(int txpin, int txenpin, int rxpin);
+    void setup(uint8_t txpin, uint8_t txenpin, uint8_t rxpin);
     void loop();
     GDOOR_RX_DATA* read();
     void send(uint8_t *data, uint16_t len);

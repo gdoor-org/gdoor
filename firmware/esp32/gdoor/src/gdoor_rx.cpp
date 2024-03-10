@@ -34,15 +34,9 @@ namespace GDOOR_RX {
 
     hw_timer_t * timer_bit_received = NULL;
     hw_timer_t * timer_bitstream_received = NULL;
-    hw_timer_t * timer_adc_300khz = NULL;
 
     uint8_t pin_rx = 0;
-    adc_continuos_data_t *adc_data = NULL;
-    int comparator = 0;
-    int adc_new = 0;
-    int adc_tick = 0;
-
-        
+    
     /*
     * We received a 60kHz pulse, so start timeout timer (for bit and whole bitstream) and increment bit pulse count,
     * so that logic knows how much pulses were in this bit pulse-train.
@@ -50,18 +44,11 @@ namespace GDOOR_RX {
     void ARDUINO_ISR_ATTR isr_extint_rx() {
         rx_state |= (uint16_t)FLAG_RX_ACTIVE;
         isr_cnt = isr_cnt + 1;
+        Serial.print("R");
         timerWrite(timer_bit_received, 0); //reset timer
         timerWrite(timer_bitstream_received, 0); //reset timer
         timerStart(timer_bit_received); //Start timer to detect bit is over
         timerStart(timer_bitstream_received); //Start timer to detect bistream is over
-    }
-
-    /*
-    * As the ESP32 has no comparator input we need to abuse the ADC,
-    * to emulate a comparator.
-    */
-    void ARDUINO_ISR_ATTR isr_adc_read() {
-        adc_tick = 1;
     }
 
     /*
@@ -102,8 +89,7 @@ namespace GDOOR_RX {
     */
     void enable() {
         reset();
-        //
-        //attachInterrupt(pin_rx, isr_extint_rx, FALLING);
+        attachInterrupt(pin_rx, isr_extint_rx, FALLING);
     }
 
      /*
@@ -111,8 +97,7 @@ namespace GDOOR_RX {
     */
     void disable() {
         reset();
-        analogContinuousStop();
-        //detachInterrupt(pin_rx);
+        detachInterrupt(pin_rx);
     }
     
 
@@ -125,11 +110,6 @@ namespace GDOOR_RX {
         pin_rx = rxpin;
         pinMode(pin_rx, INPUT);
 
-        bool result = analogContinuous(&pin_rx, 1, 1, 240000, isr_adc_read);
-        Serial.println("GDOOR ADC Comparator prepared");
-        Serial.println(result);
-        analogContinuousStart();
-
         retval.len = 0;
         retval.valid = 0;
         retval.data = words;
@@ -137,7 +117,6 @@ namespace GDOOR_RX {
 
         // Set bit_received timer frequency to 120kHz
         timer_bit_received = timerBegin(120000);
-        Serial.println("timer_bit_received prepared");
 
         // Attach isr_timer_bit_received function to bit_received timer.
         timerAttachInterrupt(timer_bit_received, &isr_timer_bit_received);
@@ -148,7 +127,6 @@ namespace GDOOR_RX {
 
         // Set bit_received timer frequency to 120kHz
         timer_bitstream_received = timerBegin(120000);
-        Serial.println("timer_bitstream_received prepared");
 
         // Attach isr_timer_bit_received function to bit_received timer.
         timerAttachInterrupt(timer_bitstream_received, &isr_timer_bitstream_received);
@@ -157,10 +135,8 @@ namespace GDOOR_RX {
         // after 6*STARTBIT_MIN_LEN 120kHz Cycles (= 3 * STARTBIT_MIN_LEN 60kHz Cycles)
         timerAlarm(timer_bitstream_received, 6*STARTBIT_MIN_LEN, true, 0);
 
-        Serial.println("timer_bitstream_received alarm set");
         // Enable External RX Interrupt
         enable();
-        Serial.println("Enabled ADC");
 
         // Set Timers to default values, just to be sure
         timerWrite(timer_bit_received, 0); //reset timer
@@ -178,29 +154,7 @@ namespace GDOOR_RX {
         uint8_t current_pulsetrain_valid = 1; //If parity or crc fails, this is set to 0
         uint16_t bit_one_thres = 0; //Dynamic Bit 1/0 threshold, based on length of startpulse
 
-        if (adc_tick && analogContinuousRead(&adc_data, 0)) {
-            adc_new = adc_data->avg_read_mvolts;       
-        }
-
-        if(adc_new > 1800) {
-            if(comparator == 0) { // Detect Rising edge
-                rx_state |= (uint16_t)FLAG_RX_ACTIVE;
-                isr_cnt = isr_cnt + 1;
-                timerWrite(timer_bit_received, 0); //reset timer
-                timerWrite(timer_bitstream_received, 0); //reset timer
-                timerStart(timer_bit_received); //Start timer to detect bit is over
-                timerStart(timer_bitstream_received); //Start timer to detect bistream is over
-            }
-            comparator = 1;
-
-        }
-
-        if(adc_new < 1500) { // Detect Falling edge
-            comparator = 0;
-        }
-
         if (rx_state & FLAG_BITSTREAM_RECEIVED) {
-            Serial.println("R");
             uint8_t bitstream_len = bitcounter; // Number of received bits
             uint8_t is_startbit = 1; // Flag to indicate current bit is start bit to determine 1/0 threshold based on its width
             uint8_t bitindex = 0; //Current bit index inside current word, loops from 0 to 8 (9bits per word)
@@ -209,7 +163,6 @@ namespace GDOOR_RX {
                 uint16_t cnt = counts[i];
                 uint8_t bit = 0;
                 raw[i] = cnt;
-                Serial.println(cnt);
 
                 // Filter out smaller pulses, just ignore them
                 if (cnt < BIT_MIN_LEN) {

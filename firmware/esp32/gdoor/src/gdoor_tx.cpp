@@ -30,8 +30,8 @@ namespace GDOOR_TX {
 
     uint8_t timer_oc_state = 0;
 
-    int pin_tx = 0;
-    int pin_tx_en = 0;
+    uint8_t pin_tx = 0;
+    uint8_t pin_tx_en = 0;
 
     hw_timer_t* timer_60khz = NULL;
     const String hexChars =  F("0123456789ABCDEF");
@@ -134,7 +134,7 @@ namespace GDOOR_TX {
     * @param int txpin Pin number where PWM is created when sending out data
     * @param int txenpin Pin number where output buffer is turned on/off
     */
-    void setup(int txpin, int txenpin) {
+    void setup(uint8_t txpin, uint8_t txenpin) {
         pin_tx = txpin;
         pin_tx_en = txenpin;
 

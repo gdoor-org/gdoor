@@ -23,7 +23,7 @@ namespace GDOOR {
     * @param int txenpin Pin number where output buffer is turned on/off
     * @param int rxpin Pin number where pulses from bus are received
     */
-    void setup(int txpin, int txenpin, int rxpin) {
+    void setup(uint8_t txpin, uint8_t txenpin, uint8_t rxpin) {
         GDOOR_RX::setup(rxpin);
         GDOOR_TX::setup(txpin, txenpin);
     }
