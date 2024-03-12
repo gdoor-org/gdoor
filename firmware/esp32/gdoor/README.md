@@ -17,4 +17,6 @@ If you want to send to the bus, just send to the serial port:
   E.g. 0x0F, 0x00, 0x02. Wrong would be: 0xF, 0x0, 0x2.
 - Do not separate the values with whitespaces, tabs or commas
 - Send the values in one go, e.g.: 02A300452F
-- Tip: If you use a terminal and want to do it by hand, use copy and paste to send in one go
+
+> [!TIP]
+> If you use a terminal and want to do it by hand, use copy and paste to send in one go

@@ -1,9 +1,11 @@
 # Content
-Receiving is most easiest: AC couple the bus to an GPIO, clamp the voltages with diodes to not stress the poor GPIO.
-Afterwards just decode the pulse-trains.
+> [!IMPORTANT]  
+> Work in progress.
+> The current hardware as shown here has a hardware bug:
+> The high/low logic values of the ESP32 on the bus data receiving side are not
+> respected. A comparator on this line is needed.
 
-## esp32
-Work in progress. Simple adapter board for ESP32mini.
+Simple adapter board for ESP32mini.
 There are production files to get nearly fully assembled boards from http://jlcpcb.com under `esp32/production`.
 A very rough guide how to order on http://jlcpcb.com is under https://www.youtube.com/watch?v=Y2G-SiKUJPk.
 
