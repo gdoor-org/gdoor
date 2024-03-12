@@ -155,6 +155,9 @@ namespace GDOOR_TX {
         digitalWrite(pin_tx, LOW);
 
         //Setup PWM subsystem (LEDC) on pin_tx
+        // We only modulate with 52kHz, as the bandpass
+        // manufacturing tolerances are a bit on the lower side.
+        // Still works.
         ledcAttach(pin_tx, 52000, 8);
         ledcWrite(pin_tx, 0);
 
