@@ -31,7 +31,6 @@ void setup() {
 
 void loop() {
     while(1) {
-        //Serial.println(analogReadMilliVolts(PIN_RX));
         GDOOR::loop();
         GDOOR_RX_DATA* rx_data = GDOOR::read();
         if(rx_data != NULL) {
