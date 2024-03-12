@@ -43,8 +43,15 @@ class GDOOR_RX_DATA : public Printable { // Class/Struct to collect bus related 
                 r+= p.print(raw[i]);
                 r+= p.print(", ");
             }
-            r+= p.print("], \"valid\": ");
-            r+= p.print(valid);
+            r+= p.print("], \"hexvalue\": ");
+            for(uint16_t i=0; i<len; i++) {
+                if(data[i] < 16) {
+                    r+= p.print("0");
+                }
+                r+= p.print(data[i], HEX);
+            }
+            r+= p.print(", \"valid\": ");
+            r+= p.print(valid, HEX);
             r+= p.print("}\n");
             return r;
        }

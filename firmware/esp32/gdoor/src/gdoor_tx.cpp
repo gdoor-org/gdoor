@@ -155,7 +155,7 @@ namespace GDOOR_TX {
         digitalWrite(pin_tx, LOW);
 
         //Setup PWM subsystem (LEDC) on pin_tx
-        ledcAttach(pin_tx, 50000, 8);
+        ledcAttach(pin_tx, 52000, 8);
         ledcWrite(pin_tx, 0);
 
         stop_timer();
@@ -177,12 +177,10 @@ namespace GDOOR_TX {
 
             for (uint16_t i=0; i<len; i++) {
                 uint8_t byte = data[i];
-                Serial.println(byte, HEX);
                 tx_words[i] = byte2word(byte);
             }
 
             uint8_t crc = GDOOR_UTILS::crc(data, len);
-            Serial.println(crc, HEX);
             tx_words[len] = byte2word(crc);
             start_timer();
         }
@@ -205,8 +203,6 @@ namespace GDOOR_TX {
                 if(i < str.length()-1) { //To make sure that i+1 will not lead to overflow
                     int high = hexChars.indexOf(str[i]);
                     int low = hexChars.indexOf(str[i+1]);
-                    Serial.println(str[i]);
-                    Serial.println(str[i+1]);
                     if (high >= 0 && low >= 0) { // Check if input can be decoded as 8 bit hex value
                         tx_strbuffer[index] = high << 4 | low;
                         index++;

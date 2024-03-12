@@ -44,7 +44,6 @@ namespace GDOOR_RX {
     void ARDUINO_ISR_ATTR isr_extint_rx() {
         rx_state |= (uint16_t)FLAG_RX_ACTIVE;
         isr_cnt = isr_cnt + 1;
-        Serial.print("R");
         timerWrite(timer_bit_received, 0); //reset timer
         timerWrite(timer_bitstream_received, 0); //reset timer
         timerStart(timer_bit_received); //Start timer to detect bit is over
