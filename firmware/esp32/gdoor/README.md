@@ -29,6 +29,7 @@ If you want to send to the bus, just send to the serial port:
 - Send hex values
 - Each hex value needs to be 2 digit, in case of values < 0x1F, add a leading zero.
   E.g. 0x0F, 0x00, 0x02. Wrong would be: 0xF, 0x0, 0x2.
+- Do not use 0x prefix.
 - Do not separate the values with whitespaces, tabs or commas
 - Send the values in one go, e.g.: 02A300452F
 
