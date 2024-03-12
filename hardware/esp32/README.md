@@ -19,8 +19,3 @@ Additionally you will need:
 ![Schematic, PDF version in esp32 subfolder](https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/esp32-schem.png)
 
 ![3D Render of ESP32 adapterboard](https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/esp32-pcb.png)
-
-# Installation / Flash
-You will need PlatformIO (https://platformio.org/).
-You can use the tutorial https://docs.platformio.org/en/stable/tutorials/espressif32/espidf_debugging_unit_testing_analysis.html
-as a baseline.

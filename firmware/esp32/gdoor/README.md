@@ -10,6 +10,11 @@ This firmware is working with the modified hardware.
 > The current firmware therefore decodes on Pin9 (IO12),
 > as a manual hardware modification was added.
 
+## Installation / Flash
+You will need PlatformIO (https://platformio.org/).
+You can use the tutorial https://docs.platformio.org/en/stable/tutorials/espressif32/espidf_debugging_unit_testing_analysis.html
+as a baseline.
+
 ## Usage
 Currently only the serial port is implemented.
 Connect to the port with baudrate 115200.
