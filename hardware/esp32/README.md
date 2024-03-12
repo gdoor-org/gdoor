@@ -3,7 +3,10 @@
 > Work in progress.
 > The current hardware as shown here has a hardware bug:
 > The high/low logic values of the ESP32 on the bus data receiving side are not
-> respected. A comparator on this line is needed.
+> respected. A comparator on Pin28 (GPIO32) is needed.
+>
+> The current firmware therefore decodes on Pin0 (IO12),
+> as a manual hardware modification was added.
 
 Simple adapter board for ESP32mini.
 There are production files to get nearly fully assembled boards from http://jlcpcb.com under `esp32/production`.
