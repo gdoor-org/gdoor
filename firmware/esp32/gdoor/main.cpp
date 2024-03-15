@@ -16,14 +16,24 @@
  */
 #include <Arduino.h>
 #include "src/gdoor.h"
+#include <Wifi.h>
+#include <WiFiManager.h> 
 
 #define PIN_RX 12
 #define PIN_TX 25
 #define PIN_TX_EN 27
 
+#define DEFAULT_WIFI_SSID       "GDoor"
+#define DEFAULT_WIFI_PASSWORD   "12345678"
+
+WiFiManager wifiManager;
+
 void setup() {
     Serial.begin(115200);
     Serial.setTimeout(1);
+
+    wifiManager.autoConnect(DEFAULT_WIFI_SSID, DEFAULT_WIFI_PASSWORD);
+
     Serial.println("GDOOR Setup start");
     GDOOR::setup(PIN_TX, PIN_TX_EN, PIN_RX);
     Serial.println("GDOOR Setup done");
