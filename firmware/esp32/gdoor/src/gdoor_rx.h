@@ -38,7 +38,7 @@ class GDOOR_RX_DATA : public Printable { // Class/Struct to collect bus related 
                 r+= p.print(", ");
             }
             r+= p.print("], \"raw\": [");
-            for(uint16_t i=0; i<len; i++) {
+            for(uint16_t i=0; i<len*9; i++) {
                 r+= p.print("0x");
                 r+= p.print(raw[i]);
                 r+= p.print(", ");
