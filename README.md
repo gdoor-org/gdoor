@@ -1,6 +1,5 @@
 <img src="https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/logo/logo.png" alt="GDOOR Logo" width=200>
 _________________
-<img src="https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/esp32-pcb.png" alt="3D Render of ESP32 adapterboard" width=200> <img src="https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/esp32-schem.png" alt="Schematic of ESP32 adapterboard" width=200>
 
 GDOOR is a project to collect and document findings about the Gira Door System.
 Gira is a german manufacturer of house appliances, including door systems.
@@ -23,6 +22,8 @@ Contributions are welcome!
 - [Bus CRC Routine - Dummycode](#bus-crc-routine---dummycode)
 
 # Bus Adapter Hardware
+<img src="https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/esp32-pcb.png" alt="3D Render of ESP32 adapterboard" width=200> <img src="https://raw.githubusercontent.com/gdoor-org/gdoor/main/doc/esp32-schem.png" alt="Schematic of ESP32 adapterboard" width=200>
+
 Currently work is ongoing to release
 a bus ESP32 based adapter, which translates the bus messages to MQTT and vice versa.
 
