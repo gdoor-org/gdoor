@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="157.67813mm"
+   height="92.857742mm"
+   viewBox="0 0 595.94886 350.9584"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.5398569"
+     inkscape:cx="87.986279"
+     inkscape:cy="398.25368"
+     inkscape:window-width="1440"
+     inkscape:window-height="851"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <rect
+       x="110.18392"
+       y="705.53094"
+       width="584.97803"
+       height="302.7261"
+       id="rect4650" />
+    <rect
+       x="93.743309"
+       y="704.3194"
+       width="616.44812"
+       height="355.78491"
+       id="rect3612" />
+    <rect
+       x="107.26177"
+       y="670.98932"
+       width="509.29703"
+       height="269.33362"
+       id="rect3442" />
+    <rect
+       x="305.87549"
+       y="184.1102"
+       width="384.82419"
+       height="384.70737"
+       id="rect3407" />
+  </defs>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-103.33363,-163.50783)">
+    <rect
+       style="fill:#ff6600;fill-opacity:1;stroke:none;stroke-width:15.2867;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:11.7;stroke-dasharray:none;stroke-dashoffset:32.126;stroke-opacity:1"
+       id="rect2414"
+       width="595.94885"
+       height="350.9584"
+       x="103.33363"
+       y="163.50783"
+       rx="16.720114"
+       ry="13.976193" />
+    <rect
+       style="fill:none;stroke:#ffffff;stroke-width:18.8976;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:11.7;stroke-dasharray:none;stroke-dashoffset:32.126;stroke-opacity:1"
+       id="rect223"
+       width="160.22929"
+       height="279.14749"
+       x="151.22098"
+       y="197.68881"
+       rx="18.897638"
+       ry="18.897638" />
+    <text
+       xml:space="preserve"
+       id="text3610"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:200px;font-family:MathJax_Size3;-inkscape-font-specification:'MathJax_Size3, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect3612);shape-padding:0.90503;display:inline;fill:#666666;fill-opacity:1;stroke:#666666;stroke-width:21.9213;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:11.7;stroke-dasharray:none;stroke-dashoffset:32.126;stroke-opacity:1"
+       transform="matrix(0.87710316,0,0,1.0088586,86.586523,-447.81216)"><tspan
+         x="94.648438"
+         y="887.19965"
+         id="tspan6158">G</tspan></text>
+    <text
+       xml:space="preserve"
+       id="text4648"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:200px;font-family:MathJax_Size3;-inkscape-font-specification:'MathJax_Size3, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect4650);display:inline;fill:#666666;fill-opacity:1;stroke:#666666;stroke-width:21.9213;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:11.7;stroke-dasharray:none;stroke-dashoffset:32.126;stroke-opacity:1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:118.626px;font-family:MathJax_Size3;-inkscape-font-specification:'MathJax_Size3, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#666666;fill-opacity:1;stroke:#e6e6e6;stroke-width:11.7692;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:11.7;stroke-dasharray:none;stroke-dashoffset:32.126;stroke-opacity:1"
+       x="285.27118"
+       y="506.85172"
+       id="text4656"
+       transform="scale(1.1294645,0.88537532)"><tspan
+         sodipodi:role="line"
+         id="tspan4654"
+         x="285.27118"
+         y="506.85172"
+         style="stroke:#e6e6e6;stroke-width:11.7692">Door</tspan></text>
+  </g>
+</svg>
