@@ -132,24 +132,28 @@ E.g. a door station with multiple buttons encodes the pressed key number
 # Bus Messages
 
 ## Open Door
-0x02 0x00 0x31 src[0] src[1] src[2] 0x00 0x00 0xA0 dst[0] dst[1] dst[2]
+| 0x02 | 0x00 | 0x31 | src[0] | src[1] | src[2] | 0x00 | 0x00 | 0xA0 | dst[0] | dst[1] | dst[2] |
+| -----|------|------|--------|--------|--------|------|------|------|--------|--------|------- |
 
 The door opener with address dst ignores src (can be any byte values),
 it also ignores the hardware type (0xA0).
 
 ## Call / Call button
-0x01 0x10 0x11 doorstation[0] doorstation[1] doorstation[2] button 0xA0 0xA0
+| 0x01 | 0x10 | 0x11 | doorstation[0] | doorstation[1] | doorstation[2] | button | 0xA0 | 0xA0 |
+| -----|------|------|----------------|----------------|----------------|--------|------|------|
 
 Doorstation button is 0x01, 0x02, 0x03 ...
 
 ## Accept call
-0x02 0x00 0x21 indoor[0] indoor[1] indoor[2] 0x00 0x00 0xA1 doorstation[0] doorstation[1] doorstation[2]
+| 0x02 | 0x00 | 0x21 | indoor[0] | indoor[1] | indoor[2] | 0x00 | 0x00 | 0xA1 | door[0] | door[1] | door[2] |
+| -----|------|------|-----------|-----------|-----------|------|------|------|---------|---------|-------- |
 
 Door station ignores indoor byte values and hardware type (0xA1).
 As soon as door station receives this command, it sends analog audio onto the bus.
 
 ## Close call
-0x02 0x00 0x20 indoor[0] indoor[1] indoor[2] 0x00 0x00 0xA1 doorstation[0] doorstation[1] doorstation[2]
+| 0x02 | 0x00 | 0x20 | indoor[0] | indoor[1] | indoor[2] | 0x00 | 0x00 | 0xA1 | door[0] | door[1] | door[2] |
+| -----|------|------|-----------|-----------|-----------|------|------|------|---------|---------|-------- |
 
 Door station ignores indoor byte values and hardware type (0xA1).
 As soon as door station receives this command, it stops analog audio onto the bus.
