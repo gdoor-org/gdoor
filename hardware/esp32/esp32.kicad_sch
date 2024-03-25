@@ -5098,7 +5098,7 @@
   )
 
   (symbol (lib_id "symbols:100p") (at 143.51 222.25 0) (mirror x) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
+    (in_bom yes) (on_board yes) (dnp yes)
     (uuid 6e52e26c-fa53-48c5-9be0-8862a4c605f8)
     (property "Reference" "C17" (at 147.32 220.345 0)
       (effects (font (size 1.27 1.27)) (justify right))
