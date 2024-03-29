@@ -110,4 +110,9 @@
     (stroke (width 0.12) (type solid)) (layer "Dwgs.User") (tstamp c18f22e0-2b2e-428b-81e8-6a0709302144))
   (fp_circle (center -13.97 -11.43) (end -12.87 -11.43)
     (stroke (width 0.1) (type default)) (fill none) (layer "Dwgs.User") (tstamp 9ace09cb-104b-4ee5-9b19-a3070883d735))
+  (model "${KIPRJMOD}/3dmodels/esp32-wemos-d1-mini.step"
+    (offset (xyz 137 43 -36))
+    (scale (xyz 1 1 1))
+    (rotate (xyz -90 0 0))
+  )
 )
