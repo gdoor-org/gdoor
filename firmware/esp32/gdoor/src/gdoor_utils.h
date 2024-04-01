@@ -56,16 +56,6 @@ namespace GDOOR_UTILS {
         return r;
     }
 
-    size_t print_json_string(Print& p, const char *keyname, const char *value) {
-        size_t r = 0;
-        r+= p.print("\"");
-        r+= p.print(keyname);
-        r+= p.print("\": \"");
-        r+= p.print(value);
-        r+= p.print("\"");
-        return r;
-    }
-
     template<typename T> size_t print_json_hexstring(Print& p, const char *keyname, const T* data, const uint16_t len) {
         size_t r = 0;
         r+= p.print("\"");
@@ -79,6 +69,8 @@ namespace GDOOR_UTILS {
         }
         return r;
     }
+
+    size_t print_json_string(Print& p, const char *keyname, const char *value);
 }
 
 #endif

@@ -54,37 +54,38 @@ class GDOOR_DATA : public Printable { // Class/Struct to collect bus related inf
 };
 
 class GDOOR_DATA_PROTOCOL : public Printable { // Class/Struct to collect bus high level protocol data
-    GDOOR_DATA *raw;
-    const char *type;
-    const char *action;
-    uint8_t parameters[2];
-    uint8_t source[3];
-    uint8_t destination[3];
+    public:
+        GDOOR_DATA *raw;
+        const char *type;
+        const char *action;
+        uint8_t parameters[2];
+        uint8_t source[3];
+        uint8_t destination[3];
 
-    GDOOR_DATA_PROTOCOL(GDOOR_DATA* data);
+        GDOOR_DATA_PROTOCOL(GDOOR_DATA* data);
 
-    virtual size_t printTo(Print& p) const {
-        size_t r = 0;
+        virtual size_t printTo(Print& p) const {
+            size_t r = 0;
 
-        // Json compatible output
-        r+= p.print("{");
-        r+= GDOOR_UTILS::print_json_hexarray<uint8_t>(p, "source", source, 3);
-        r+= p.print(", ");
+            // Json compatible output
+            r+= p.print("{");
+            r+= GDOOR_UTILS::print_json_hexarray<uint8_t>(p, "source", source, 3);
+            r+= p.print(", ");
 
-        r+= GDOOR_UTILS::print_json_hexarray<uint8_t>(p, "destination", destination, 3);
-        r+= p.print(", ");
+            r+= GDOOR_UTILS::print_json_hexarray<uint8_t>(p, "destination", destination, 3);
+            r+= p.print(", ");
 
-        r+= GDOOR_UTILS::print_json_hexarray<uint8_t>(p, "parameters", parameters, 2);
-        r+= p.print(", ");
+            r+= GDOOR_UTILS::print_json_hexarray<uint8_t>(p, "parameters", parameters, 2);
+            r+= p.print(", ");
 
-        r+= GDOOR_UTILS::print_json_string(p, "action", action);
-        r+= p.print(", ");
+            r+= GDOOR_UTILS::print_json_string(p, "action", action);
+            r+= p.print(", ");
 
-        r+= GDOOR_UTILS::print_json_string(p, "type", type);
+            r+= GDOOR_UTILS::print_json_string(p, "type", type);
 
-        r+= p.print("}\n");
-        return r;
-    }
+            r+= p.print("}\n");
+            return r;
+        }
 };
 
 #endif

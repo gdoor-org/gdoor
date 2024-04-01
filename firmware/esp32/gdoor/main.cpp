@@ -34,6 +34,7 @@ void loop() {
         GDOOR::loop();
         GDOOR_DATA* rx_data = GDOOR::read();
         if(rx_data != NULL) {
+            GDOOR_DATA_PROTOCOL busmessage = GDOOR_DATA_PROTOCOL(rx_data);
             Serial.print("New data:\n");
             Serial.print(*rx_data);
         } else if (!GDOOR::active()) { //Neither RX nor TX active,

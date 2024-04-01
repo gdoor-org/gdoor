@@ -37,4 +37,14 @@ namespace GDOOR_UTILS {
         /* if ones is odd, least significant bit will be 1 */
         return ones &0x01;
     }
+
+    size_t print_json_string(Print& p, const char *keyname, const char *value) {
+        size_t r = 0;
+        r+= p.print("\"");
+        r+= p.print(keyname);
+        r+= p.print("\": \"");
+        r+= p.print(value);
+        r+= p.print("\"");
+        return r;
+    }
 }
