@@ -32,6 +32,7 @@ std::map<int, const char*>GDOOR_DATA_ACTION = {
     { 0x41, "BUTTON_LIGHT"},
     { 0x31, "OPEN_DOOR"},
     { 0x21, "CALL_ACCEPT"},
+    { 0x28, "CALL_ACCEPT_VIDEO"},
     { 0x20, "CALL_CLOSE"},
     { 0x13, "BUTTON_FLOOR"},
     { 0x11, "BUTTON_RING"},
