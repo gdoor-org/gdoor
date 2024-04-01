@@ -37,9 +37,9 @@ namespace GDOOR_UTILS {
             r+= p.print("\"0x");
             r+= p.print(data[i], HEX);
             if (i==len-1) {
-                r+= p.print("\", ");
-            } else {
                 r+= p.print("\"");
+            } else {
+                r+= p.print("\", ");
             }
         }
         r+= p.print("]");
@@ -67,6 +67,7 @@ namespace GDOOR_UTILS {
             }
             r+= p.print(data[i], HEX);
         }
+        r+= p.print("\"");
         return r;
     }
 
