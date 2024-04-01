@@ -47,7 +47,7 @@ class GDOOR_DATA : public Printable { // Class/Struct to collect bus related inf
             r+= GDOOR_UTILS::print_json_hexstring<uint8_t>(p, "hexvalue", data, len);
             r+= p.print(", ");
 
-            r+= GDOOR_UTILS::print_json_value<uint8_t>(p, "valid", valid);
+            r+= GDOOR_UTILS::print_json_bool<uint8_t>(p, "valid", valid);
             r+= p.print("}\n");
             return r;
        }

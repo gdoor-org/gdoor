@@ -71,6 +71,20 @@ namespace GDOOR_UTILS {
         return r;
     }
 
+    template<typename T> size_t print_json_bool(Print& p, const char *keyname, const T value) {
+        size_t r = 0;
+        r+= p.print("\"");
+        r+= p.print(keyname);
+        r+= p.print("\": ");
+        if(value) {
+            r+= p.print("true");
+        } else {
+            r+= p.print("false");
+        }
+        r+= p.print("");
+        return r;
+    }
+
     size_t print_json_string(Print& p, const char *keyname, const char *value);
 }
 
