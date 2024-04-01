@@ -32,11 +32,11 @@ void setup() {
 void loop() {
     while(1) {
         GDOOR::loop();
-        GDOOR_RX_DATA* rx_data = GDOOR::read();
+        GDOOR_DATA* rx_data = GDOOR::read();
         if(rx_data != NULL) {
             Serial.print("New data:\n");
             Serial.print(*rx_data);
-        } else if (1 || !GDOOR::active()) { //Neither RX nor TX active,
+        } else if (!GDOOR::active()) { //Neither RX nor TX active,
             if (Serial.available() > 0) { // let's check the serial port if something is in buffer
                 String serialstr = Serial.readString();
                 GDOOR::send(serialstr);
