@@ -20,13 +20,13 @@ There are two possibilities:
         serial_port: /dev/ttyUSB0 # change device if needed
         baudrate: 115200
     ```
-   - if you're unsure under which device path the serial port got registered (usually `/dev/ttyUSB0`), go to Settings -> Logs and choose "Supervisor". Look for `[supervisor.hardware.monitor] Detecting add hardware /dev/ttyUSB`...
+   - if you're unsure under which device path the serial port got registered, go to Settings -> Logs and choose "Supervisor". Look for `[supervisor.hardware.monitor] Detecting add hardware /dev/ttyUSB`...
 3. restart Home Assistant
 4. press the door bell
 5. press the "open door" button on your indoor station
 6. open Logbook and search for "Gdoor", now you should see state changes like
    ```
-   Gdoor changed to {"action": "BUTTON_RING", "parameters": "0360", "source": "A286FD", "destination": "000000", "type": "OUTDOOR"}
+   Gdoor changed to {"action": "BUTTON_RING", "parameters": "0360", "source": "A286FD", "destination": "000000", "type": "OUTDOOR", "hexvalue": "011011A286FD0360A04A"}
    ```
    Note the value of the `parameters` field: this is the unique value of your door bell which you can use to identify your door bell in automations.
 7. look for the `OPEN_DOOR` action, copy the value of `hexvalue` and add the following shell command in `configuration.yaml` to be able to open the door programmatically. Replace `<hexvalue>` with the copied value.
