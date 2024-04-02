@@ -73,13 +73,13 @@ class GDOOR_DATA_PROTOCOL : public Printable { // Class/Struct to collect bus hi
             r+= GDOOR_UTILS::print_json_string(p, "action", action);
             r+= p.print(", ");
 
-            r+= GDOOR_UTILS::print_json_hexarray<uint8_t>(p, "parameters", parameters, 2);
+            r+= GDOOR_UTILS::print_json_hexstring<uint8_t>(p, "parameters", parameters, 2);
             r+= p.print(", ");
 
-            r+= GDOOR_UTILS::print_json_hexarray<uint8_t>(p, "source", source, 3);
+            r+= GDOOR_UTILS::print_json_hexstring<uint8_t>(p, "source", source, 3);
             r+= p.print(", ");
 
-            r+= GDOOR_UTILS::print_json_hexarray<uint8_t>(p, "destination", destination, 3);
+            r+= GDOOR_UTILS::print_json_hexstring<uint8_t>(p, "destination", destination, 3);
             r+= p.print(", ");
 
             r+= GDOOR_UTILS::print_json_string(p, "type", type);
