@@ -5,15 +5,26 @@ GDOOR is a project to collect and document findings about the Gira Door System.
 Gira is a german manufacturer of house appliances, including door systems.
 These systems are connected via a proprietary two wire bus system.
 
+The Gdoor hardware adapter allows listening and controlling the bus and e.g. integrating a Gira door bell into a smart home.
+
 Contributions are welcome!
 
 # Table of contents
+- [Table of contents](#table-of-contents)
 - [Bus Adapter Hardware](#bus-adapter-hardware)
+- [Integrations with Smart Home platforms](#integrations-with-smart-home-platforms)
 - [Bus Protocol](#bus-protocol)
   - [Hardware Layer](#hardware-layer)
   - [Digital Signaling](#digital-signaling)
   - [Bits and Bytes](#bits-and-bytes)
   - [Bus protocol / Frame](#bus-protocol--frame)
+    - [?Length?](#length)
+    - [?Status?](#status)
+    - [Action](#action)
+    - [Source](#source)
+    - [Parameter](#parameter)
+    - [Type](#type)
+    - [Destination](#destination)
 - [Bus Messages](#bus-messages)
   - [Open Door](#open-door)
   - [Call / Call button](#call--call-button)
@@ -31,6 +42,15 @@ Hardware can be found in the `hardware` subfolder,
 corresponding firmware in the `firmware` subfolder.
 
 Work is not finished yet.
+
+The adapter was successfully tested with
+- Gira Türkommunikations-System Steuergerät Video (1288 00)
+- Gira Wohnungsstation Video AP Plus
+
+# Integrations with Smart Home platforms
+
+- [Home Assistant](/doc/integrations/home-assistant.md)
+
 
 # Bus Protocol
 ## Hardware Layer
