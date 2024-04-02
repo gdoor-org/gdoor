@@ -48,7 +48,7 @@ class GDOOR_DATA : public Printable { // Class/Struct to collect bus related inf
             r+= p.print(", ");
 
             r+= GDOOR_UTILS::print_json_bool<uint8_t>(p, "valid", valid);
-            r+= p.print("}\n");
+            r+= p.print("}");
             return r;
        }
 };
@@ -84,7 +84,7 @@ class GDOOR_DATA_PROTOCOL : public Printable { // Class/Struct to collect bus hi
 
             r+= GDOOR_UTILS::print_json_string(p, "type", type);
 
-            r+= p.print("}\n");
+            r+= p.print("}");
             return r;
         }
 };

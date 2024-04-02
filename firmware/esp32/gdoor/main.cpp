@@ -35,8 +35,11 @@ void loop() {
         GDOOR_DATA* rx_data = GDOOR::read();
         if(rx_data != NULL) {
             GDOOR_DATA_PROTOCOL busmessage = GDOOR_DATA_PROTOCOL(rx_data);
+            Serial.print("{\"data\": ");
             Serial.print(*rx_data);
+            Serial.print(", \"message\": ");
             Serial.print(busmessage);
+            Serial.println("}")
         } else if (!GDOOR::active()) { //Neither RX nor TX active,
             if (Serial.available() > 0) { // let's check the serial port if something is in buffer
                 String serialstr = Serial.readString();
