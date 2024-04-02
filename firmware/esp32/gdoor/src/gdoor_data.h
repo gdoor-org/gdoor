@@ -36,19 +36,17 @@ class GDOOR_DATA : public Printable { // Class/Struct to collect bus related inf
             size_t r = 0;
 
             // Json compatible output
-            r+= p.print("{");
+            r+= GDOOR_UTILS::print_json_hexstring<uint8_t>(p, "hexvalue", data, len);
+            r+= p.print(", ");
+
             r+= GDOOR_UTILS::print_json_hexarray<uint8_t>(p, "data", data, len);
             r+= p.print(", ");
 
             r+= GDOOR_UTILS::print_json_hexarray<uint16_t>(p, "raw", raw, len*9);
             r+= p.print(", ");
-            
-
-            r+= GDOOR_UTILS::print_json_hexstring<uint8_t>(p, "hexvalue", data, len);
-            r+= p.print(", ");
 
             r+= GDOOR_UTILS::print_json_bool<uint8_t>(p, "valid", valid);
-            r+= p.print("}");
+
             return r;
        }
 };
@@ -68,8 +66,6 @@ class GDOOR_DATA_PROTOCOL : public Printable { // Class/Struct to collect bus hi
             size_t r = 0;
 
             // Json compatible output
-            r+= p.print("{");
-
             r+= GDOOR_UTILS::print_json_string(p, "action", action);
             r+= p.print(", ");
 
@@ -84,7 +80,6 @@ class GDOOR_DATA_PROTOCOL : public Printable { // Class/Struct to collect bus hi
 
             r+= GDOOR_UTILS::print_json_string(p, "type", type);
 
-            r+= p.print("}");
             return r;
         }
 };
