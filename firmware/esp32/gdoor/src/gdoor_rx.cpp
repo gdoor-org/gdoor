@@ -16,6 +16,7 @@
  */
 #include "defines.h"
 #include "gdoor_rx.h"
+#include "gdoor_data.h"
 #include "gdoor_utils.h"
 
 namespace GDOOR_RX {
@@ -30,7 +31,7 @@ namespace GDOOR_RX {
 
     uint8_t bitcounter = 0; //Current bit index, in currently active bitstream
 
-    GDOOR_RX_DATA retval;
+    GDOOR_DATA retval;
 
     hw_timer_t * timer_bit_received = NULL;
     hw_timer_t * timer_bitstream_received = NULL;
@@ -111,8 +112,6 @@ namespace GDOOR_RX {
 
         retval.len = 0;
         retval.valid = 0;
-        retval.data = words;
-        retval.raw = raw;
 
         // Set bit_received timer frequency to 120kHz
         timer_bit_received = timerBegin(120000);
@@ -149,82 +148,12 @@ namespace GDOOR_RX {
     * Needed for the decoding logic.
     */
     void loop() {
-        uint8_t wordcounter = 0; //Current word index
-        uint8_t current_pulsetrain_valid = 1; //If parity or crc fails, this is set to 0
-        uint16_t bit_one_thres = 0; //Dynamic Bit 1/0 threshold, based on length of startpulse
-
         if (rx_state & FLAG_BITSTREAM_RECEIVED) {
-            uint8_t bitstream_len = bitcounter; // Number of received bits
-            uint8_t is_startbit = 1; // Flag to indicate current bit is start bit to determine 1/0 threshold based on its width
-            uint8_t bitindex = 0; //Current bit index inside current word, loops from 0 to 8 (9bits per word)
-
-            for (uint8_t i=0; i<bitstream_len; i++) {
-                uint16_t cnt = counts[i];
-                uint8_t bit = 0;
-                raw[i] = cnt;
-
-                // Filter out smaller pulses, just ignore them
-                if (cnt < BIT_MIN_LEN) {
-                    continue;
-                }
-
-                // Check that first start bit is at least roughly in our expected range
-                if(is_startbit && cnt < STARTBIT_MIN_LEN) {
-                    continue;
-                }
-
-                // First bit is start bit and we use it to determine
-                // length of one bit and zero bit
-                if (is_startbit) {
-                    bit_one_thres = cnt/BIT_ONE_DIV;
-                    is_startbit = 0;
-                } else { //Normal bit
-
-                    // We start new receive word so preset the word with value 0
-                    if (bitindex == 0) {
-                        words[wordcounter] = 0;
-                    }
-
-                    //Detect zero or one bit value
-                    if (cnt < bit_one_thres) {
-                        bit = 1;
-                    }
-
-                    // Parity Bit
-                    if (bitindex == 8) {
-                        // Check if parity bit is as expected
-                        if (GDOOR_UTILS::parity_odd(words[wordcounter]) != bit) {
-                            current_pulsetrain_valid = 0;
-                        }
-                        bitindex = 0;
-                        wordcounter = wordcounter + 1;
-                    } else { // Normal Bits from 0 to 7
-                        words[wordcounter] |= (uint8_t)(bit << bitindex);
-                        bitindex = bitindex + 1;
-                    }
-
-                } //End normal bit
-            } //End for
+            retval.parse(counts, bitcounter);
             rx_state &= (uint16_t)~FLAG_BITSTREAM_RECEIVED;
-            rx_state |= (uint16_t)FLAG_BITSTREAM_CONVERTED;      
-        } // End FLAG_BITSTREAM_RECEIVED
-        
-        if(rx_state & FLAG_BITSTREAM_CONVERTED) {
-            if(wordcounter != 0) {
-
-                //Check last word for crc value
-                if (GDOOR_UTILS::crc(words, wordcounter-1) != words[wordcounter-1]) {
-                    current_pulsetrain_valid = 0;
-                }
-                retval.len = wordcounter;
-                retval.valid = current_pulsetrain_valid;
-
-                //Signal that new data is available
+            if (retval.len > 0) {
                 rx_state |= FLAG_DATA_READY;
             }
-            rx_state &= (uint16_t)~FLAG_BITSTREAM_CONVERTED;
-
-            //Prepare for next receive
             reset();
         }
     }
@@ -233,7 +162,7 @@ namespace GDOOR_RX {
     * User function, called to see if new data is available.
     * @return Data pointer as GDOOR_RX_DATA class or NULL if no data is available
     */
-    GDOOR_RX_DATA* read() {
+    GDOOR_DATA* read() {
         if(rx_state & FLAG_DATA_READY) {
             rx_state &= (uint16_t)~FLAG_DATA_READY;
             return &retval;

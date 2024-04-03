@@ -40,7 +40,7 @@ namespace GDOOR {
     * User function, called to see if new data is available.
     * @return Data pointer as GDOOR_RX_DATA class or NULL if no data is available
     */
-    GDOOR_RX_DATA* read() {
+    GDOOR_DATA* read() {
         return GDOOR_RX::read();
     }
 
