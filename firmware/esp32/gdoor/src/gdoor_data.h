@@ -36,7 +36,7 @@ class GDOOR_DATA : public Printable { // Class/Struct to collect bus related inf
             size_t r = 0;
 
             // Json compatible output
-            r+= GDOOR_UTILS::print_json_hexstring<uint8_t>(p, "hexvalue", data, len);
+            r+= GDOOR_UTILS::print_json_hexstring<uint8_t>(p, "busdata", data, len);
             r+= p.print(", ");
 
             r+= GDOOR_UTILS::print_json_hexarray<uint8_t>(p, "data", data, len);
