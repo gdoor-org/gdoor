@@ -24,59 +24,89 @@
 #define PIN_TX 25
 #define PIN_TX_EN 27
 
-#define DEFAULT_WIFI_SSID       "GDoor"
-#define DEFAULT_WIFI_PASSWORD   "12345678"
+#define DEFAULT_WIFI_SSID     "GDOOR"
+#define DEFAULT_WIFI_PASSWORD "12345678"
+#define DEFAULT_MQTT_SERVER   "0.0.0.0" 
+#define DEFAULT_MQTT_PORT     "1883" 
 
-#define MQTT_TOPIC      "/gdoor"
-
+#define MQTT_TOPIC "/gdoor"
 
 WiFiManager wifiManager;
+WiFiManagerParameter custom_mqtt_server("mqtt_server", "MQTT Server", DEFAULT_MQTT_SERVER, 40);
+WiFiManagerParameter custom_mqtt_port("mqtt_port", "MQTT Port", DEFAULT_MQTT_PORT, 6);
+
 WiFiClient net;
 MQTTClient mqttClient;
 
-unsigned long lastMillis = 0;
-
-void messageReceived(String &topic, String &payload) {
-  Serial.println("incoming: " + topic + " - " + payload);
-
+void messageReceived(String &topic, String &payload)
+{
+    Serial.println("incoming: " + topic + " - " + payload);    
 }
 
-void setup() {
+void setup()
+{
     Serial.begin(115200);
     Serial.setTimeout(1);
-    
+
     Serial.println("GDOOR Setup start");
 
-    wifiManager.autoConnect(DEFAULT_WIFI_SSID, DEFAULT_WIFI_PASSWORD);
-
-    mqttClient.begin("192.168.10.249", 1884, net);
-    mqttClient.onMessage(messageReceived);
-
-    while (!mqttClient.connect("arduino")) {
-        Serial.print(".");
-        delay(1000);
-    } 
-
-    mqttClient.subscribe(MQTT_TOPIC);
-
     GDOOR::setup(PIN_TX, PIN_TX_EN, PIN_RX);
+
+    wifiManager.addParameter(&custom_mqtt_server);
+    wifiManager.addParameter(&custom_mqtt_port);
+    wifiManager.setBreakAfterConfig(true);
+    wifiManager.setConfigPortalBlocking(false);
+    wifiManager.setTimeout(300);
+    wifiManager.autoConnect(DEFAULT_WIFI_SSID, DEFAULT_WIFI_PASSWORD);
+    
+    mqttClient.begin(custom_mqtt_server.getValue(), atoi(custom_mqtt_port.getValue()), net); /* TODO: check string before conversion */
+    mqttClient.onMessage(messageReceived);
+    
+    if (!mqttClient.connect("GDoor"))
+    {
+        delay(1000);
+        if (!mqttClient.connect("GDoor")){
+            Serial.println("Failed to connect to MQTT broker");
+        }
+    }
+
+    mqttClient.subscribe("/gdoor/send");
+
     Serial.println("GDOOR Setup done");
+
+    //Temporay
+    mqttClient.publish(MQTT_TOPIC, "Initialized");
 }
 
-void loop() {
+void loop()
+{
+    wifiManager.process();
+    mqttClient.loop();
+
     GDOOR::loop();
-    GDOOR_RX_DATA* rx_data = GDOOR::read();
-    if(rx_data != NULL) {
+    GDOOR_RX_DATA *rx_data = GDOOR::read();
+    if (rx_data != NULL)
+    {
         Serial.print("New data:\n");
         Serial.print(*rx_data);
-        mqttClient.publish(MQTT_TOPIC, "1");
-    } else if (!GDOOR::active()) { //Neither RX nor TX active,
-        if (Serial.available() > 0) { // let's check the serial port if something is in buffer
+
+        /* Quick and dirty as function does not support Printable */
+        char buffer[50];
+        char* buffer_ptr = buffer;
+        for (uint8_t i = 0; i< rx_data->len;i++){
+            buffer_ptr += sprintf(buffer_ptr, "%.2x", rx_data->data[i]);
+        }
+        *buffer_ptr = '\0';
+        mqttClient.publish(MQTT_TOPIC, buffer);
+    }
+    else if (!GDOOR::active())
+    { // Neither RX nor TX active,
+        if (Serial.available() > 0)
+        { // let's check the serial port if something is in buffer
             String serialstr = Serial.readString();
             GDOOR::send(serialstr);
             Serial.print("Send data:");
             Serial.println(serialstr);
         }
     }
-
 }
