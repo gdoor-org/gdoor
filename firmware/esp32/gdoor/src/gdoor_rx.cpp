@@ -149,9 +149,8 @@ namespace GDOOR_RX {
     */
     void loop() {
         if (rx_state & FLAG_BITSTREAM_RECEIVED) {
-            retval.parse(counts, bitcounter);
             rx_state &= (uint16_t)~FLAG_BITSTREAM_RECEIVED;
-            if (retval.len > 0) {
+            if (retval.parse(counts, bitcounter)) {
                 rx_state |= FLAG_DATA_READY;
             }
             reset();
