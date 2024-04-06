@@ -52,14 +52,17 @@ std::map<int, const char*>GDOOR_DATA_ACTION = {
  * 
  * @param counts Array with pulse counts of bits
  * @param len Number of elements in array
+ * @return true if parsing was successful
 */
-void GDOOR_DATA::parse(uint16_t *counts, uint16_t len) {
+bool GDOOR_DATA::parse(uint16_t *counts, uint16_t len) {
     uint8_t wordcounter = 0; //Current word index
     uint8_t current_pulsetrain_valid = 1; //If parity or crc fails, this is set to 0
     uint16_t bit_one_thres = 0; //Dynamic Bit 1/0 threshold, based on length of startpulse
 
     uint8_t is_startbit = 1; // Flag to indicate current bit is start bit to determine 1/0 threshold based on its width
     uint8_t bitindex = 0; //Current bit index inside current word, loops from 0 to 8 (9bits per word)
+
+    bool success=false;
 
     for (uint8_t i=0; i<len; i++) {
         uint16_t cnt = counts[i];
@@ -116,7 +119,9 @@ void GDOOR_DATA::parse(uint16_t *counts, uint16_t len) {
         }
         this->len = wordcounter;
         this->valid = current_pulsetrain_valid;
+        success = true;
     }
+    return success;
 }
 
 /*
