@@ -26,13 +26,13 @@ There are two possibilities:
 5. press the "open door" button on your indoor station
 6. open Logbook and search for "Gdoor", now you should see state changes like
    ```
-   Gdoor changed to {"action": "BUTTON_RING", "parameters": "0360", "source": "A286FD", "destination": "000000", "type": "OUTDOOR", "hexvalue": "011011A286FD0360A04A"}
+   Gdoor changed to {"action": "BUTTON_RING", "parameters": "0360", "source": "A286FD", "destination": "000000", "type": "OUTDOOR", "busdata": "011011A286FD0360A04A"}
    ```
    Note the value of the `parameters` field: this is the unique value of your door bell which you can use to identify your door bell in automations.
-7. look for the `OPEN_DOOR` action, copy the value of `hexvalue` and add the following shell command in `configuration.yaml` to be able to open the door programmatically. Replace `<hexvalue>` with the copied value.
+7. look for the `OPEN_DOOR` action, copy the value of `busdata` and add the following shell command in `configuration.yaml` to be able to open the door programmatically. Replace `<busdata>` with the copied value.
     ```
     shell_command:
-      gdoor_open_door: echo -e '<hexvalue>' > /dev/ttyUSB0 # change hexvalue and device if needed
+      gdoor_open_door: echo -e '<busdata>' > /dev/ttyUSB0 # change busdata and device if needed
     ```
 8. restart Home Assistant
 
@@ -97,7 +97,7 @@ action:
             attribute: parameters
             state: "FF6F" # check in Logbook which parameter matches your floor bell
         sequence:
-          - service: notify.all_smartphones
+          - service: notify.all_smartphones # adjust to your notification group/device
             data:
               data:
                 push:
