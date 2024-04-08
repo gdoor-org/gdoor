@@ -16,6 +16,7 @@
  */
 #include <Arduino.h>
 #include "src/gdoor.h"
+#include "src/mqtt_helper.h"
 
 #include <WiFiManager.h> 
 #include <MQTT.h>
@@ -40,6 +41,8 @@ WiFiManagerParameter custom_mqtt_port("mqtt_port", "MQTT Port", DEFAULT_MQTT_POR
 WiFiClient net;
 MQTTClient mqttClient;
 
+MQTT_PRINTER mqttPrinter(&mqttClient);
+
 void messageReceived(String &topic, String &payload)
 {
     Serial.println("incoming: " + topic + " - " + payload);  
@@ -63,27 +66,29 @@ boolean parseSerialCommand(String  &input) {
 }
 
 /**
- * Function which outputs bus data via the serial port.
+ * Function which outputs bus data via the serial port and MQTT.
  * Depending in debug mode, it may output more data.
  * 
  * In normal mode, it also checks the valid flag and only
  * outputs valid bus messages.
  * @param busmessage The bus message to be send out to the user.
 */
-void outputSerial(GDOOR_DATA_PROTOCOL &busmessage) {
+void output(GDOOR_DATA_PROTOCOL &busmessage) {
     if(!debug) {
         if(busmessage.raw->valid) {
-            Serial.print("{");
-            Serial.print(busmessage);
-            Serial.println("}");
+            mqttPrinter.print("{");
+            mqttPrinter.print(busmessage);
+            mqttPrinter.println("}");
+            mqttPrinter.publish(MQTT_TOPIC);
         }
     } else {
-        Serial.print("{");
-        Serial.print(busmessage);
-        Serial.println("}");
-        Serial.print("{");
-        Serial.print(*(busmessage.raw));
-        Serial.println("}");
+        mqttPrinter.print("{");
+        mqttPrinter.print(busmessage);
+        mqttPrinter.println("}");
+        mqttPrinter.print("{");
+        mqttPrinter.print(*(busmessage.raw));
+        mqttPrinter.println("}");
+        mqttPrinter.publish(MQTT_TOPIC);
     }
 }
 
@@ -126,17 +131,7 @@ void loop() {
     GDOOR_DATA* rx_data = GDOOR::read();
     if(rx_data != NULL) {
         GDOOR_DATA_PROTOCOL busmessage = GDOOR_DATA_PROTOCOL(rx_data);
-        outputSerial(busmessage);
-
-        /* Quick and dirty as function does not support Printable */
-        char buffer[50];
-        char* buffer_ptr = buffer;
-        for (uint8_t i = 0; i< rx_data->len;i++){
-            buffer_ptr += sprintf(buffer_ptr, "%.2x", rx_data->data[i]);
-        }
-        *buffer_ptr = '\0';
-        mqttClient.publish(MQTT_TOPIC, buffer);
-        
+        output(busmessage);        
     } else if (!GDOOR::active()) { // Neither RX nor TX active,
         if (Serial.available() > 0) { // let's check the serial port if something is in buffer
             String serialstr = Serial.readString();
