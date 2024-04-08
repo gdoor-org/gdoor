@@ -196,7 +196,6 @@ namespace GDOOR_TX {
     void send(String str) {
         uint16_t index = 0;
         // String cleanup
-        str.trim();
         str.toUpperCase();
 
         // Only if we have enough memory

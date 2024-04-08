@@ -21,11 +21,12 @@
 #include "defines.h"
 #include "gdoor_rx.h"
 #include "gdoor_tx.h"
+#include "gdoor_data.h"
 
 namespace GDOOR { //Namespace as we can only use it once
     void setup(uint8_t txpin, uint8_t txenpin, uint8_t rxpin);
     void loop();
-    GDOOR_RX_DATA* read();
+    GDOOR_DATA* read();
     void send(uint8_t *data, uint16_t len);
     void send(String str);
     bool active();

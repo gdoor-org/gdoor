@@ -19,43 +19,7 @@
 
 #define GDOOR_RX_H
 #include <Arduino.h>
-
-class GDOOR_RX_DATA : public Printable { // Class/Struct to collect bus related infos
-    public:
-        uint16_t len;
-        uint8_t *data;
-        uint16_t *raw;
-        uint8_t valid;
-
-        virtual size_t printTo(Print& p) const {
-            size_t r = 0;
-
-            // Json compatible output
-            r+= p.print("{\"data\": [");
-            for(uint16_t i=0; i<len; i++) {
-                r+= p.print("0x");
-                r+= p.print(data[i], HEX);
-                r+= p.print(", ");
-            }
-            r+= p.print("], \"raw\": [");
-            for(uint16_t i=0; i<len; i++) {
-                r+= p.print("0x");
-                r+= p.print(raw[i]);
-                r+= p.print(", ");
-            }
-            r+= p.print("], \"hexvalue\": ");
-            for(uint16_t i=0; i<len; i++) {
-                if(data[i] < 16) {
-                    r+= p.print("0");
-                }
-                r+= p.print(data[i], HEX);
-            }
-            r+= p.print(", \"valid\": ");
-            r+= p.print(valid, HEX);
-            r+= p.print("}\n");
-            return r;
-       }
-};
+#include "gdoor_data.h"
 
 namespace GDOOR_RX { //Namespace as we can only use it once
     extern uint16_t rx_state;
@@ -63,7 +27,7 @@ namespace GDOOR_RX { //Namespace as we can only use it once
     void loop();
     void enable();
     void disable();
-    GDOOR_RX_DATA* read();
+    GDOOR_DATA* read();
 };
 
 #endif
