@@ -23,7 +23,7 @@
 class MQTT_PRINTER : public Print { // Class/Struct to collect bus related infos
     public:
         MQTTClient *mqttClient;
-        char buffer[200];
+        char buffer[201];
         uint8_t index = 0;
 
         MQTT_PRINTER(MQTTClient *mqttClient) {
