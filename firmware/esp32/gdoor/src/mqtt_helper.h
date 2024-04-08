@@ -45,7 +45,7 @@ class MQTT_PRINTER : public Print { // Class/Struct to collect bus related infos
         }
 
         char* read() {
-            if(this->index < 200) {
+            if(this->index < 200 && this->index > 0) {
                 this->buffer[index] = '\0'; //just to be sure
             }
             this->index = 0;
