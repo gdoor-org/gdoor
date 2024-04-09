@@ -14,33 +14,9 @@
  * You should have received a copy of the GNU General Public License 
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DEFINES_H
-#define DEFINES_H
 
-// GDOOR
-#define MAX_WORDLEN 25
+#ifndef WIFI_H
 
-// RX Statemachine
-#define FLAG_RX_ACTIVE 0x01
-#define FLAG_BITSTREAM_RECEIVED 0x02
-#define FLAG_BITSTREAM_CONVERTED 0x04
-#define FLAG_DATA_READY 0x08
-
-// RX
-#define BIT_ONE_DIV 2.5
-#define BIT_MIN_LEN 5
-#define STARTBIT_MIN_LEN 45
-
-// TX
-#define STARTBIT_PULSENUM 66
-#define ONE_PULSENUM 16
-#define ZERO_PULSENUM 37
-#define PAUSE_PULSENUM 30
-
-#define STATE_SENDING 0x01
-
-// WIFI
-#define DEFAULT_WIFI_SSID     "GDOOR"
-#define DEFAULT_WIFI_PASSWORD "12345678"
+#define WIFI_H
 
 #endif

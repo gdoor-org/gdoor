@@ -20,36 +20,5 @@
 #include <Arduino.h>
 #include <MQTT.h>
 
-class MQTT_PRINTER : public Print { // Class/Struct to collect bus related infos
-    public:
-        MQTTClient *mqttClient;
-        char buffer[201];
-        uint8_t index = 0;
 
-        MQTT_PRINTER(MQTTClient *mqttClient) {
-            this->mqttClient = mqttClient;
-        }
-
-        void publish(char *topic) {
-            this->mqttClient->publish(topic, this->read());
-            Serial.print(this->read());
-        }
-
-        size_t write(uint8_t byte) {
-            if(index < 200) {
-                this->buffer[index] = (char) byte;
-                index = index + 1;
-                return 1;
-            }
-            return 0;
-        }
-
-        char* read() {
-            if(this->index < 200 && this->index > 0) {
-                this->buffer[index] = '\0'; //just to be sure
-            }
-            this->index = 0;
-            return this->buffer;
-        }
-};
 #endif

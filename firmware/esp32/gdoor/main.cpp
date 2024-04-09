@@ -18,35 +18,16 @@
 #include "src/gdoor.h"
 #include "src/mqtt_helper.h"
 
-#include <WiFiManager.h> 
-#include <MQTT.h>
-
 #define PIN_RX 12
 #define PIN_TX 25
 #define PIN_TX_EN 27
 
-#define DEFAULT_WIFI_SSID     "GDOOR"
-#define DEFAULT_WIFI_PASSWORD "12345678"
 #define DEFAULT_MQTT_SERVER   "0.0.0.0" 
 #define DEFAULT_MQTT_PORT     "1883" 
 
 #define MQTT_TOPIC "/gdoor"
 
 boolean debug = false; // Global variable to indicate if we are in debug mode (true)
-
-WiFiManager wifiManager;
-WiFiManagerParameter custom_mqtt_server("mqtt_server", "MQTT Server", DEFAULT_MQTT_SERVER, 40);
-WiFiManagerParameter custom_mqtt_port("mqtt_port", "MQTT Port", DEFAULT_MQTT_PORT, 6);
-
-WiFiClient net;
-MQTTClient mqttClient;
-
-MQTT_PRINTER mqttPrinter(&mqttClient);
-
-void messageReceived(String &topic, String &payload)
-{
-    Serial.println("incoming: " + topic + " - " + payload);  
-}
 
 /**
  * Function which parses user provided serial input
@@ -97,36 +78,11 @@ void setup() {
     Serial.setTimeout(1);
     Serial.println("GDOOR Setup start");
     GDOOR::setup(PIN_TX, PIN_TX_EN, PIN_RX);
-    wifiManager.addParameter(&custom_mqtt_server);
-    wifiManager.addParameter(&custom_mqtt_port);
-    wifiManager.setBreakAfterConfig(true);
-    wifiManager.setConfigPortalBlocking(false);
-    wifiManager.setTimeout(300);
-    wifiManager.autoConnect(DEFAULT_WIFI_SSID, DEFAULT_WIFI_PASSWORD);
-    
-    mqttClient.begin(custom_mqtt_server.getValue(), atoi(custom_mqtt_port.getValue()), net); /* TODO: check string before conversion */
-    mqttClient.onMessage(messageReceived);
-    
-    if (!mqttClient.connect("GDoor"))
-    {
-        delay(1000);
-        if (!mqttClient.connect("GDoor")){
-            Serial.println("Failed to connect to MQTT broker");
-        }
-    }
-
-    mqttClient.subscribe("/gdoor/send");
 
     Serial.println("GDOOR Setup done");
-
-    //Temporay
-    mqttClient.publish(MQTT_TOPIC, "Initialized");
 }
 
 void loop() {
-    wifiManager.process();
-    mqttClient.loop();
-
     GDOOR::loop();
     GDOOR_DATA* rx_data = GDOOR::read();
     if(rx_data != NULL) {
