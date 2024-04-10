@@ -28,13 +28,14 @@ std::map<int, const char*>GDOOR_DATA_HWTYPE = {
 
 // Map the Action field between bus value and human readable string
 std::map<int, const char*>GDOOR_DATA_ACTION = {
-    { 0x42, "BUTTON_RING_UNKOWN"},
+    { 0x42, "BUTTON"},
     { 0x41, "BUTTON_LIGHT"},
-    { 0x31, "OPEN_DOOR"},
-    { 0x28, "CALL_ACCEPT_VIDEO"},
-    { 0x21, "CALL_ACCEPT"},
+    { 0x31, "DOOR_OPEN"},
+    { 0x28, "VIDEO_REQUEST"},
+    { 0x21, "AUDIO_REQUEST"},
     { 0x20, "CALL_CLOSE"},
     { 0x13, "BUTTON_FLOOR"},
+    { 0x12, "CALL_INTERNAL"},
     { 0x11, "BUTTON_RING"},
     { 0x0F, "CTRL_DOOROPENER_ACK"},
     { 0x08, "CTRL_RESET"},
