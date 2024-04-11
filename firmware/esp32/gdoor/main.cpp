@@ -17,15 +17,11 @@
 #include <Arduino.h>
 #include "src/gdoor.h"
 #include "src/mqtt_helper.h"
+#include "src/wifi_helper.h"
 
 #define PIN_RX 12
 #define PIN_TX 25
 #define PIN_TX_EN 27
-
-#define DEFAULT_MQTT_SERVER   "0.0.0.0" 
-#define DEFAULT_MQTT_PORT     "1883" 
-
-#define MQTT_TOPIC "/gdoor"
 
 boolean debug = false; // Global variable to indicate if we are in debug mode (true)
 
@@ -57,19 +53,19 @@ boolean parseSerialCommand(String  &input) {
 void output(GDOOR_DATA_PROTOCOL &busmessage) {
     if(!debug) {
         if(busmessage.raw->valid) {
-            mqttPrinter.print("{");
-            mqttPrinter.print(busmessage);
-            mqttPrinter.println("}");
-            mqttPrinter.publish(MQTT_TOPIC);
+            MQTT_HELPER::printer.print("{");
+            MQTT_HELPER::printer.print(busmessage);
+            MQTT_HELPER::printer.println("}");
+            //MQTT_HELPER::printer.publish((char* const)MQTT_TOPIC);
         }
     } else {
-        mqttPrinter.print("{");
-        mqttPrinter.print(busmessage);
-        mqttPrinter.println("}");
-        mqttPrinter.print("{");
-        mqttPrinter.print(*(busmessage.raw));
-        mqttPrinter.println("}");
-        mqttPrinter.publish(MQTT_TOPIC);
+        MQTT_HELPER::printer.print("{");
+        MQTT_HELPER::printer.print(busmessage);
+        MQTT_HELPER::printer.println("}");
+        MQTT_HELPER::printer.print("{");
+        MQTT_HELPER::printer.print(*(busmessage.raw));
+        MQTT_HELPER::printer.println("}");
+        //MQTT_HELPER::printer.publish((char* const)MQTT_TOPIC);
     }
 }
 
@@ -78,11 +74,13 @@ void setup() {
     Serial.setTimeout(1);
     Serial.println("GDOOR Setup start");
     GDOOR::setup(PIN_TX, PIN_TX_EN, PIN_RX);
+    WIFI_HELPER::setup();
 
     Serial.println("GDOOR Setup done");
 }
 
 void loop() {
+    //WIFI_HELPER::loop();
     GDOOR::loop();
     GDOOR_DATA* rx_data = GDOOR::read();
     if(rx_data != NULL) {

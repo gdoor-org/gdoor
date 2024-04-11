@@ -14,53 +14,47 @@
  * You should have received a copy of the GNU General Public License 
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
+#include "defines.h"
 #include "mqtt_helper.h"
 #include <MQTT.h>
 
 #include <WiFi.h>
 
-class MQTT_PRINTER : public Print { // Class/Struct to collect bus related infos
-    public:
-        MQTTClient *mqttClient;
-        char buffer[201];
-        uint8_t index = 0;
+MQTT_PRINTER::MQTT_PRINTER(MQTTClient *mqttClient) {
+    this->mqttClient = mqttClient;
+}
 
-        MQTT_PRINTER(MQTTClient *mqttClient) {
-            this->mqttClient = mqttClient;
-        }
+void MQTT_PRINTER::publish(char *topic) {
+    if (this->mqttClient->connected()) {
+        this->mqttClient->publish(topic, this->read());
+    }
+    Serial.print(this->read());
+}
 
-        void publish(char *topic) {
-            if (this->mqttClient->connected()) {
-                this->mqttClient->publish(topic, this->read());
-            }
-            Serial.print(this->read());
-        }
+size_t MQTT_PRINTER::write(uint8_t byte) {
+    if(index < 200) {
+        this->buffer[index] = (char) byte;
+        index = index + 1;
+        return 1;
+    }
+    return 0;
+}
 
-        size_t write(uint8_t byte) {
-            if(index < 200) {
-                this->buffer[index] = (char) byte;
-                index = index + 1;
-                return 1;
-            }
-            return 0;
-        }
-
-        char* read() {
-            if(this->index < 200 && this->index > 0) {
-                this->buffer[index] = '\0'; //just to be sure
-            }
-            this->index = 0;
-            return this->buffer;
-        }
-};
+char* MQTT_PRINTER::read() {
+    if(this->index < 200 && this->index > 0) {
+        this->buffer[index] = '\0'; //just to be sure
+    }
+    this->index = 0;
+    return this->buffer;
+}
 
 namespace MQTT_HELPER { //Namespace as we can only use it once
+    WiFiClient net;
     MQTTClient mqttClient;
 
     MQTT_PRINTER printer(&mqttClient);
 
-    bool newly_connected = false;
+    bool newly_connected = true;
 
     void on_message_received(String &topic, String &payload) {
         Serial.println("incoming: " + topic + " - " + payload);  
@@ -70,9 +64,13 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
         newly_connected = true;
     }
 
-    void setup() {
+    void setup(String &server, String &port) {
+
+    }
+
+    void setup(String &server, int port) {
         WiFi.onEvent(on_wifi_active, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
-        mqttClient.begin(custom_mqtt_server.getValue(), atoi(custom_mqtt_port.getValue()), net); /* TODO: check string before conversion */
+        mqttClient.begin(server.c_str(), port, net);
         mqttClient.onMessage(on_message_received);
     }
 

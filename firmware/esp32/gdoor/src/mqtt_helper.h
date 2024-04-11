@@ -20,5 +20,28 @@
 #include <Arduino.h>
 #include <MQTT.h>
 
+class MQTT_PRINTER : public Print { // Class/Struct to collect bus related infos
+    public:
+        MQTTClient *mqttClient;
+        char buffer[201];
+        uint8_t index = 0;
+
+        MQTT_PRINTER(MQTTClient *mqttClient);
+
+        void publish(char *topic);
+        size_t write(uint8_t byte);
+        char* read();
+};
+
+namespace MQTT_HELPER { //Namespace as we can only use it once
+    extern MQTT_PRINTER printer;
+
+
+    void setup(String &server, String &port);
+    void setup(String &server, int &port);
+
+    void loop();
+
+};
 
 #endif

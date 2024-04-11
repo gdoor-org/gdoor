@@ -43,4 +43,9 @@
 #define DEFAULT_WIFI_SSID     "GDOOR"
 #define DEFAULT_WIFI_PASSWORD "12345678"
 
+// MQTT
+#define DEFAULT_MQTT_SERVER   "0.0.0.0" 
+#define DEFAULT_MQTT_PORT     "1883" 
+#define DEFAULT_MQTT_TOPIC "/gdoor"
+
 #endif

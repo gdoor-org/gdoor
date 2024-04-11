@@ -19,4 +19,9 @@
 
 #define WIFI_H
 
+namespace WIFI_HELPER { //Namespace as we can only use it once
+    void loop();
+    void setup();
+};
+
 #endif
