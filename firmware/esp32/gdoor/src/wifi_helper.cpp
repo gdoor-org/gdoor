@@ -19,15 +19,22 @@
 #include <WiFiManager.h>
 #include <LittleFS.h>
 
+class MyCustomWifiManager: public WiFiManager {
+    public:
+        void setBackButton(bool enable) {
+            _showBack = enable;
+        }
+};
+
 
 namespace WIFI_HELPER { //Namespace as we can only use it once
     bool shouldSaveConfig = false;
 
-    WiFiManager wifiManager;
+    MyCustomWifiManager wifiManager;
     WiFiManagerParameter custom_mqtt_server("mqtt_server", "MQTT Server", DEFAULT_MQTT_SERVER, 40);
     WiFiManagerParameter custom_mqtt_port("mqtt_port", "MQTT Port", DEFAULT_MQTT_PORT, 6);
     WiFiManagerParameter custom_mqtt_topic("mqtt_topic", "MQTT TOPIC", DEFAULT_MQTT_TOPIC, 20);
-    WiFiManagerParameter custom_debug("debug", "Debug Mode", "false", 6, "placeholder=\"Custom Field Placeholder\" type=\"checkbox\"");
+    WiFiManagerParameter custom_debug("debug", "Debug Mode", "debug", 6, "type=\"checkbox\"");
 
     void save_config_file(const char* filename, const char *value) {
         File file = LittleFS.open(filename, FILE_WRITE);
@@ -51,12 +58,15 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     void setup() {
         String filevalue;
 
-        /*bool filesystem_mounted = LittleFS.begin(true);
+        bool filesystem_mounted = LittleFS.begin(true);
         if (filesystem_mounted) {
             read_config_file("custom_mqtt_server", &filevalue);
+            Serial.println("Read mqtt port");
             if (filevalue.length() > 0) {
                 custom_mqtt_server.setValue(filevalue.c_str(), 40);
             }
+            Serial.println(filevalue);
+            Serial.println(custom_mqtt_server.getValue());
 
             read_config_file("custom_mqtt_port", &filevalue);
             if (filevalue.length() > 0) {
@@ -74,19 +84,29 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
             }
 
             LittleFS.end();
+        } else {
+            Serial.println("Could not mount filesystem on load");
         }
+
+        wifiManager.setTitle(GDOOR_LOGO);
+        wifiManager.setBackButton(true);
         
         wifiManager.addParameter(&custom_mqtt_server);
         wifiManager.addParameter(&custom_mqtt_port);
         wifiManager.addParameter(&custom_mqtt_topic);
+
         wifiManager.addParameter(&custom_debug);
-        wifiManager.setSaveConfigCallback(on_save);*/
+
+        wifiManager.setSaveConfigCallback(on_save);
+        wifiManager.setSaveParamsCallback(on_save);
+        
         wifiManager.setBreakAfterConfig(true);
         wifiManager.setConfigPortalBlocking(false);
         wifiManager.setTimeout(300);
-        //wifiManager.autoConnect(DEFAULT_WIFI_SSID, DEFAULT_WIFI_PASSWORD);
-
-        
+        std::vector<const char *> menu = {"wifi","param","sep","update"};
+        wifiManager.setMenu(menu);
+        //wifiManager.setDebugOutput(false);
+        wifiManager.autoConnect(DEFAULT_WIFI_SSID, DEFAULT_WIFI_PASSWORD);
     }
 
     const char* mqtt_server(){
@@ -103,7 +123,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     }
 
     bool debug(){
-        return custom_debug.getValue();
+        return strcmp(custom_debug.getValue(), "debug") == 0;
     }
 
     void loop() {
@@ -111,6 +131,8 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
 
         if (shouldSaveConfig) {
             shouldSaveConfig = false;
+            Serial.print("Save: ");
+            Serial.println(custom_debug.getValue());
             bool filesystem_mounted = LittleFS.begin(true);
             if (filesystem_mounted) {
                 save_config_file("/custom_mqtt_server", custom_mqtt_server.getValue());
@@ -119,6 +141,8 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
                 save_config_file("/custom_debug", custom_debug.getValue());
                 LittleFS.end();
                 //ESP.restart();
+            } else {
+                Serial.println("Could not mount filesystem");
             }
             
         }

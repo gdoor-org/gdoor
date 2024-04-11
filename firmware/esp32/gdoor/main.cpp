@@ -80,7 +80,7 @@ void setup() {
 }
 
 void loop() {
-    //WIFI_HELPER::loop();
+    WIFI_HELPER::loop();
     GDOOR::loop();
     GDOOR_DATA* rx_data = GDOOR::read();
     if(rx_data != NULL) {
