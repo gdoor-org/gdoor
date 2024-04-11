@@ -26,6 +26,32 @@ class MyCustomWifiManager: public WiFiManager {
         }
 };
 
+class CheckBoxParameter : public WiFiManagerParameter {
+public:
+    CheckBoxParameter(const char *id, const char *placeholder, const char * value, const uint8_t length = 10)
+        : WiFiManagerParameter("") {
+        init(id, placeholder, value, length+11, "type=\"checkbox\"", WFM_LABEL_BEFORE);
+    }
+
+    const char *getCustomHTML() const override {
+        static String html;
+        const char * value = getValue();
+        Serial.print("Get HTML: ");
+        Serial.println(value);
+        Serial.println(*value, HEX);
+
+        if(*value != '\0') {
+            Serial.println("Check");
+            html = String(_customHTML) + " checked";
+        } else {
+            html = _customHTML;
+        }
+        Serial.print("Return HTML: ");
+        Serial.println(html);
+        return html.c_str();
+    }
+};
+
 
 namespace WIFI_HELPER { //Namespace as we can only use it once
     bool shouldSaveConfig = false;
@@ -34,10 +60,10 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     WiFiManagerParameter custom_mqtt_server("mqtt_server", "MQTT Server", DEFAULT_MQTT_SERVER, 40);
     WiFiManagerParameter custom_mqtt_port("mqtt_port", "MQTT Port", DEFAULT_MQTT_PORT, 6);
     WiFiManagerParameter custom_mqtt_topic("mqtt_topic", "MQTT TOPIC", DEFAULT_MQTT_TOPIC, 20);
-    WiFiManagerParameter custom_debug("debug", "Debug Mode", "debug", 6, "type=\"checkbox\"");
+    CheckBoxParameter custom_debug("debug", "Debug Mode", "debug", 6);
 
     void save_config_file(const char* filename, const char *value) {
-        File file = LittleFS.open(filename, FILE_WRITE);
+        File file = LittleFS.open(filename, FILE_WRITE, true);
         if (file) {
             file.print(value);
             file.close();
@@ -47,7 +73,10 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     void read_config_file(const char* filename, String *s) {
         File file = LittleFS.open(filename, FILE_READ);
         if(file && !file.isDirectory()){
+            Serial.print("Read");
+            Serial.println(filename);
             *s = file.readString();
+            Serial.println(*s);
         }
     }
 
@@ -60,7 +89,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
 
         bool filesystem_mounted = LittleFS.begin(true);
         if (filesystem_mounted) {
-            read_config_file("custom_mqtt_server", &filevalue);
+            read_config_file("/custom_mqtt_server", &filevalue);
             Serial.println("Read mqtt port");
             if (filevalue.length() > 0) {
                 custom_mqtt_server.setValue(filevalue.c_str(), 40);
@@ -68,17 +97,17 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
             Serial.println(filevalue);
             Serial.println(custom_mqtt_server.getValue());
 
-            read_config_file("custom_mqtt_port", &filevalue);
+            read_config_file("/custom_mqtt_port", &filevalue);
             if (filevalue.length() > 0) {
                 custom_mqtt_port.setValue(filevalue.c_str(), 6);
             }
 
-            read_config_file("custom_mqtt_topic", &filevalue);
+            read_config_file("/custom_mqtt_topic", &filevalue);
             if (filevalue.length() > 0) {
                 custom_mqtt_topic.setValue(filevalue.c_str(), 20);
             }
 
-            read_config_file("custom_debug", &filevalue);
+            read_config_file("/custom_debug", &filevalue);
             if (filevalue.length() > 0) {
                 custom_debug.setValue(filevalue.c_str(), 6);
             }
