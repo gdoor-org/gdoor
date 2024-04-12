@@ -192,7 +192,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     void loop() {
         wifiManager.process();
 
-        if (shouldSaveConfig) {
+        /*if (shouldSaveConfig) {
             shouldSaveConfig = false;
             bool filesystem_mounted = LittleFS.begin(true);
             if (filesystem_mounted) {
@@ -206,6 +206,6 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
                 Serial.println("Could not mount filesystem");
             }
             
-        }
+        }*/
     }
 };
