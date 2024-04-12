@@ -186,7 +186,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     }
 
     bool debug(){
-        return strcmp(custom_debug.getValue(), "debug") == 0;
+        return strcmp(custom_debug.getValue(), "enabled") == 0;
     }
 
     void loop() {
