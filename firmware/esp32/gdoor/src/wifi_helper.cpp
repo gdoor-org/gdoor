@@ -26,41 +26,81 @@ class MyCustomWifiManager: public WiFiManager {
         }
 };
 
-class CheckBoxParameter : public WiFiManagerParameter {
+class CheckSelectParameter : public WiFiManagerParameter {
 public:
-    CheckBoxParameter(const char *id, const char *placeholder, const char * value, const uint8_t length = 10)
+    String myid;
+    String label;
+    std::vector<String> selectvalues;
+    uint32_t selectlength;
+
+    CheckSelectParameter()
         : WiFiManagerParameter("") {
-        init(id, placeholder, value, length+11, "type=\"checkbox\"", WFM_LABEL_BEFORE);
     }
 
-    const char *getCustomHTML() const override {
-        static String html;
-        const char * value = getValue();
-        Serial.print("Get HTML: ");
-        Serial.println(value);
-        Serial.println(*value, HEX);
+    CheckSelectParameter(const char *id, const char *placeholder, const char ** values, uint32_t len_values, uint32_t maxlen)
+        : WiFiManagerParameter("") {
+        selectInit(id, placeholder, values, len_values, maxlen);
+    }
 
-        if(*value != '\0') {
-            Serial.println("Check");
-            html = String(_customHTML) + " checked";
-        } else {
-            html = _customHTML;
+    void setValue(const char *defaultValue, int length) {
+        if(length <= _length ){
+            memcpy(_value, defaultValue, length);  
         }
-        Serial.print("Return HTML: ");
-        Serial.println(html);
-        return html.c_str();
+    }
+
+    void selectInit(const char *id, const char *placeholder, const char ** values, uint32_t len_values, uint32_t maxlen) {
+        myid = id;
+        label = placeholder;
+        
+        selectlength = len_values;
+
+        for(int i=0; i<len_values; i++) {
+            selectvalues.push_back((values[i]));
+        }
+        _value  = new char[maxlen + 1];
+        _length = maxlen;
+    }
+
+    virtual const char *getCustomHTML() const {
+        static String pre_select = "";
+        pre_select = "";
+        pre_select += "<br/><label for='" + myid + "'>" + label + "</label>";
+        pre_select += "<select name='" + myid + "' id='" + myid + "'>";
+
+        for(String value : selectvalues) {
+            String selected = "";
+            if(value == _value) {
+                selected = " selected";
+            }
+            pre_select += "<option value='" + value + "'" + selected +">" + value + "</option>";
+        }
+        pre_select += "</select>";
+
+        return pre_select.c_str();
+    }
+
+};
+
+class EnableDisableParameter : public CheckSelectParameter {
+public:
+    
+    EnableDisableParameter(const char *id, const char *placeholder)
+        :  CheckSelectParameter() {
+        const char* endis[] = {"disabled", "enabled"};
+        selectInit(id, placeholder, endis, 2, 10);
     }
 };
 
 
 namespace WIFI_HELPER { //Namespace as we can only use it once
     bool shouldSaveConfig = false;
+    
 
     MyCustomWifiManager wifiManager;
     WiFiManagerParameter custom_mqtt_server("mqtt_server", "MQTT Server", DEFAULT_MQTT_SERVER, 40);
     WiFiManagerParameter custom_mqtt_port("mqtt_port", "MQTT Port", DEFAULT_MQTT_PORT, 6);
     WiFiManagerParameter custom_mqtt_topic("mqtt_topic", "MQTT TOPIC", DEFAULT_MQTT_TOPIC, 20);
-    CheckBoxParameter custom_debug("debug", "Debug Mode", "debug", 6);
+    EnableDisableParameter custom_debug("param_3", "Debug Mode"); //param_3 ugly workaround for stupid WifiManager Bug custom fields only with param_<fixedno>
 
     void save_config_file(const char* filename, const char *value) {
         File file = LittleFS.open(filename, FILE_WRITE, true);
@@ -73,10 +113,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     void read_config_file(const char* filename, String *s) {
         File file = LittleFS.open(filename, FILE_READ);
         if(file && !file.isDirectory()){
-            Serial.print("Read");
-            Serial.println(filename);
             *s = file.readString();
-            Serial.println(*s);
         }
     }
 
@@ -90,12 +127,9 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         bool filesystem_mounted = LittleFS.begin(true);
         if (filesystem_mounted) {
             read_config_file("/custom_mqtt_server", &filevalue);
-            Serial.println("Read mqtt port");
             if (filevalue.length() > 0) {
                 custom_mqtt_server.setValue(filevalue.c_str(), 40);
             }
-            Serial.println(filevalue);
-            Serial.println(custom_mqtt_server.getValue());
 
             read_config_file("/custom_mqtt_port", &filevalue);
             if (filevalue.length() > 0) {
@@ -109,7 +143,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
 
             read_config_file("/custom_debug", &filevalue);
             if (filevalue.length() > 0) {
-                custom_debug.setValue(filevalue.c_str(), 6);
+                custom_debug.setValue(filevalue.c_str(), 10);
             }
 
             LittleFS.end();
@@ -160,8 +194,6 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
 
         if (shouldSaveConfig) {
             shouldSaveConfig = false;
-            Serial.print("Save: ");
-            Serial.println(custom_debug.getValue());
             bool filesystem_mounted = LittleFS.begin(true);
             if (filesystem_mounted) {
                 save_config_file("/custom_mqtt_server", custom_mqtt_server.getValue());
