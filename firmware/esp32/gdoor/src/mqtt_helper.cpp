@@ -75,17 +75,19 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
     }
 
     void loop() {
-        if (newly_connected) {
-            if (mqttClient.connect("GDoor")) {
-                mqttClient.subscribe("/gdoor/send");
-                newly_connected = false;
+        if(WiFi.getMode() == WIFI_MODE_STA && WiFi.status() == WL_CONNECTED) {
+            if (newly_connected) {
+                if (mqttClient.connect("GDoor")) {
+                    mqttClient.subscribe("/gdoor/send");
+                    newly_connected = false;
+                }
             }
-        }
 
-        mqttClient.loop();
-        if (!mqttClient.connected()) {
-            mqttClient.connect("GDoor");
-            mqttClient.subscribe("/gdoor/send");
+            mqttClient.loop();
+            if (!mqttClient.connected()) {
+                mqttClient.connect("GDoor");
+                mqttClient.subscribe("/gdoor/send");
+            }
         }
     }
 
