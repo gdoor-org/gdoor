@@ -99,8 +99,9 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     MyCustomWifiManager wifiManager;
     WiFiManagerParameter custom_mqtt_server("mqtt_server", "MQTT Server", DEFAULT_MQTT_SERVER, 40);
     WiFiManagerParameter custom_mqtt_port("mqtt_port", "MQTT Port", DEFAULT_MQTT_PORT, 6, "type='number' min=0 max=65535");
-    WiFiManagerParameter custom_mqtt_topic("mqtt_topic", "MQTT TOPIC", DEFAULT_MQTT_TOPIC, 20);
-    EnableDisableParameter custom_debug("param_3", "Debug Mode"); //param_3 ugly workaround for stupid WifiManager Bug custom fields only with param_<fixedno>
+    WiFiManagerParameter custom_mqtt_topic_bus_rx("mqtt_topic_bus_rx", "MQTT Topic - from bus", DEFAULT_MQTT_TOPIC_BUS_RX, 20);
+    WiFiManagerParameter custom_mqtt_topic_bus_tx("mqtt_topic_bus_tx", "MQTT Topic - to bus", DEFAULT_MQTT_TOPIC_BUS_TX, 20);
+    EnableDisableParameter custom_debug("param_4", "Debug Mode"); //param_3 ugly workaround for stupid WifiManager Bug custom fields only with param_<fixedno>
 
     void save_config_file(const char* filename, const char *value) {
         File file = LittleFS.open(filename, FILE_WRITE, true);
@@ -136,9 +137,14 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
                 custom_mqtt_port.setValue(filevalue.c_str(), 6);
             }
 
-            read_config_file("/custom_mqtt_topic", &filevalue);
+            read_config_file("/custom_mqtt_topic_bus_rx", &filevalue);
             if (filevalue.length() > 0) {
-                custom_mqtt_topic.setValue(filevalue.c_str(), 20);
+                custom_mqtt_topic_bus_rx.setValue(filevalue.c_str(), 20);
+            }
+
+            read_config_file("/custom_mqtt_topic_bus_tx", &filevalue);
+            if (filevalue.length() > 0) {
+                custom_mqtt_topic_bus_tx.setValue(filevalue.c_str(), 20);
             }
 
             read_config_file("/custom_debug", &filevalue);
@@ -156,7 +162,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         
         wifiManager.addParameter(&custom_mqtt_server);
         wifiManager.addParameter(&custom_mqtt_port);
-        wifiManager.addParameter(&custom_mqtt_topic);
+        wifiManager.addParameter(&custom_mqtt_topic_bus_rx);
 
         wifiManager.addParameter(&custom_debug);
 
@@ -181,8 +187,12 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         return atoi(strvalue);
     }
 
-    const char* mqtt_topic(){
-        return custom_mqtt_topic.getValue();
+    const char* mqtt_topic_bus_rx(){
+        return custom_mqtt_topic_bus_rx.getValue();
+    }
+
+    const char* mqtt_topic_bus_tx(){
+        return custom_mqtt_topic_bus_tx.getValue();
     }
 
     bool debug(){
@@ -198,7 +208,8 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
             if (filesystem_mounted) {
                 save_config_file("/custom_mqtt_server", custom_mqtt_server.getValue());
                 save_config_file("/custom_mqtt_port", custom_mqtt_port.getValue());
-                save_config_file("/custom_mqtt_topic", custom_mqtt_topic.getValue());
+                save_config_file("/custom_mqtt_topic_bus_rx", custom_mqtt_topic_bus_rx.getValue());
+                save_config_file("/custom_mqtt_topic_bus_tx", custom_mqtt_topic_bus_tx.getValue());
                 save_config_file("/custom_debug", custom_debug.getValue());
                 LittleFS.end();
                 //ESP.restart();
