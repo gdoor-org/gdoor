@@ -71,9 +71,9 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
         newly_connected = true;
     }
 
-    void setup(String &server, int port) {
+    void setup(const char* server, int port) {
         WiFi.onEvent(on_wifi_active, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
-        mqttClient.begin(server.c_str(), port, net);
+        mqttClient.begin(server, port, net);
         mqttClient.onMessage(on_message_received);
     }
 
