@@ -99,8 +99,8 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     MyCustomWifiManager wifiManager;
     WiFiManagerParameter custom_mqtt_server("mqtt_server", "MQTT Server", DEFAULT_MQTT_SERVER, 40);
     WiFiManagerParameter custom_mqtt_port("mqtt_port", "MQTT Port", DEFAULT_MQTT_PORT, 6, "type='number' min=0 max=65535");
-    WiFiManagerParameter custom_mqtt_topic_bus_rx("mqtt_topic_bus_rx", "MQTT Topic - from bus", DEFAULT_MQTT_TOPIC_BUS_RX, 20);
-    WiFiManagerParameter custom_mqtt_topic_bus_tx("mqtt_topic_bus_tx", "MQTT Topic - to bus", DEFAULT_MQTT_TOPIC_BUS_TX, 20);
+    WiFiManagerParameter custom_mqtt_topic_bus_rx("mqtt_topic_bus_rx", "MQTT Topic - from bus", DEFAULT_MQTT_TOPIC_BUS_RX, 40);
+    WiFiManagerParameter custom_mqtt_topic_bus_tx("mqtt_topic_bus_tx", "MQTT Topic - to bus", DEFAULT_MQTT_TOPIC_BUS_TX, 40);
     EnableDisableParameter custom_debug("param_4", "Debug Mode"); //param_3 ugly workaround for stupid WifiManager Bug custom fields only with param_<fixedno>
 
     void save_config_file(const char* filename, const char *value) {
@@ -176,6 +176,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         wifiManager.setMenu(menu);
         //wifiManager.setDebugOutput(false);
         wifiManager.autoConnect(DEFAULT_WIFI_SSID, DEFAULT_WIFI_PASSWORD);
+        wifiManager.startWebPortal();
     }
 
     const char* mqtt_server(){
@@ -202,7 +203,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     void loop() {
         wifiManager.process();
 
-        /*if (shouldSaveConfig) {
+        if (shouldSaveConfig) {
             shouldSaveConfig = false;
             bool filesystem_mounted = LittleFS.begin(true);
             if (filesystem_mounted) {
@@ -212,11 +213,11 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
                 save_config_file("/custom_mqtt_topic_bus_tx", custom_mqtt_topic_bus_tx.getValue());
                 save_config_file("/custom_debug", custom_debug.getValue());
                 LittleFS.end();
-                //ESP.restart();
+                ESP.restart();
             } else {
                 Serial.println("Could not mount filesystem");
             }
             
-        }*/
+        }
     }
 };

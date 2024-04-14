@@ -28,7 +28,7 @@ class MQTT_PRINTER : public Print { // Class/Struct to collect bus related infos
 
         MQTT_PRINTER(MQTTClient *mqttClient);
 
-        void publish(char *topic);
+        void publish(const char *topic);
         size_t write(uint8_t byte);
         char* read();
 };
@@ -36,10 +36,8 @@ class MQTT_PRINTER : public Print { // Class/Struct to collect bus related infos
 namespace MQTT_HELPER { //Namespace as we can only use it once
     extern MQTT_PRINTER printer;
 
-
-    void setup(String &server, String &port);
     void setup(String &server, int &port);
-
+    String& receive();
     void loop();
 
 };

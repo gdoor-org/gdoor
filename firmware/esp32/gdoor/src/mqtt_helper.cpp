@@ -24,7 +24,7 @@ MQTT_PRINTER::MQTT_PRINTER(MQTTClient *mqttClient) {
     this->mqttClient = mqttClient;
 }
 
-void MQTT_PRINTER::publish(char *topic) {
+void MQTT_PRINTER::publish(const char *topic) {
     if (this->mqttClient->connected()) {
         this->mqttClient->publish(topic, this->read());
     }
@@ -54,18 +54,21 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
 
     MQTT_PRINTER printer(&mqttClient);
 
+    String received_mqtt_payload;
+    String empty("");
+
+    bool new_string_available = false;
+
     bool newly_connected = true;
 
     void on_message_received(String &topic, String &payload) {
-        Serial.println("incoming: " + topic + " - " + payload);  
+        new_string_available = true;
+        received_mqtt_payload = payload;
+        received_mqtt_payload.trim();
     }
 
     void on_wifi_active(WiFiEvent_t event, WiFiEventInfo_t info) {
         newly_connected = true;
-    }
-
-    void setup(String &server, String &port) {
-
     }
 
     void setup(String &server, int port) {
@@ -89,6 +92,14 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
                 mqttClient.subscribe("/gdoor/send");
             }
         }
+    }
+
+    String& receive() {
+        if(new_string_available) {
+            new_string_available = false;
+            return received_mqtt_payload;
+        }
+        return empty;
     }
 
 };
