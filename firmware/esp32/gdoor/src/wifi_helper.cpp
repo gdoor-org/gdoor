@@ -19,6 +19,10 @@
 #include <WiFiManager.h>
 #include <LittleFS.h>
 
+/**
+ * Overriden WiFiManager class,
+ * to enable back button in web gui.
+*/
 class MyCustomWifiManager: public WiFiManager {
     public:
         void setBackButton(bool enable) {
@@ -26,6 +30,10 @@ class MyCustomWifiManager: public WiFiManager {
         }
 };
 
+/**
+ * Custom WiFiManager parameter which
+ * allows a HTML select menu.
+*/
 class CheckSelectParameter : public WiFiManagerParameter {
 public:
     String myid;
@@ -33,21 +41,44 @@ public:
     std::vector<String> selectvalues;
     uint32_t selectlength;
 
+    /**
+     * Default constructor.
+    */
     CheckSelectParameter()
         : WiFiManagerParameter("") {
     }
 
+    /**
+     * Main Constructor
+     * @param id ID String
+     * @param placeholder Label in GUI
+     * @param values a String array with selectable values
+     * @param len_values Number og values
+     * @param maxlen How much memory to reserve, biggest entry of values.
+    */
     CheckSelectParameter(const char *id, const char *placeholder, const char ** values, uint32_t len_values, uint32_t maxlen)
         : WiFiManagerParameter("") {
         selectInit(id, placeholder, values, len_values, maxlen);
     }
 
+    /** 
+     * Override Setvalue to skip WiFiManager gibberish checks.
+    */
     void setValue(const char *defaultValue, int length) {
         if(length <= _length ){
             memcpy(_value, defaultValue, length);  
         }
     }
 
+    /** Mainly the logic of the constructor,
+     * separated as it is easier to use for child classes.
+     * 
+     * @param id ID String
+     * @param placeholder Label in GUI
+     * @param values a String array with selectable values
+     * @param len_values Number og values
+     * @param maxlen How much memory to reserve, biggest entry of values.
+    */
     void selectInit(const char *id, const char *placeholder, const char ** values, uint32_t len_values, uint32_t maxlen) {
         myid = id;
         label = placeholder;
@@ -61,6 +92,9 @@ public:
         _length = maxlen;
     }
 
+    /**
+     * Overriden WiFiManager function to render select.
+    */
     virtual const char *getCustomHTML() const {
         static String pre_select = "";
         pre_select = "";
@@ -81,6 +115,10 @@ public:
 
 };
 
+/**
+ * Custom WiFiManager parameter which
+ * allows a HTML enable/disable parameter.
+*/
 class EnableDisableParameter : public CheckSelectParameter {
 public:
     
@@ -101,8 +139,13 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     WiFiManagerParameter custom_mqtt_port("mqtt_port", "MQTT Port", DEFAULT_MQTT_PORT, 6, "type='number' min=0 max=65535");
     WiFiManagerParameter custom_mqtt_topic_bus_rx("mqtt_topic_bus_rx", "MQTT Topic - from bus", DEFAULT_MQTT_TOPIC_BUS_RX, 40);
     WiFiManagerParameter custom_mqtt_topic_bus_tx("mqtt_topic_bus_tx", "MQTT Topic - to bus", DEFAULT_MQTT_TOPIC_BUS_TX, 40);
-    EnableDisableParameter custom_debug("param_4", "Debug Mode"); //param_3 ugly workaround for stupid WifiManager Bug custom fields only with param_<fixedno>
+    EnableDisableParameter custom_debug("param_4", "Debug Mode"); //param_4 is a very ugly workaround for stupid WifiManager custom fields implementation. Works only with param_<fixedno>
 
+    /**
+     * Internal function which creates and writes a file to LittleFS.
+     * @param filename Filename
+     * @param value Value
+    */
     void save_config_file(const char* filename, const char *value) {
         File file = LittleFS.open(filename, FILE_WRITE, true);
         if (file) {
@@ -111,15 +154,52 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         }
     }
 
-    void read_config_file(const char* filename, String *s) {
+    /**
+     * Internal function which reads a files content from LittleFS.
+     * @param filename Filename
+     * @param s Read Value
+     * @return true if read was successful
+    */
+    bool read_config_file(const char* filename, String *s) {
         File file = LittleFS.open(filename, FILE_READ);
         if(file && !file.isDirectory()){
             *s = file.readString();
+            return true;
         }
+        return false;
     }
 
+    /**
+     * WiFiManager Callback, executed when parameters changed.
+    */
     void on_save () {
         shouldSaveConfig = true;
+    }
+
+    /** Returns MQTT broker host*/
+    const char* mqtt_server(){
+        return custom_mqtt_server.getValue();
+    }
+
+    /** Returns MQTT broker port*/
+    int mqtt_port() {
+        const char* strvalue = custom_mqtt_port.getValue();
+        return atoi(strvalue);
+    }
+
+    /** Returns MQTT topic where bus data is send to (bus rx, MQTT tx)*/
+    const char* mqtt_topic_bus_rx(){
+        return custom_mqtt_topic_bus_rx.getValue();
+    }
+
+    /** Returns MQTT topic where MQTT data is send to the bus (MQTT rx, bus tx)*/
+    const char* mqtt_topic_bus_tx(){
+        return custom_mqtt_topic_bus_tx.getValue();
+    }
+
+    /** Returns true if debug mode is enabled */
+    bool debug(){
+        return strcmp(custom_debug.getValue(), "enabled") == 0;
     }
 
     void setup() {
@@ -127,28 +207,23 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
 
         bool filesystem_mounted = LittleFS.begin(true);
         if (filesystem_mounted) {
-            read_config_file("/custom_mqtt_server", &filevalue);
-            if (filevalue.length() > 0) {
+            if (read_config_file("/custom_mqtt_server", &filevalue) && filevalue.length() > 0) {
                 custom_mqtt_server.setValue(filevalue.c_str(), 40);
             }
 
-            read_config_file("/custom_mqtt_port", &filevalue);
-            if (filevalue.length() > 0) {
+            if (read_config_file("/custom_mqtt_port", &filevalue) && filevalue.length() > 0) {
                 custom_mqtt_port.setValue(filevalue.c_str(), 6);
             }
 
-            read_config_file("/custom_mqtt_topic_bus_rx", &filevalue);
-            if (filevalue.length() > 0) {
+            if (read_config_file("/custom_mqtt_topic_bus_rx", &filevalue) && filevalue.length() > 0) {
                 custom_mqtt_topic_bus_rx.setValue(filevalue.c_str(), 20);
             }
 
-            read_config_file("/custom_mqtt_topic_bus_tx", &filevalue);
-            if (filevalue.length() > 0) {
+            if (read_config_file("/custom_mqtt_topic_bus_tx", &filevalue) && filevalue.length() > 0) {
                 custom_mqtt_topic_bus_tx.setValue(filevalue.c_str(), 20);
             }
 
-            read_config_file("/custom_debug", &filevalue);
-            if (filevalue.length() > 0) {
+            if (read_config_file("/custom_debug", &filevalue) && filevalue.length() > 0 ) {
                 custom_debug.setValue(filevalue.c_str(), 10);
             }
 
@@ -177,27 +252,6 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         //wifiManager.setDebugOutput(false);
         wifiManager.autoConnect(DEFAULT_WIFI_SSID, DEFAULT_WIFI_PASSWORD);
         wifiManager.startWebPortal();
-    }
-
-    const char* mqtt_server(){
-        return custom_mqtt_server.getValue();
-    }
-
-    int mqtt_port() {
-        const char* strvalue = custom_mqtt_port.getValue();
-        return atoi(strvalue);
-    }
-
-    const char* mqtt_topic_bus_rx(){
-        return custom_mqtt_topic_bus_rx.getValue();
-    }
-
-    const char* mqtt_topic_bus_tx(){
-        return custom_mqtt_topic_bus_tx.getValue();
-    }
-
-    bool debug(){
-        return strcmp(custom_debug.getValue(), "enabled") == 0;
     }
 
     void loop() {
