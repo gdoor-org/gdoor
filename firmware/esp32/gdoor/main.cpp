@@ -25,7 +25,6 @@
 
 boolean debug = false; // Global variable to indicate if we are in debug mode (true)
 const char* mqtt_topic_bus_rx = NULL;
-const char* mqtt_topic_bus_tx = NULL;
 
 /**
  * Function which parses user provided serial input
@@ -77,10 +76,9 @@ void setup() {
     Serial.println("GDOOR Setup start");
     GDOOR::setup(PIN_TX, PIN_TX_EN, PIN_RX);
     WIFI_HELPER::setup();
-    MQTT_HELPER::setup(WIFI_HELPER::mqtt_server(), WIFI_HELPER::mqtt_port());
+    MQTT_HELPER::setup(WIFI_HELPER::mqtt_server(), WIFI_HELPER::mqtt_port(), WIFI_HELPER::mqtt_topic_bus_tx());
 
     mqtt_topic_bus_rx = WIFI_HELPER::mqtt_topic_bus_rx();
-    mqtt_topic_bus_tx = WIFI_HELPER::mqtt_topic_bus_tx();
     debug = WIFI_HELPER::debug();
 
     Serial.println("GDOOR Setup done");
@@ -106,6 +104,8 @@ void loop() {
         if(str_received.length() > 0) {
             if(!parse(str_received)) { //Check if received string is a command
                 GDOOR::send(str_received); // Send to bus if it is not a command
+                Serial.print("Send: ");
+                Serial.println(str_received);
             }
         }
         

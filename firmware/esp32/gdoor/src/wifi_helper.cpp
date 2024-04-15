@@ -238,11 +238,15 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         wifiManager.addParameter(&custom_mqtt_server);
         wifiManager.addParameter(&custom_mqtt_port);
         wifiManager.addParameter(&custom_mqtt_topic_bus_rx);
+        wifiManager.addParameter(&custom_mqtt_topic_bus_tx);
 
         wifiManager.addParameter(&custom_debug);
 
         wifiManager.setSaveConfigCallback(on_save);
         wifiManager.setSaveParamsCallback(on_save);
+
+        wifiManager.setHostname("GDOOR");
+        wifiManager.setShowPassword(true);
         
         wifiManager.setBreakAfterConfig(true);
         wifiManager.setConfigPortalBlocking(false);
