@@ -23,28 +23,29 @@ GDOOR is a project to collect and document findings about the Gira Door System, 
     - [Destination](#destination)
 - [Bus Messages](#bus-messages)
   - [Open Door](#open-door)
-  - [Call / Call button](#call--call-button)
-  - [Accept call](#accept-call)
-  - [Close call](#close-call)
+  - [Ring button](#ring-button)
+  - [Request audio](#request-audio)
+  - [Request video](#request-video)
+  - [End audio/video transmission](#end-audiovideo-transmission)
 - [Bus CRC Routine - Dummycode](#bus-crc-routine---dummycode)
 
 # Bus Protocol
 ## Hardware Layer
 The bus is formed by two wires and is single ended, meaning one of the wire carries
-power and data and the other wire is ground.
+power and data and the other wire is ground. For the GDOOR hardware adapter, the polarity doesn't matter.
 
 To power the bus devices, a central device called controller powers the bus with ~26 Vdc.
-Bus commands and analog data (voice and video!) are modulated onto this 26V.
+Bus commands and analog data (audio and video!) are modulated onto this 26V.
 The exact electrical scheme for the modulations is not known, but capacitive coupling the signals
 on the 26 V seems to work.
 
-Digital bus commands indicate the start and end of analog audio transmission,
+Digital bus commands indicate the start and end of analog audio/video transmission,
 each participating bus device decides on its own to:
-- send audio on the bus
-- receive audio from the bus
+- send audio/video on the bus
+- receive audio/video from the bus
 
-The outdoor station can be commanded to send audio to the bus, the indoor stations
-will do this only if a user pressed the "call accept" button.
+The outdoor station can be commanded to send audio/video to the bus, the indoor stations
+will send audio only if a user pressed the "call accept" button.
 
 ## Digital Signaling
 ![Example of Bus voltage](busvoltage.png)
@@ -101,12 +102,16 @@ to the bus and observing device behavior:
 | 0x08          | Reset device configuration (announcement by device itself)|
 | 0x0F          | Confirm learned door opener|
 | 0x11          | Door bell button pressed - which button is specified in ?Param?|
+| 0x12          | Internal call from one to another indoor station - which station is specified in ?Param?|
 | 0x13          | Floor bell button pressed|
-| 0x20          | Close call|
-| 0x21          | Open call|
+| 0x20          | End audio/video transmission|
+| 0x21          | Request audio|
+| 0x28          | Request video|
 | 0x31          | Open door|
-| 0x41          | Generic button pressed|
-| 0x42          | Unlearned button pressed|
+| 0x41          | Light button pressed|
+| 0x42          | Generic button pressed - which button is specified in ?Param?|
+
+see [mapping of actions in the firmware source code](../firmware/esp32/gdoor/src/gdoor_data.cpp).
 
 ### Source
 3 Byte of device address
@@ -131,28 +136,36 @@ E.g. a door station with multiple buttons encodes the pressed key number
 | 0x02 | 0x00 | 0x31 | src[0] | src[1] | src[2] | 0x00 | 0x00 | 0xA0 | dst[0] | dst[1] | dst[2] |
 | -----|------|------|--------|--------|--------|------|------|------|--------|--------|------- |
 
-The door opener with address dst ignores src (can be any byte values),
+The door opener with address `dst` ignores `src` (can be any byte values),
 it also ignores the hardware type (0xA0).
+The indoor station sets `dst` to the outdoor station if there is an active audio/video transmission. Otherwise it sets the controller as `dst`.
 
-## Call / Call button
+## Ring button
 | 0x01 | 0x10 | 0x11 | doorstation[0] | doorstation[1] | doorstation[2] | button | 0xA0 | 0xA0 |
 | -----|------|------|----------------|----------------|----------------|--------|------|------|
 
-Doorstation button is 0x01, 0x02, 0x03 ...
+Doorstation ring button is 0x01, 0x02, 0x03 ...
 
-## Accept call
+## Request audio
 | 0x02 | 0x00 | 0x21 | indoor[0] | indoor[1] | indoor[2] | 0x00 | 0x00 | 0xA1 | door[0] | door[1] | door[2] |
 | -----|------|------|-----------|-----------|-----------|------|------|------|---------|---------|-------- |
 
 Door station ignores indoor byte values and hardware type (0xA1).
 As soon as door station receives this command, it sends analog audio onto the bus.
 
-## Close call
+## Request video
+| 0x02 | 0x00 | 0x28 | indoor[0] | indoor[1] | indoor[2] | 0x00 | 0x00 | 0xA1 | door[0] | door[1] | door[2] |
+| -----|------|------|-----------|-----------|-----------|------|------|------|---------|---------|-------- |
+
+Door station ignores indoor byte values and hardware type (0xA1).
+As soon as door station receives this command, it sends analog video onto the bus.
+
+## End audio/video transmission
 | 0x02 | 0x00 | 0x20 | indoor[0] | indoor[1] | indoor[2] | 0x00 | 0x00 | 0xA1 | door[0] | door[1] | door[2] |
 | -----|------|------|-----------|-----------|-----------|------|------|------|---------|---------|-------- |
 
 Door station ignores indoor byte values and hardware type (0xA1).
-As soon as door station receives this command, it stops analog audio onto the bus.
+As soon as door station receives this command, it stops analog audio/video onto the bus.
 
 # Bus CRC Routine - Dummycode
 

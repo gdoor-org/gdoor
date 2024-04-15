@@ -26,8 +26,8 @@ The following serial commands can be send to the bus adapter:
 
 ### Receive bus events/commands
 On each bus communication you will receive a JSON formatted string with the following fields:
-- action: The action of the bus message like e.g. `OPEN_DOOR`. For details please look into `gdoor_data.cpp`.
-- type: The hardware type of the message sender. For details please look into `gdoor_data.cpp`.
+- action: The action of the bus message like e.g. `DOOR_OPEN`. For details please look into [gdoor_data.cpp](src/gdoor_data.cpp).
+- type: The hardware type of the message sender. For details please look into [gdoor_data.cpp](src/gdoor_data.cpp).
 - source: Bus address of message sender, 3 Bytes.
 - destination: Bus address of message destination, 3 Bytes. This field is not contained in each bus message in such cases it is set to 0.
 - parameters: Parameter values depend on action and bus structure. E.g. it can be the ID of which button was pressed, 2 Bytes.
@@ -50,7 +50,7 @@ If you want to send to the bus, just send to the serial port:
   Do not pause the transmission in between characters!
 
 > [!TIP]
-> You can use the field `busdata`of a received bus message to duplicate this bus message back to the bus.
+> You can use the field `busdata` of a received bus message to duplicate this bus message back to the bus.
 > E.g. Useful to easily open the door.
 
 > [!TIP]
