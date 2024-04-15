@@ -32,7 +32,7 @@ GDOOR is a project to collect and document findings about the Gira Door System, 
 # Bus Protocol
 ## Hardware Layer
 The bus is formed by two wires and is single ended, meaning one of the wire carries
-power and data and the other wire is ground. The polarity doesn't matter.
+power and data and the other wire is ground. For the GDOOR hardware adapter, the polarity doesn't matter.
 
 To power the bus devices, a central device called controller powers the bus with ~26 Vdc.
 Bus commands and analog data (audio and video!) are modulated onto this 26V.
