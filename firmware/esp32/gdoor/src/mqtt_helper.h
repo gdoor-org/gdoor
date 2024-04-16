@@ -20,11 +20,13 @@
 #include <Arduino.h>
 #include <MQTT.h>
 
+#define BUFFER_SIZE 2048
+
 class MQTT_PRINTER : public Print { // Class/Struct to collect bus related infos
     public:
         MQTTClient *mqttClient;
-        char buffer[201];
-        uint8_t index = 0;
+        char buffer[BUFFER_SIZE + 1];
+        uint16_t index = 0;
 
         MQTT_PRINTER(MQTTClient *mqttClient);
 

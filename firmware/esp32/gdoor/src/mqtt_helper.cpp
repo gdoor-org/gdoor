@@ -44,7 +44,7 @@ void MQTT_PRINTER::publish(const char *topic) {
  * @return Number of bytes written
 */
 size_t MQTT_PRINTER::write(uint8_t byte) {
-    if(index < 200) {
+    if(index < BUFFER_SIZE) {
         this->buffer[index] = (char) byte;
         index = index + 1;
         return 1;
@@ -56,7 +56,7 @@ size_t MQTT_PRINTER::write(uint8_t byte) {
  * @return string of collected data
 */
 char* MQTT_PRINTER::read() {
-    if(this->index < 200 && this->index > 0) {
+    if(this->index < BUFFER_SIZE && this->index > 0) {
         this->buffer[index] = '\0'; //just to be sure
     }
     this->index = 0;
