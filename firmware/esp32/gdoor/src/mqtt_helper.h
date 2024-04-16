@@ -17,15 +17,14 @@
  */
 #ifndef MQTT_HELPER_H
 #define MQTT_HELPER_H
+#include "defines.h"
 #include <Arduino.h>
 #include <MQTT.h>
-
-#define BUFFER_SIZE 2048
 
 class MQTT_PRINTER : public Print { // Class/Struct to collect bus related infos
     public:
         MQTTClient *mqttClient;
-        char buffer[BUFFER_SIZE + 1];
+        char buffer[MQTT_TX_BUFFER + 1];
         uint16_t index = 0;
 
         MQTT_PRINTER(MQTTClient *mqttClient);
