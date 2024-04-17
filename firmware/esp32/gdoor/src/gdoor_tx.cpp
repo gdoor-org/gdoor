@@ -140,6 +140,7 @@ namespace GDOOR_TX {
 
         // Set timer_60khz timer frequency to 60kHz
         timer_60khz = timerBegin(60000);
+        timerStop(timer_60khz);
 
         // Attach isr_timer_60khz function to timer_60khz timer.
         timerAttachInterrupt(timer_60khz, &isr_timer_60khz);
