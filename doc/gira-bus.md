@@ -160,6 +160,10 @@ As soon as door station receives this command, it sends analog audio onto the bu
 Door station ignores indoor byte values and hardware type (0xA1).
 As soon as door station receives this command, it sends analog video onto the bus.
 
+> [!NOTE]  
+> The indoor station also sends this command when viewing a missed call or opening the menu.
+> The parameters are different in this case.
+
 ## End audio/video transmission
 | 0x02 | 0x00 | 0x20 | indoor[0] | indoor[1] | indoor[2] | 0x00 | 0x00 | 0xA1 | door[0] | door[1] | door[2] |
 | -----|------|------|-----------|-----------|-----------|------|------|------|---------|---------|-------- |
