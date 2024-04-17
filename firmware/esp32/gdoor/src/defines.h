@@ -46,7 +46,7 @@
 // MQTT
 #define DEFAULT_MQTT_SERVER   "0.0.0.0" 
 #define DEFAULT_MQTT_PORT     "1883" 
-#define DEFAULT_MQTT_TOPIC_BUS_RX "/gdoor/bus_rx"
-#define DEFAULT_MQTT_TOPIC_BUS_TX "/gdoor/bus_tx"
+#define DEFAULT_MQTT_TOPIC_BUS_RX "gdoor/bus_rx"
+#define DEFAULT_MQTT_TOPIC_BUS_TX "gdoor/bus_tx"
 
 #endif
