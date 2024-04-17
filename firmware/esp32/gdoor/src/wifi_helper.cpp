@@ -296,7 +296,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         wifiManager.setTimeout(300);
         std::vector<const char *> menu = {"wifi","param","sep","update"};
         wifiManager.setMenu(menu);
-        //wifiManager.setDebugOutput(false);
+        wifiManager.setDebugOutput(debug());
         wifiManager.autoConnect(DEFAULT_WIFI_SSID, DEFAULT_WIFI_PASSWORD);
         wifiManager.startWebPortal();
     }
