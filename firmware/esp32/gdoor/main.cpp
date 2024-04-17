@@ -104,8 +104,10 @@ void loop() {
         if(str_received.length() > 0) {
             if(!parse(str_received)) { //Check if received string is a command
                 GDOOR::send(str_received); // Send to bus if it is not a command
-                Serial.print("Send: ");
-                Serial.println(str_received);
+                if(debug) {
+                    Serial.print("Send: ");
+                    Serial.println(str_received);
+                }
             }
         }
         
