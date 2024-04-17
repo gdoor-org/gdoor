@@ -131,7 +131,7 @@ public:
 
 /**
  * Custom WiFiManager parameter which
- * allows a HTML enable/disable parameter.
+ * allows to return a nullptr, if the value is empty.
 */
 class NullableParameter : public WiFiManagerParameter {
 public:
