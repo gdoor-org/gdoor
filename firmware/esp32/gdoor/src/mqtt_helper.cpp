@@ -68,6 +68,8 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
     MQTTClient mqttClient; // MQTT Library object
 
     const char* rx_topic_name; // Which callback topic
+    const char* user; // Username
+    const char* password; // Password
 
     MQTT_PRINTER printer(&mqttClient); // Printer, so that code can use the Arduino print functions
 
@@ -102,11 +104,13 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
      * @param port MQTT Broker TCP port
      * @param rx_topic Topic from which data is received
     */
-    void setup(const char* server, int port, const char* rx_topic) {
+    void setup(const char* server, int port, const char* username, const char* pw, const char* rx_topic) {
         WiFi.onEvent(on_wifi_active, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
         mqttClient.begin(server, port, net);
         mqttClient.onMessage(on_message_received);
         rx_topic_name = rx_topic;
+        user = username;
+        password = pw;
     }
 
     /**
@@ -116,7 +120,7 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
     void loop() {
         if(WiFi.getMode() == WIFI_MODE_STA && WiFi.status() == WL_CONNECTED) {
             if (newly_connected) {
-                if (mqttClient.connect("GDoor")) {
+                if (mqttClient.connect("GDoor", user, password)) {
                     mqttClient.subscribe(rx_topic_name);
                     newly_connected = false;
                 }
@@ -124,7 +128,7 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
 
             mqttClient.loop();
             if (!mqttClient.connected()) {
-                mqttClient.connect("GDoor");
+                mqttClient.connect("GDoor", user, password);
                 mqttClient.subscribe(rx_topic_name);
             }
         }

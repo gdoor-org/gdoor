@@ -26,6 +26,8 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     void setup();
     const char* mqtt_server();
     int mqtt_port();
+    const char* mqtt_user();
+    const char* mqtt_password();
     const char* mqtt_topic_bus_rx();
     const char* mqtt_topic_bus_tx();
     bool debug();

@@ -129,6 +129,27 @@ public:
     }
 };
 
+/**
+ * Custom WiFiManager parameter which
+ * allows a HTML enable/disable parameter.
+*/
+class NullableParameter : public WiFiManagerParameter {
+public:
+    
+    NullableParameter(const char *id, const char *label, const char *defaultValue, int length)
+        :  WiFiManagerParameter(id, label, defaultValue, length) {
+    }
+
+    const char* getNullableValue() {
+        const char* value = getValue();
+        if (value[0] == '\0') {
+            return nullptr;
+        } else {
+            return value;
+        }
+    }
+};
+
 
 namespace WIFI_HELPER { //Namespace as we can only use it once
     bool shouldSaveConfig = false;
@@ -137,9 +158,11 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     MyCustomWifiManager wifiManager;
     WiFiManagerParameter custom_mqtt_server("mqtt_server", "MQTT Server", DEFAULT_MQTT_SERVER, 40);
     WiFiManagerParameter custom_mqtt_port("mqtt_port", "MQTT Port", DEFAULT_MQTT_PORT, 6, "type='number' min=0 max=65535");
+    NullableParameter custom_mqtt_user("mqtt_user", "MQTT Username", "", 40);
+    NullableParameter custom_mqtt_password("mqtt_password", "MQTT Password", "", 40);
     WiFiManagerParameter custom_mqtt_topic_bus_rx("mqtt_topic_bus_rx", "MQTT Topic - from bus", DEFAULT_MQTT_TOPIC_BUS_RX, 40);
     WiFiManagerParameter custom_mqtt_topic_bus_tx("mqtt_topic_bus_tx", "MQTT Topic - to bus", DEFAULT_MQTT_TOPIC_BUS_TX, 40);
-    EnableDisableParameter custom_debug("param_4", "Debug Mode"); //param_4 is a very ugly workaround for stupid WifiManager custom fields implementation. Works only with param_<fixedno>
+    EnableDisableParameter custom_debug("param_6", "Debug Mode"); //param_4 is a very ugly workaround for stupid WifiManager custom fields implementation. Works only with param_<fixedno>
 
     /**
      * Internal function which creates and writes a file to LittleFS.
@@ -187,6 +210,16 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         return atoi(strvalue);
     }
 
+    /** Returns MQTT Username*/
+    const char* mqtt_user(){
+        return custom_mqtt_user.getNullableValue();
+    }
+
+    /** Returns MQTT Password*/
+    const char* mqtt_password(){
+        return custom_mqtt_password.getNullableValue();
+    }
+
     /** Returns MQTT topic where bus data is send to (bus rx, MQTT tx)*/
     const char* mqtt_topic_bus_rx(){
         return custom_mqtt_topic_bus_rx.getValue();
@@ -215,6 +248,14 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
                 custom_mqtt_port.setValue(filevalue.c_str(), 6);
             }
 
+            if (read_config_file("/custom_mqtt_user", &filevalue) && filevalue.length() > 0) {
+                custom_mqtt_user.setValue(filevalue.c_str(), 40);
+            }
+
+            if (read_config_file("/custom_mqtt_password", &filevalue) && filevalue.length() > 0) {
+                custom_mqtt_password.setValue(filevalue.c_str(), 40);
+            }
+
             if (read_config_file("/custom_mqtt_topic_bus_rx", &filevalue) && filevalue.length() > 0) {
                 custom_mqtt_topic_bus_rx.setValue(filevalue.c_str(), 20);
             }
@@ -237,6 +278,8 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         
         wifiManager.addParameter(&custom_mqtt_server);
         wifiManager.addParameter(&custom_mqtt_port);
+        wifiManager.addParameter(&custom_mqtt_user);
+        wifiManager.addParameter(&custom_mqtt_password);
         wifiManager.addParameter(&custom_mqtt_topic_bus_rx);
         wifiManager.addParameter(&custom_mqtt_topic_bus_tx);
 
@@ -267,6 +310,8 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
             if (filesystem_mounted) {
                 save_config_file("/custom_mqtt_server", custom_mqtt_server.getValue());
                 save_config_file("/custom_mqtt_port", custom_mqtt_port.getValue());
+                save_config_file("/custom_mqtt_user", custom_mqtt_user.getValue());
+                save_config_file("/custom_mqtt_password", custom_mqtt_password.getValue());
                 save_config_file("/custom_mqtt_topic_bus_rx", custom_mqtt_topic_bus_rx.getValue());
                 save_config_file("/custom_mqtt_topic_bus_tx", custom_mqtt_topic_bus_tx.getValue());
                 save_config_file("/custom_debug", custom_debug.getValue());
