@@ -158,8 +158,8 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     MyCustomWifiManager wifiManager;
     WiFiManagerParameter custom_mqtt_server("mqtt_server", "MQTT Server", DEFAULT_MQTT_SERVER, 40);
     WiFiManagerParameter custom_mqtt_port("mqtt_port", "MQTT Port", DEFAULT_MQTT_PORT, 6, "type='number' min=0 max=65535");
-    NullableParameter custom_mqtt_user("mqtt_user", "MQTT Username", "", 40);
-    NullableParameter custom_mqtt_password("mqtt_password", "MQTT Password", "", 40);
+    NullableParameter custom_mqtt_user("mqtt_user", "MQTT Username (optional)", "", 40);
+    NullableParameter custom_mqtt_password("mqtt_password", "MQTT Password (optional)", "", 40);
     WiFiManagerParameter custom_mqtt_topic_bus_rx("mqtt_topic_bus_rx", "MQTT Topic - from bus", DEFAULT_MQTT_TOPIC_BUS_RX, 40);
     WiFiManagerParameter custom_mqtt_topic_bus_tx("mqtt_topic_bus_tx", "MQTT Topic - to bus", DEFAULT_MQTT_TOPIC_BUS_TX, 40);
     EnableDisableParameter custom_debug("param_6", "Debug Mode"); //param_4 is a very ugly workaround for stupid WifiManager custom fields implementation. Works only with param_<fixedno>
