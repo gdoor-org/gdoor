@@ -2,8 +2,9 @@ name: PlatformIO CI
 
 on: 
   push:
-    paths:
-      - 'firmware/**' # only run if firmware changes
+    paths: # only run if firmware changes
+      - 'firmware/**'
+      - '.github/workflows/**'
 
 jobs:
   build:
