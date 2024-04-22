@@ -4,7 +4,7 @@ on:
   push:
     paths: # only run if firmware changes
       - 'firmware/**'
-      - '.github/workflows/**'
+      - '.github/workflows/firmware.yml'
 
 jobs:
   build:
