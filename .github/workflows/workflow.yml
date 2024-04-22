@@ -31,5 +31,5 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: firmware
-          path: ./firmware/esp32/gdoor/.pio/build/GDOOR_ESP32MINI
+          name: gdoor_firmware
+          path: ./firmware/esp32/gdoor/.pio/build/GDOOR_ESP32MINI/*.bin
