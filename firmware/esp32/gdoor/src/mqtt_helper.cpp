@@ -103,6 +103,8 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
      * Setup MQTT.
      * @param server MQTT Broker ip/hostname
      * @param port MQTT Broker TCP port
+     * @param username MQTT Broker username
+     * @param pw MQTT Broker password
      * @param rx_topic Topic from which data is received
     */
     void setup(const char* server, int port, const char* username, const char* pw, const char* rx_topic) {
