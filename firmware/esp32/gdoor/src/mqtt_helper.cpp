@@ -33,6 +33,7 @@ MQTT_PRINTER::MQTT_PRINTER(MQTTClient *mqttClient) {
  * @param topic The MQTT topic to which the collected data is send.
 */
 void MQTT_PRINTER::publish(const char *topic) {
+    DEBUGLN("MQTT_PRINTER publish()");
     if (this->mqttClient->connected()) {
         this->mqttClient->publish(topic, this->read());
     }
@@ -49,6 +50,8 @@ size_t MQTT_PRINTER::write(uint8_t byte) {
         this->buffer[index] = (char) byte;
         index = index + 1;
         return 1;
+    } else {
+        DEBUGLN("!!WARNING MQTT_PRINTER OUTPUT OVERFLOW, LOOSING DATA!!");
     }
     return 0;
 }
@@ -57,6 +60,7 @@ size_t MQTT_PRINTER::write(uint8_t byte) {
  * @return string of collected data
 */
 char* MQTT_PRINTER::read() {
+    DEBUGLN("MQTT_PRINTER read()");
     if(this->index < BUFFER_SIZE && this->index > 0) {
         this->buffer[index] = '\0'; //just to be sure
     }
