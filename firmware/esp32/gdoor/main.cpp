@@ -18,6 +18,7 @@
 #include "src/gdoor.h"
 #include "src/mqtt_helper.h"
 #include "src/wifi_helper.h"
+#include "src/printer_helper.h"
 
 #define PIN_RX 12
 #define PIN_TX 25
@@ -73,7 +74,7 @@ void output(GDOOR_DATA_PROTOCOL &busmessage, const char* topic) {
 void setup() {
     Serial.begin(115200);
     Serial.setTimeout(1);
-    Serial.println("GDOOR Setup start");
+    PRINTLN("GDOOR Setup start");
     GDOOR::setup(PIN_TX, PIN_TX_EN, PIN_RX);
     WIFI_HELPER::setup();
     MQTT_HELPER::setup(WIFI_HELPER::mqtt_server(), WIFI_HELPER::mqtt_port(), WIFI_HELPER::mqtt_user(), WIFI_HELPER::mqtt_password(), WIFI_HELPER::mqtt_topic_bus_tx());
@@ -81,7 +82,7 @@ void setup() {
     mqtt_topic_bus_rx = WIFI_HELPER::mqtt_topic_bus_rx();
     debug = WIFI_HELPER::debug();
 
-    Serial.println("GDOOR Setup done");
+    PRINTLN("GDOOR Setup done");
 }
 
 void loop() {
@@ -90,8 +91,10 @@ void loop() {
     GDOOR::loop();
     GDOOR_DATA* rx_data = GDOOR::read();
     if(rx_data != NULL) {
+        DEBUG("Received data from bus");
         GDOOR_DATA_PROTOCOL busmessage = GDOOR_DATA_PROTOCOL(rx_data);
-        output(busmessage, mqtt_topic_bus_rx);        
+        output(busmessage, mqtt_topic_bus_rx);
+        DEBUG("Output bus data via Serial and MQTT, done");        
     } else if (!GDOOR::active()) { // Neither RX nor TX active,
         String str_received("");
         if (Serial.available() > 0) { // let's check the serial port if something is in buffer
@@ -104,10 +107,8 @@ void loop() {
         if(str_received.length() > 0) {
             if(!parse(str_received)) { //Check if received string is a command
                 GDOOR::send(str_received); // Send to bus if it is not a command
-                if(debug) {
-                    Serial.print("Send: ");
-                    Serial.println(str_received);
-                }
+                DEBUG("Send: ");
+                DEBUGLN(str_received);
             }
         }
         

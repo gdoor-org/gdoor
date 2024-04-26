@@ -16,6 +16,7 @@
  */
 #include "defines.h"
 #include "mqtt_helper.h"
+#include "printer_helper.h"
 #include <MQTT.h>
 
 #include <WiFi.h>
@@ -35,7 +36,7 @@ void MQTT_PRINTER::publish(const char *topic) {
     if (this->mqttClient->connected()) {
         this->mqttClient->publish(topic, this->read());
     }
-    Serial.print(this->read());
+    PRINT(this->read());
 }
 
 /**
@@ -120,7 +121,9 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
     void loop() {
         if(WiFi.getMode() == WIFI_MODE_STA && WiFi.status() == WL_CONNECTED) {
             if (newly_connected) {
+                DEBUGLN("Newly connected WIFI detected in MQTT loop");
                 if (mqttClient.connect("GDoor", user, password)) {
+                    DEBUGLN("Successfully connected MQTT");
                     mqttClient.subscribe(rx_topic_name);
                     newly_connected = false;
                 }
@@ -128,6 +131,7 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
 
             mqttClient.loop();
             if (!mqttClient.connected()) {
+                DEBUGLN("MQTT lost connection");
                 mqttClient.connect("GDoor", user, password);
                 mqttClient.subscribe(rx_topic_name);
             }

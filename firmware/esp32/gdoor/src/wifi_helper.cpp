@@ -18,6 +18,7 @@
 #include "wifi_helper.h"
 #include <WiFiManager.h>
 #include <LittleFS.h>
+#include "printer_helper.h"
 
 /**
  * Overriden WiFiManager class,
@@ -270,7 +271,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
 
             LittleFS.end();
         } else {
-            Serial.println("Could not mount filesystem on load");
+            PRINTLN("Could not mount filesystem on load");
         }
 
         wifiManager.setTitle(GDOOR_LOGO);
@@ -318,7 +319,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
                 LittleFS.end();
                 ESP.restart();
             } else {
-                Serial.println("Could not mount filesystem");
+                PRINTLN("Could not mount filesystem");
             }
             
         }
