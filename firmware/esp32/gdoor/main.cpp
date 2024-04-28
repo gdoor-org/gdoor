@@ -91,10 +91,10 @@ void loop() {
     GDOOR::loop();
     GDOOR_DATA* rx_data = GDOOR::read();
     if(rx_data != NULL) {
-        DEBUG("Received data from bus");
+        DEBUGLN("Received data from bus");
         GDOOR_DATA_PROTOCOL busmessage = GDOOR_DATA_PROTOCOL(rx_data);
         output(busmessage, mqtt_topic_bus_rx);
-        DEBUG("Output bus data via Serial and MQTT, done");        
+        DEBUGLN("Output bus data via Serial and MQTT, done");        
     } else if (!GDOOR::active()) { // Neither RX nor TX active,
         String str_received("");
         if (Serial.available() > 0) { // let's check the serial port if something is in buffer
