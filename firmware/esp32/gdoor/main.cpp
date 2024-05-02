@@ -74,7 +74,7 @@ void output(GDOOR_DATA_PROTOCOL &busmessage, const char* topic) {
 void setup() {
     Serial.begin(115200);
     Serial.setTimeout(1);
-    PRINTLN("GDOOR Setup start");
+    DEBUGLN("GDOOR Setup start");
     GDOOR::setup(PIN_TX, PIN_TX_EN, PIN_RX);
     WIFI_HELPER::setup();
     MQTT_HELPER::setup(WIFI_HELPER::mqtt_server(), WIFI_HELPER::mqtt_port(), WIFI_HELPER::mqtt_user(), WIFI_HELPER::mqtt_password(), WIFI_HELPER::mqtt_topic_bus_tx());
@@ -82,7 +82,7 @@ void setup() {
     mqtt_topic_bus_rx = WIFI_HELPER::mqtt_topic_bus_rx();
     debug = WIFI_HELPER::debug();
 
-    PRINTLN("GDOOR Setup done");
+    DEBUGLN("GDOOR Setup done");
 }
 
 void loop() {
