@@ -1,3 +1,4 @@
+
 /* 
  * This file is part of the GDOOR distribution (https://github.com/gdoor-org).
  * Copyright (c) 2024 GDOOR Authors.
@@ -14,39 +15,30 @@
  * You should have received a copy of the GNU General Public License 
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DEFINES_H
-#define DEFINES_H
+#ifndef PRINTER_HELPER_H
+#define PRINTER_HELPER_H
+#include <Arduino.h>
 
-// GDOOR
-#define MAX_WORDLEN 25
+extern boolean debug;
 
-// RX Statemachine
-#define FLAG_RX_ACTIVE 0x01
-#define FLAG_BITSTREAM_RECEIVED 0x02
-#define FLAG_BITSTREAM_CONVERTED 0x04
-#define FLAG_DATA_READY 0x08
+#define PRINT(...) { \
+            Serial.print(__VA_ARGS__); \
+        }
 
-// RX
-#define BIT_ONE_DIV 2.5
-#define BIT_MIN_LEN 5
-#define STARTBIT_MIN_LEN 45
+#define PRINTLN(...) { \
+            Serial.println(__VA_ARGS__); \
+        }
 
-// TX
-#define STARTBIT_PULSENUM 66
-#define ONE_PULSENUM 16
-#define ZERO_PULSENUM 37
-#define PAUSE_PULSENUM 30
+#define DEBUG(...) { \
+            if(debug) { \
+                Serial.print(__VA_ARGS__); \
+            }\
+        }
 
-#define STATE_SENDING 0x01
-
-// WIFI
-#define DEFAULT_WIFI_SSID     "GDOOR"
-#define DEFAULT_WIFI_PASSWORD "12345678"
-
-// MQTT
-#define DEFAULT_MQTT_SERVER   "0.0.0.0" 
-#define DEFAULT_MQTT_PORT     "1883" 
-#define DEFAULT_MQTT_TOPIC_BUS_RX "gdoor/bus_rx"
-#define DEFAULT_MQTT_TOPIC_BUS_TX "gdoor/bus_tx"
+#define DEBUGLN(...) { \
+            if(debug) { \
+                Serial.println(__VA_ARGS__); \
+            }\
+        }
 
 #endif

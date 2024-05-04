@@ -16,12 +16,16 @@
  */
 #include <Arduino.h>
 #include "src/gdoor.h"
+#include "src/mqtt_helper.h"
+#include "src/wifi_helper.h"
+#include "src/printer_helper.h"
 
 #define PIN_RX 12
 #define PIN_TX 25
 #define PIN_TX_EN 27
 
 boolean debug = false; // Global variable to indicate if we are in debug mode (true)
+const char* mqtt_topic_bus_rx = NULL;
 
 /**
  * Function which parses user provided serial input
@@ -29,7 +33,7 @@ boolean debug = false; // Global variable to indicate if we are in debug mode (t
  * @param input String with input from user.
  * @return boolean, true if a command was found, false if no valid command was found.
 */
-boolean parseSerialCommand(String  &input) {
+boolean parse(String  &input) {
     if(input == "*debug") {
         debug = true;
         return true;
@@ -41,54 +45,72 @@ boolean parseSerialCommand(String  &input) {
 }
 
 /**
- * Function which outputs bus data via the serial port.
+ * Function which outputs bus data via the serial port and MQTT.
  * Depending in debug mode, it may output more data.
  * 
  * In normal mode, it also checks the valid flag and only
  * outputs valid bus messages.
  * @param busmessage The bus message to be send out to the user.
 */
-void outputSerial(GDOOR_DATA_PROTOCOL &busmessage) {
+void output(GDOOR_DATA_PROTOCOL &busmessage, const char* topic) {
     if(!debug) {
         if(busmessage.raw->valid) {
-            Serial.print("{");
-            Serial.print(busmessage);
-            Serial.println("}");
+            MQTT_HELPER::printer.print("{");
+            MQTT_HELPER::printer.print(busmessage);
+            MQTT_HELPER::printer.println("}");
+            MQTT_HELPER::printer.publish((const char*)topic);
         }
     } else {
-        Serial.print("{");
-        Serial.print(busmessage);
-        Serial.println("}");
-        Serial.print("{");
-        Serial.print(*(busmessage.raw));
-        Serial.println("}");
+        MQTT_HELPER::printer.print("{");
+        MQTT_HELPER::printer.print(busmessage);
+        MQTT_HELPER::printer.println("}");
+        MQTT_HELPER::printer.print("{");
+        MQTT_HELPER::printer.print(*(busmessage.raw));
+        MQTT_HELPER::printer.println("}");
+        MQTT_HELPER::printer.publish((const char*)topic);
     }
 }
 
 void setup() {
     Serial.begin(115200);
     Serial.setTimeout(1);
-    Serial.println("GDOOR Setup start");
+    DEBUGLN("GDOOR Setup start");
     GDOOR::setup(PIN_TX, PIN_TX_EN, PIN_RX);
-    Serial.println("GDOOR Setup done");
+    WIFI_HELPER::setup();
+    MQTT_HELPER::setup(WIFI_HELPER::mqtt_server(), WIFI_HELPER::mqtt_port(), WIFI_HELPER::mqtt_user(), WIFI_HELPER::mqtt_password(), WIFI_HELPER::mqtt_topic_bus_tx());
+
+    mqtt_topic_bus_rx = WIFI_HELPER::mqtt_topic_bus_rx();
+    debug = WIFI_HELPER::debug();
+
+    DEBUGLN("GDOOR Setup done");
 }
 
 void loop() {
-    while(1) {
-        GDOOR::loop();
-        GDOOR_DATA* rx_data = GDOOR::read();
-        if(rx_data != NULL) {
-            GDOOR_DATA_PROTOCOL busmessage = GDOOR_DATA_PROTOCOL(rx_data);
-            outputSerial(busmessage);
-        } else if (!GDOOR::active()) { // Neither RX nor TX active,
-            if (Serial.available() > 0) { // let's check the serial port if something is in buffer
-                String serialstr = Serial.readString();
-                serialstr.trim();
+    WIFI_HELPER::loop();
+    MQTT_HELPER::loop();
+    GDOOR::loop();
+    GDOOR_DATA* rx_data = GDOOR::read();
+    if(rx_data != NULL) {
+        DEBUGLN("Received data from bus");
+        GDOOR_DATA_PROTOCOL busmessage = GDOOR_DATA_PROTOCOL(rx_data);
+        output(busmessage, mqtt_topic_bus_rx);
+        DEBUGLN("Output bus data via Serial and MQTT, done");        
+    } else if (!GDOOR::active()) { // Neither RX nor TX active,
+        String str_received("");
+        if (Serial.available() > 0) { // let's check the serial port if something is in buffer
+            str_received = Serial.readString();
+            str_received.trim();    
+        } else {
+            str_received = MQTT_HELPER::receive();
+        }
 
-                if(!parseSerialCommand(serialstr)) { //Check if received string is a command
-                    GDOOR::send(serialstr); // Send to bus if it is not a command
-                }
+        if(str_received.length() > 0) {
+            if(!parse(str_received)) { //Check if received string is a command
+                GDOOR::send(str_received); // Send to bus if it is not a command
+                DEBUG("Send: ");
+                DEBUGLN(str_received);
             }
         }
+        
     }
 }

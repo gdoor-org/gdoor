@@ -1,3 +1,4 @@
+
 /* 
  * This file is part of the GDOOR distribution (https://github.com/gdoor-org).
  * Copyright (c) 2024 GDOOR Authors.
@@ -14,39 +15,33 @@
  * You should have received a copy of the GNU General Public License 
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DEFINES_H
-#define DEFINES_H
+#ifndef MQTT_HELPER_H
+#define MQTT_HELPER_H
+#include <Arduino.h>
+#include <MQTT.h>
 
-// GDOOR
-#define MAX_WORDLEN 25
+#define BUFFER_SIZE 2048
 
-// RX Statemachine
-#define FLAG_RX_ACTIVE 0x01
-#define FLAG_BITSTREAM_RECEIVED 0x02
-#define FLAG_BITSTREAM_CONVERTED 0x04
-#define FLAG_DATA_READY 0x08
+class MQTT_PRINTER : public Print { // Class/Struct to collect bus related infos
+    public:
+        MQTTClient *mqttClient;
+        char buffer[BUFFER_SIZE + 1];
+        uint16_t index = 0;
 
-// RX
-#define BIT_ONE_DIV 2.5
-#define BIT_MIN_LEN 5
-#define STARTBIT_MIN_LEN 45
+        MQTT_PRINTER(MQTTClient *mqttClient);
 
-// TX
-#define STARTBIT_PULSENUM 66
-#define ONE_PULSENUM 16
-#define ZERO_PULSENUM 37
-#define PAUSE_PULSENUM 30
+        void publish(const char *topic);
+        size_t write(uint8_t byte);
+        char* read();
+};
 
-#define STATE_SENDING 0x01
+namespace MQTT_HELPER { //Namespace as we can only use it once
+    extern MQTT_PRINTER printer;
 
-// WIFI
-#define DEFAULT_WIFI_SSID     "GDOOR"
-#define DEFAULT_WIFI_PASSWORD "12345678"
+    void setup(const char* server, int port, const char* username, const char* pw, const char* rx_topic);
+    String& receive();
+    void loop();
 
-// MQTT
-#define DEFAULT_MQTT_SERVER   "0.0.0.0" 
-#define DEFAULT_MQTT_PORT     "1883" 
-#define DEFAULT_MQTT_TOPIC_BUS_RX "gdoor/bus_rx"
-#define DEFAULT_MQTT_TOPIC_BUS_TX "gdoor/bus_tx"
+};
 
 #endif

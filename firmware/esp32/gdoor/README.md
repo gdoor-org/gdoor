@@ -36,7 +36,6 @@ On each bus communication you will receive a JSON formatted string with the foll
 
 If you switch on debug mode, you will also receive:
 - raw: The raw counting values of each high/low bit. Array of bytes where each byte represents the number of pulses of a individual bit.
-- busdata: Bus data as hex value.
 - valid: 1 if checksum and parity bits passed the check.
 
 ### Send bus events/commands

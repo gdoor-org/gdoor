@@ -18,6 +18,7 @@
 #include "gdoor_rx.h"
 #include "gdoor_data.h"
 #include "gdoor_utils.h"
+#include "printer_helper.h"
 
 namespace GDOOR_RX {
 
@@ -150,7 +151,9 @@ namespace GDOOR_RX {
     void loop() {
         if (rx_state & FLAG_BITSTREAM_RECEIVED) {
             rx_state &= (uint16_t)~FLAG_BITSTREAM_RECEIVED;
+            DEBUGLN("Gira RX done");
             if (retval.parse(counts, bitcounter)) {
+                DEBUGLN("Gira RX was successfully parsed");
                 rx_state |= FLAG_DATA_READY;
             }
             reset();
