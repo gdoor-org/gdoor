@@ -33,7 +33,7 @@ MQTT_PRINTER::MQTT_PRINTER(MQTTClient *mqttClient) {
  * @param topic The MQTT topic to which the collected data is send.
 */
 void MQTT_PRINTER::publish(const char *topic) {
-    DEBUGLN("MQTT_PRINTER publish()");
+    JSONDEBUG("MQTT_PRINTER publish()");
     if (this->mqttClient->connected()) {
         this->mqttClient->publish(topic, this->read());
     }
@@ -51,7 +51,7 @@ size_t MQTT_PRINTER::write(uint8_t byte) {
         index = index + 1;
         return 1;
     } else {
-        DEBUGLN("!!WARNING MQTT_PRINTER OUTPUT OVERFLOW, LOOSING DATA!!");
+        JSONDEBUG("!!WARNING MQTT_PRINTER OUTPUT OVERFLOW, LOOSING DATA!!");
     }
     return 0;
 }
@@ -60,7 +60,7 @@ size_t MQTT_PRINTER::write(uint8_t byte) {
  * @return string of collected data
 */
 char* MQTT_PRINTER::read() {
-    DEBUGLN("MQTT_PRINTER read()");
+    JSONDEBUG("MQTT_PRINTER read()");
     if(this->index < BUFFER_SIZE && this->index > 0) {
         this->buffer[index] = '\0'; //just to be sure
     }
@@ -127,9 +127,9 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
     void loop() {
         if(WiFi.getMode() == WIFI_MODE_STA && WiFi.status() == WL_CONNECTED) {
             if (newly_connected) {
-                DEBUGLN("Newly connected WIFI detected in MQTT loop");
+                JSONDEBUG("Newly connected WIFI detected in MQTT loop");
                 if (mqttClient.connect("GDoor", user, password)) {
-                    DEBUGLN("Successfully connected MQTT");
+                    JSONDEBUG("Successfully connected MQTT");
                     mqttClient.subscribe(rx_topic_name);
                     newly_connected = false;
                 }
@@ -137,7 +137,7 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
 
             mqttClient.loop();
             if (!mqttClient.connected()) {
-                DEBUGLN("MQTT lost connection");
+                JSONDEBUG("MQTT lost connection");
                 mqttClient.connect("GDoor", user, password);
                 mqttClient.subscribe(rx_topic_name);
             }

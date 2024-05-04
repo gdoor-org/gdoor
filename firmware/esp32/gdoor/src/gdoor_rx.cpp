@@ -151,9 +151,9 @@ namespace GDOOR_RX {
     void loop() {
         if (rx_state & FLAG_BITSTREAM_RECEIVED) {
             rx_state &= (uint16_t)~FLAG_BITSTREAM_RECEIVED;
-            DEBUGLN("Gira RX done");
+            JSONDEBUG("Gira RX done");
             if (retval.parse(counts, bitcounter)) {
-                DEBUGLN("Gira RX was successfully parsed");
+                JSONDEBUG("Gira RX was successfully parsed");
                 rx_state |= FLAG_DATA_READY;
             }
             reset();

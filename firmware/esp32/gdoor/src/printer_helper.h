@@ -21,6 +21,20 @@
 
 extern boolean debug;
 
+#define JSONDEBUG(...) { \
+            if(debug) { \
+                Serial.print("{\"debug\": \""); \
+                Serial.print(__VA_ARGS__); \
+                Serial.println("\"}"); \
+            }\
+        }
+
+#define JSONPRINT(...) { \
+            Serial.print("{\"message\": \""); \
+            Serial.print(__VA_ARGS__); \
+            Serial.println("\"}"); \
+        }
+
 #define PRINT(...) { \
             Serial.print(__VA_ARGS__); \
         }
