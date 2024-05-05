@@ -23,6 +23,8 @@
 #include "defines.h"
 #include "gdoor_utils.h"
 
+extern boolean debug;
+
 class GDOOR_DATA : public Printable { // Class/Struct to collect bus related infos
     public:
         uint16_t len;
@@ -82,6 +84,11 @@ class GDOOR_DATA_PROTOCOL : public Printable { // Class/Struct to collect bus hi
             if (this->raw != NULL) {
                 r+= GDOOR_UTILS::print_json_hexstring<uint8_t>(p, "busdata", this->raw->data, this->raw->len);
                 r+= p.print(", ");
+
+                if(debug) {
+                    r+= GDOOR_UTILS::print_json_hexarray<uint16_t>(p, "raw", this->raw->raw, this->raw->len*9);
+                    r+= p.print(", ");
+                }
             }
 
             r+= GDOOR_UTILS::print_json_value<uint32_t>(p, "event_id", cnt++);

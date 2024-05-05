@@ -271,7 +271,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
 
             LittleFS.end();
         } else {
-            PRINTLN("Could not mount filesystem on load");
+            JSONPRINT("Could not mount filesystem on load");
         }
 
         wifiManager.setTitle(GDOOR_LOGO);
@@ -319,7 +319,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
                 LittleFS.end();
                 ESP.restart();
             } else {
-                PRINTLN("Could not mount filesystem");
+                JSONPRINT("Could not mount filesystem");
             }
             
         }
