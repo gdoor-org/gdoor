@@ -1,4 +1,4 @@
-<img src="doc/logo/logo.png" alt="GDOOR Logo" width=200>
+<img src="doc/logo/logo.png" alt="GDoor Logo" width=200>
 <p align="center">
   https://gdoor-org.github.io/
 </p>
@@ -7,9 +7,9 @@ _________________
 
 Gira is a german manufacturer of house appliances, including door systems.
 These systems are connected via a proprietary two wire bus system.
-GDOOR is a project to collect and document findings about the Gira Door System, all figured out by reverse engineering.
+GDoor is a project to collect and document findings about the Gira Door System, all figured out by reverse engineering.
 
-The GDOOR hardware adapter allows listening and controlling the bus and e.g. integrating a Gira door bell into a smart home. It might serve as an DIY alternative to the Gira TKS-IP-Gateway. It supports the following features:
+The GDoor hardware adapter allows listening and controlling the bus and e.g. integrating a Gira door bell into a smart home. It might serve as an DIY alternative to the Gira TKS-IP-Gateway. It supports the following features:
 
 - listening to the bus, e.g. to trigger notifications on mobile devices when a door bell button is pressed
 - sending to the bus, e.g. to open the door
