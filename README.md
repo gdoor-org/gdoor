@@ -1,4 +1,4 @@
-<img src="doc/logo/logo.png" alt="GDoor Logo" width=200>
+<img src="doc/logo.png" alt="GDoor Logo" width=200>
 <p align="center">
   https://gdoor-org.github.io/
 </p>
