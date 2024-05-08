@@ -1,6 +1,6 @@
 <p align="center">
-<img src="https://gdoor-org.github.io/assets/images/logo.png" alt="GDoor Logo" height=300>
-<img src="https://gdoor-org.github.io/assets/images/doc-3d.png" alt="GDoor Hardware" height=300>
+<img src="https://gdoor-org.github.io/assets/images/logo.png" alt="GDoor Logo" height=200>
+<img src="https://gdoor-org.github.io/assets/images/doc-3d.png" alt="GDoor Hardware" height=200>
 </p>
 <p align="center">
   https://gdoor-org.github.io/
