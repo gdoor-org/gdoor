@@ -1,5 +1,7 @@
+<p align="center">
 <img src="https://gdoor-org.github.io/assets/images/logo.png" alt="GDoor Logo" width=200>
 <img src="https://gdoor-org.github.io/assets/images/doc-3d.png" alt="GDoor Hardware" width=200>
+</p>
 <p align="center">
   https://gdoor-org.github.io/
 </p>
