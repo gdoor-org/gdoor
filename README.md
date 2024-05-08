@@ -21,7 +21,7 @@ Receiving and sending audio/video is currently neither supported nor plannend.
 
 Contributions are welcome!
 
-# Buy / DIY-Built
+# Buy / DIY
 Moved to the dedicated [page](https://gdoor-org.github.io/buy.html) on our homepage.
 
 # Documentation / Home Automation
