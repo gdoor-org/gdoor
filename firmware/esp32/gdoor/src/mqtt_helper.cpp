@@ -138,8 +138,7 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
             mqttClient.loop();
             if (!mqttClient.connected()) {
                 JSONDEBUG("MQTT lost connection");
-                mqttClient.connect("GDoor", user, password);
-                mqttClient.subscribe(rx_topic_name);
+                newly_connected = true;
             }
         }
     }
