@@ -140,9 +140,9 @@ R"""(
         message += "\"availability_topic\": \"" + availability_topic + "\"";
         message += "},";
         message += "\"uniq_id\": \"gdoor_data_" + mac_clean + "\",";
-        message += "\"state_topic\": \"" + String(tx_topic_name) + "\",";
+        message += "\"state_topic\": \"" + String(rx_topic_name) + "\",";
         message += "\"json_attributes_topic\": \"" + String(tx_topic_name) + "\",";
-        message += "\"command_topic\": \"" + String(rx_topic_name) + "\"";
+        message += "\"command_topic\": \"" + String(tx_topic_name) + "\"";
         message += "}";
         mqttClient.publish("homeassistant/sensor/gdoor/data/config", message, true, 1);
 
@@ -176,6 +176,7 @@ R"""(
      * @param username MQTT Broker username
      * @param pw MQTT Broker password
      * @param rx_topic Topic from which data is received
+     * @param tx_topic Topic from which is announced in HA discovery as bus outgoing topic
     */
     void setup(const char* server, int port, const char* username, const char* pw, const char* rx_topic, const char* tx_topic) {
         WiFi.onEvent(on_wifi_active, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
