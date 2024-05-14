@@ -145,7 +145,6 @@ R"""(
         message += "\"command_topic\": \"" + String(tx_topic_name) + "\"";
         message += "}";
         mqttClient.publish("homeassistant/sensor/gdoor/data/config", message, true, 1);
-
         
         mqttClient.setWill(availability_topic.c_str(), "offline");
     }
