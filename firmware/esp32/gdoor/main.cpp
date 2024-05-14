@@ -67,7 +67,12 @@ void setup() {
     JSONDEBUG("GDOOR Setup start");
     GDOOR::setup(PIN_TX, PIN_TX_EN, PIN_RX);
     WIFI_HELPER::setup();
-    MQTT_HELPER::setup(WIFI_HELPER::mqtt_server(), WIFI_HELPER::mqtt_port(), WIFI_HELPER::mqtt_user(), WIFI_HELPER::mqtt_password(), WIFI_HELPER::mqtt_topic_bus_tx());
+    MQTT_HELPER::setup(WIFI_HELPER::mqtt_server(),
+                       WIFI_HELPER::mqtt_port(),
+                       WIFI_HELPER::mqtt_user(),
+                       WIFI_HELPER::mqtt_password(),
+                       WIFI_HELPER::mqtt_topic_bus_tx(),
+                       WIFI_HELPER::mqtt_topic_bus_rx());
 
     mqtt_topic_bus_rx = WIFI_HELPER::mqtt_topic_bus_rx();
     debug = WIFI_HELPER::debug();

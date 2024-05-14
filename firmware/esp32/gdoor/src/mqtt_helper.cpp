@@ -73,6 +73,7 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
     MQTTClient mqttClient; // MQTT Library object
 
     const char* rx_topic_name; // Which callback topic
+    const char* tx_topic_name; // For HA discovery message
     const char* user; // Username
     const char* password; // Password
 
@@ -80,10 +81,75 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
 
     String received_mqtt_payload; // Global variable which stores received MQTT payload
     String empty(""); //Empty string, useful as global and fixed allocated value.
+    String availability_topic; //Topic where availabiliy is shown
 
     bool new_string_available = false; // Global variable to indicate that a new MQTT String was received
 
     bool newly_connected = true; // Global variable to indicate a newly established WIFI connection
+
+    /**
+     * Function which sends home assistant discovery message,
+     * e.g.
+     * {
+     *  "name": "Bus Data",
+     *  "force_update": True,
+     *  "icon": "mdi:door",
+     *  "state_topic": "gdoor/rx",
+     *  "command_topic": "gdoor/tx",
+     *  "json_attributes_topic": "gdoor/rx",
+     *  "value_template": "{{ value_json.action }}",
+     *  "uniq_id": "gdoor_data_mac",
+     *  "device": {
+     *      "sw_version": "3.0",
+     *      "name": "GDOOR Adapter",
+     *      "model": "ESP32 (de:ad:be:ef)",
+     *      "manufacturer": "GDOOR Project",
+     *      "configuration_url": "http://127.0.0.1",
+     *      "ids": "gdoor_mac",
+     *      "availability_topic": "homeassistant/sensor/gdoor/data/config/mac"
+     *  }
+     * }
+    */
+    void send_ha_discovery(){
+        String mac = WiFi.macAddress();
+        String mac_clean = mac;
+        mac_clean.replace(":", "_");
+
+        availability_topic = "homeassistant/sensor/gdoor/data/config/"+mac_clean;
+
+        String ip;
+        ip = WiFi.localIP().toString();
+
+        String message = 
+R"""(
+{
+"name": "Bus Data",
+"force_update": True,
+"icon": "mdi:door",
+"value_template": "{{ value_json.action }}",
+"device": {
+"sw_version": "3.0",
+"name": "GDOOR Adapter",
+"manufacturer": "GDOOR Project",
+)"""
+"";
+
+        message += "\"model\": \"ESP32 (" + mac + ")\",";
+        message += "\"configuration_url\": \"" + ip + "\",";
+        message += "\"ids\": \"gdoor_" + mac_clean + "\",";
+        message += "\"availability_topic\": \"" + availability_topic + "\"";
+        message += "},";
+        message += "\"uniq_id\": \"gdoor_data_" + mac_clean + "\",";
+        message += "\"state_topic\": \"" + String(tx_topic_name) + "\",";
+        message += "\"json_attributes_topic\": \"" + String(tx_topic_name) + "\",";
+        message += "\"command_topic\": \"" + String(rx_topic_name) + "\"";
+        message += "}";
+        mqttClient.publish("homeassistant/sensor/gdoor/data/config", message, true, 1);
+
+        
+        mqttClient.setWill(availability_topic.c_str(), "offline");
+    }
+   
 
     /**
      * MQTT Callback function,
@@ -111,11 +177,13 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
      * @param pw MQTT Broker password
      * @param rx_topic Topic from which data is received
     */
-    void setup(const char* server, int port, const char* username, const char* pw, const char* rx_topic) {
+    void setup(const char* server, int port, const char* username, const char* pw, const char* rx_topic, const char* tx_topic) {
         WiFi.onEvent(on_wifi_active, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
+        
         mqttClient.begin(server, port, net);
         mqttClient.onMessage(on_message_received);
         rx_topic_name = rx_topic;
+        tx_topic_name = tx_topic;
         user = username;
         password = pw;
     }
@@ -125,14 +193,24 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
      * needs to be executed in main loop().
     */
     void loop() {
+        static uint16_t counter = 0;
         if(WiFi.getMode() == WIFI_MODE_STA && WiFi.status() == WL_CONNECTED) {
             if (newly_connected) {
                 JSONDEBUG("Newly connected WIFI detected in MQTT loop");
                 if (mqttClient.connect("GDoor", user, password)) {
                     JSONDEBUG("Successfully connected MQTT");
                     mqttClient.subscribe(rx_topic_name);
+
+                    send_ha_discovery();
+
                     newly_connected = false;
+                    counter = 0;
                 }
+            }
+
+            // Send every 2^16 a availability message
+            if (! counter && !newly_connected ) {
+                mqttClient.publish(availability_topic, "online");
             }
 
             mqttClient.loop();
@@ -140,6 +218,7 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
                 JSONDEBUG("MQTT lost connection");
                 newly_connected = true;
             }
+            counter = counter + 1;
         }
     }
 
