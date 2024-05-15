@@ -88,6 +88,7 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
 
     bool newly_connected = true; // Global variable to indicate a newly established WIFI connection
     bool new_connection_established = false; //Global variable to indicate we successfully connected new
+    bool ha_online = false; // Indicates if Home assistant messaged a new online state, so that we can resend our state
 
     /**
      * Function which sends home assistant discovery message,
@@ -164,6 +165,9 @@ R"""(
      * executes when a new String is received via the subscribed topic
     */
     void on_message_received(String &topic, String &payload) {
+        if(topic == "homeassistant/status" && payload == "online") {
+            ha_online = true;
+        }
         new_string_available = true;
         received_mqtt_payload = payload;
         received_mqtt_payload.trim();
@@ -210,6 +214,7 @@ R"""(
                 if (mqttClient.connect("GDoor", user, password)) {
                     JSONDEBUG("Successfully connected MQTT");
                     mqttClient.subscribe(rx_topic_name);
+                    mqttClient.subscribe("homeassistant/status");
 
                     send_ha_discovery();
 
@@ -219,15 +224,23 @@ R"""(
                 }
             }
 
-            // Send every 2^16 a availability message
-            if (! counter && !newly_connected ) {
-                mqttClient.publish(availability_topic, "online");
-            }
-
             mqttClient.loop();
             if (!mqttClient.connected()) {
                 JSONDEBUG("MQTT lost connection");
                 newly_connected = true;
+            } else {
+                // Send every 2^16 a availability message
+                if (! counter && !newly_connected ) {
+                    mqttClient.publish(availability_topic, "online");
+                }
+
+                // Indicate a new connection if HA gets online,
+                // so that state is resend
+                if(ha_online) {
+                    ha_online = false;
+                    send_ha_discovery();
+                    new_connection_established = true;
+                }
             }
             counter = counter + 1;
         }
