@@ -59,7 +59,7 @@ class GDOOR_DATA_PROTOCOL : public Printable { // Class/Struct to collect bus hi
         uint8_t source[3];
         uint8_t destination[3];
 
-        GDOOR_DATA_PROTOCOL(GDOOR_DATA* data);
+        GDOOR_DATA_PROTOCOL(GDOOR_DATA* data, bool idle = false);
 
         virtual size_t printTo(Print& p) const {
             size_t r = 0;

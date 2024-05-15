@@ -17,6 +17,7 @@
 #include "defines.h"
 #include "mqtt_helper.h"
 #include "printer_helper.h"
+#include "gdoor_data.h"
 #include <MQTT.h>
 
 #include <WiFi.h>
@@ -86,6 +87,7 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
     bool new_string_available = false; // Global variable to indicate that a new MQTT String was received
 
     bool newly_connected = true; // Global variable to indicate a newly established WIFI connection
+    bool new_connection_established = false; //Global variable to indicate we successfully connected new
 
     /**
      * Function which sends home assistant discovery message,
@@ -124,7 +126,7 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
 R"""(
 {
 "name": "Bus Data",
-"force_update": True,
+"force_update": true,
 "icon": "mdi:door",
 "value_template": "{{ value_json.action }}",
 "device": {
@@ -135,17 +137,24 @@ R"""(
 "";
 
         message += "\"model\": \"ESP32 (" + mac + ")\",";
-        message += "\"configuration_url\": \"" + ip + "\",";
-        message += "\"ids\": \"gdoor_" + mac_clean + "\",";
-        message += "\"availability_topic\": \"" + availability_topic + "\"";
+        message += "\"configuration_url\": \"http://" + ip + "\",";
+        message += "\"ids\": \"gdoor_" + mac_clean + "\"";
         message += "},";
+        message += "\"availability_topic\": \"" + availability_topic + "\",";
         message += "\"uniq_id\": \"gdoor_data_" + mac_clean + "\",";
-        message += "\"state_topic\": \"" + String(rx_topic_name) + "\",";
+        message += "\"state_topic\": \"" + String(tx_topic_name) + "\",";
         message += "\"json_attributes_topic\": \"" + String(tx_topic_name) + "\",";
-        message += "\"command_topic\": \"" + String(tx_topic_name) + "\"";
+        message += "\"command_topic\": \"" + String(rx_topic_name) + "\"";
         message += "}";
-        mqttClient.publish("homeassistant/sensor/gdoor/data/config", message, true, 1);
-        
+        mqttClient.publish("homeassistant/sensor/gdoor/data/config", message, true, 1); 
+    }
+
+    void setWill() {
+        String mac = WiFi.macAddress();
+        String mac_clean = mac;
+        mac_clean.replace(":", "_");
+
+        availability_topic = "homeassistant/sensor/gdoor/data/config/"+mac_clean;
         mqttClient.setWill(availability_topic.c_str(), "offline");
     }
    
@@ -197,6 +206,7 @@ R"""(
         if(WiFi.getMode() == WIFI_MODE_STA && WiFi.status() == WL_CONNECTED) {
             if (newly_connected) {
                 JSONDEBUG("Newly connected WIFI detected in MQTT loop");
+                setWill();
                 if (mqttClient.connect("GDoor", user, password)) {
                     JSONDEBUG("Successfully connected MQTT");
                     mqttClient.subscribe(rx_topic_name);
@@ -204,6 +214,7 @@ R"""(
                     send_ha_discovery();
 
                     newly_connected = false;
+                    new_connection_established = true;
                     counter = 0;
                 }
             }
@@ -233,6 +244,24 @@ R"""(
             return received_mqtt_payload;
         }
         return empty;
+    }
+
+    /** Returns true if MQTT was newly connected since last call*/
+    bool isNewConnection() {
+        static uint16_t counter = 0;
+
+        //Delay new connection return because otherwise discovery and value is send too fast after each other
+        if(new_connection_established) {
+            counter = counter + 1;
+        } else {
+            counter = 0;
+        }
+
+        if (counter >= 1<<14 && new_connection_established) {
+            new_connection_established = false;
+            return true;
+        }
+        return false;
     }
 
 };

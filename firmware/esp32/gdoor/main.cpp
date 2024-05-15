@@ -24,6 +24,8 @@
 #define PIN_TX 25
 #define PIN_TX_EN 27
 
+GDOOR_DATA_PROTOCOL gdoor_data_idle(NULL, true);
+
 boolean debug = false; // Global variable to indicate if we are in debug mode (true)
 const char* mqtt_topic_bus_rx = NULL;
 
@@ -52,8 +54,8 @@ boolean parse(String  &input) {
  * outputs valid bus messages.
  * @param busmessage The bus message to be send out to the user.
 */
-void output(GDOOR_DATA_PROTOCOL &busmessage, const char* topic) {
-    if(debug || busmessage.raw->valid) {
+void output(GDOOR_DATA_PROTOCOL &busmessage, const char* topic, bool force=false) {
+    if(force || debug || (busmessage.raw != NULL && busmessage.raw->valid)) {
         MQTT_HELPER::printer.print("{");
         MQTT_HELPER::printer.print(busmessage);
         MQTT_HELPER::printer.println("}");
@@ -85,11 +87,20 @@ void loop() {
     MQTT_HELPER::loop();
     GDOOR::loop();
     GDOOR_DATA* rx_data = GDOOR::read();
+
+    // Output bus idle message on new MQTT connections to set a defined state
+    if(MQTT_HELPER::isNewConnection()) {
+        output(gdoor_data_idle, mqtt_topic_bus_rx, true);
+    }
     if(rx_data != NULL) {
         JSONDEBUG("Received data from bus");
         GDOOR_DATA_PROTOCOL busmessage = GDOOR_DATA_PROTOCOL(rx_data);
         output(busmessage, mqtt_topic_bus_rx);
-        JSONDEBUG("Output bus data via Serial and MQTT, done");        
+        JSONDEBUG("Output bus data via Serial and MQTT, done");
+        // Output idle message after bus message, to reset values so that
+        //home automation can trigger again
+        output(gdoor_data_idle, mqtt_topic_bus_rx, true);
+
     } else if (!GDOOR::active()) { // Neither RX nor TX active,
         String str_received("");
         if (Serial.available() > 0) { // let's check the serial port if something is in buffer

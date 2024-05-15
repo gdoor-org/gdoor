@@ -131,11 +131,16 @@ bool GDOOR_DATA::parse(uint16_t *counts, uint16_t len) {
 * and stores a human readable form in its class elements.
 *
 * @param data GDOOR_DATA element, with parsed bus data.
+* @param idle true: generate idle message
 */
-GDOOR_DATA_PROTOCOL::GDOOR_DATA_PROTOCOL(GDOOR_DATA* data) {
-    this->type = "TYPE_UNKOWN";
-    this->action = "ACTION_UNKOWN";
-
+GDOOR_DATA_PROTOCOL::GDOOR_DATA_PROTOCOL(GDOOR_DATA* data, bool idle) {
+    if(idle) {
+        this->type = "TYPE_GDOOR";
+        this->action = "BUS_IDLE";
+    } else {
+        this->type = "TYPE_UNKOWN";
+        this->action = "ACTION_UNKOWN";
+    }
     this->raw = data;
 
     this->source[0] = 0x00;
@@ -149,7 +154,7 @@ GDOOR_DATA_PROTOCOL::GDOOR_DATA_PROTOCOL(GDOOR_DATA* data) {
     this->parameters[0] = 0x00;
     this->parameters[1] = 0x00;
 
-    if(data->valid && data->len >= 9) {
+    if(data != NULL && data->valid && data->len >= 9) {
         if(GDOOR_DATA_HWTYPE.find(data->data[8]) != GDOOR_DATA_HWTYPE.end()){
             this->type = GDOOR_DATA_HWTYPE.at(data->data[8]);
         }

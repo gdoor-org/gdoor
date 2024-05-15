@@ -41,7 +41,7 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
     void setup(const char* server, int port, const char* username, const char* pw, const char* rx_topic, const char* tx_topic);
     String& receive();
     void loop();
-
+    bool isNewConnection();
 };
 
 #endif
