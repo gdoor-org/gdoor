@@ -30,6 +30,7 @@ namespace GDOOR { //Namespace as we can only use it once
     void send(uint8_t *data, uint16_t len);
     void send(String str);
     bool active();
+    void setRxThreshold(uint8_t pin, float sensitivity);
 };
 
 #endif

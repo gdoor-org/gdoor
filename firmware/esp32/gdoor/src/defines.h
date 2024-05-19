@@ -51,6 +51,10 @@
 
 // Settings
 
+#define PIN_TX 25
+#define PIN_TX_EN 27
+#define PIN_RX_THRESH 26
+
 // RX Pin Settings
 #define RX_PIN_22_NAME "v3.1 adjustable (IO22)"
 #define RX_PIN_22_NUM 22

@@ -20,10 +20,6 @@
 #include "src/wifi_helper.h"
 #include "src/printer_helper.h"
 
-#define PIN_RX 12
-#define PIN_TX 25
-#define PIN_TX_EN 27
-
 boolean debug = false; // Global variable to indicate if we are in debug mode (true)
 const char* mqtt_topic_bus_rx = NULL;
 
@@ -65,8 +61,12 @@ void setup() {
     Serial.begin(115200);
     Serial.setTimeout(1);
     JSONDEBUG("GDOOR Setup start");
-    GDOOR::setup(PIN_TX, PIN_TX_EN, PIN_RX);
+    
     WIFI_HELPER::setup();
+
+    GDOOR::setRxThreshold(PIN_RX_THRESH, WIFI_HELPER::rx_sensitivity());
+    GDOOR::setup(PIN_TX, PIN_TX_EN, WIFI_HELPER::rx_pin());
+
     MQTT_HELPER::setup(WIFI_HELPER::mqtt_server(), WIFI_HELPER::mqtt_port(), WIFI_HELPER::mqtt_user(), WIFI_HELPER::mqtt_password(), WIFI_HELPER::mqtt_topic_bus_tx());
 
     mqtt_topic_bus_rx = WIFI_HELPER::mqtt_topic_bus_rx();
