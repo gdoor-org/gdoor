@@ -49,4 +49,37 @@
 #define DEFAULT_MQTT_TOPIC_BUS_RX "gdoor/bus_rx"
 #define DEFAULT_MQTT_TOPIC_BUS_TX "gdoor/bus_tx"
 
+// Settings
+
+#define PIN_TX 25
+#define PIN_TX_EN 27
+#define PIN_RX_THRESH 26
+
+// RX Pin Settings
+#define RX_PIN_22_NAME "v3.1 adjustable (IO22)"
+#define RX_PIN_22_NUM 22
+
+#define RX_PIN_21_NAME "v3.1 (IO21)"
+#define RX_PIN_21_NUM 21
+
+#define RX_PIN_12_NAME "v3.0 bugfix (IO12)"
+#define RX_PIN_12_NUM 12
+
+#define RX_PIN_32_NAME "v3.0 (IO32)"
+#define RX_PIN_32_NUM 32
+
+#define RX_PIN_CHOICES {RX_PIN_22_NAME, RX_PIN_21_NAME, RX_PIN_12_NAME, RX_PIN_32_NAME}
+#define RX_PIN_CHOICES_LEN 4
+
+// RX Pin Sensitivity (only working for RX PIN22)
+#define RX_SENS_LOW_NAME "Low (1.3V)"
+#define RX_SENS_LOW_NUM 1.3
+#define RX_SENS_MED_NAME "Med (1.45V)"
+#define RX_SENS_MED_NUM 1.45
+#define RX_SENS_HIGH_NAME "High (1.65V)"
+#define RX_SENS_HIGH_NUM 1.65
+
+#define RX_SENS_CHOICES {RX_SENS_HIGH_NAME, RX_SENS_MED_NAME, RX_SENS_LOW_NAME}
+#define RX_SENS_CHOICES_LEN 3
+
 #endif

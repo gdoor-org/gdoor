@@ -1565,9 +1565,9 @@
       (stroke (width 0.1) (type solid)) (layer "F.Fab") (tstamp c330f0c3-9beb-4d07-aff4-28d18d650c05))
     (fp_line (start 1.6 1.25) (end -1.6 1.25)
       (stroke (width 0.1) (type solid)) (layer "F.Fab") (tstamp 823dfb38-bffc-469b-b5bf-f16a496d7776))
-    (pad "1" smd roundrect (at -1.5625 0) (size 1.325 2.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.188679)
+    (pad "1" smd roundrect (at -1.5625 0) (size 1.325 2.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.1886792453)
       (net 7 "+5V") (pintype "passive") (tstamp 35dc928e-3784-47f3-81c6-1af47cb892fd))
-    (pad "2" smd roundrect (at 1.5625 0) (size 1.325 2.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.188679)
+    (pad "2" smd roundrect (at 1.5625 0) (size 1.325 2.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.1886792453)
       (net 3 "GND") (pintype "passive") (tstamp 4ace8e49-37d3-442f-aea0-7e3987c284b9))
     (model "${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_1210_3225Metric.wrl"
       (offset (xyz 0 0 0))
@@ -2370,9 +2370,9 @@
       (stroke (width 0.1) (type solid)) (layer "F.Fab") (tstamp 8af80104-bca8-4800-8a7f-c9aa4e18fcad))
     (fp_line (start 1.6 1.25) (end -1.6 1.25)
       (stroke (width 0.1) (type solid)) (layer "F.Fab") (tstamp 89029d39-e973-48f3-99d1-ded68fab3605))
-    (pad "1" smd roundrect (at -1.5625 0 180) (size 1.325 2.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.188679)
+    (pad "1" smd roundrect (at -1.5625 0 180) (size 1.325 2.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.1886792453)
       (net 8 "+3.3V") (pintype "passive") (tstamp 4efe520e-0fe4-44a5-a00a-a3bcc66003ed))
-    (pad "2" smd roundrect (at 1.5625 0 180) (size 1.325 2.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.188679)
+    (pad "2" smd roundrect (at 1.5625 0 180) (size 1.325 2.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.1886792453)
       (net 3 "GND") (pintype "passive") (tstamp 8b7b3d72-f994-4952-b8df-01fdaa58f6f7))
     (model "${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_1210_3225Metric.wrl"
       (offset (xyz 0 0 0))

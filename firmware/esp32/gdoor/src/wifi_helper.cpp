@@ -154,7 +154,8 @@ public:
 
 namespace WIFI_HELPER { //Namespace as we can only use it once
     bool shouldSaveConfig = false;
-    
+    const char* rx_pin_select_values[] = RX_PIN_CHOICES;    
+    const char* rx_sensitivity_select_values[] = RX_SENS_CHOICES;    
 
     MyCustomWifiManager wifiManager;
     WiFiManagerParameter custom_mqtt_server("mqtt_server", "MQTT Server", DEFAULT_MQTT_SERVER, 40);
@@ -164,6 +165,8 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
     WiFiManagerParameter custom_mqtt_topic_bus_rx("mqtt_topic_bus_rx", "MQTT Topic - from bus", DEFAULT_MQTT_TOPIC_BUS_RX, 40);
     WiFiManagerParameter custom_mqtt_topic_bus_tx("mqtt_topic_bus_tx", "MQTT Topic - to bus", DEFAULT_MQTT_TOPIC_BUS_TX, 40);
     EnableDisableParameter custom_debug("param_6", "Debug Mode"); //param_4 is a very ugly workaround for stupid WifiManager custom fields implementation. Works only with param_<fixedno>
+    CheckSelectParameter custom_rx_pin("param_7", "RX Input", rx_pin_select_values, RX_PIN_CHOICES_LEN, 40); 
+    CheckSelectParameter custom_rx_sens("param_8", "IO22 Sensitivity", rx_sensitivity_select_values, RX_SENS_CHOICES_LEN, 40); 
 
     /**
      * Internal function which creates and writes a file to LittleFS.
@@ -236,6 +239,35 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         return strcmp(custom_debug.getValue(), "enabled") == 0;
     }
 
+    /** Returns io number of select RX method*/
+    uint8_t rx_pin() {
+        const char* value = custom_rx_pin.getValue();
+
+        if(!strcmp(value, RX_PIN_22_NAME)) {
+            return RX_PIN_22_NUM;
+        } else if(!strcmp(value, RX_PIN_21_NAME)) {
+            return RX_PIN_21_NUM;
+        } else if(!strcmp(value, RX_PIN_12_NAME)) {
+            return RX_PIN_12_NUM;
+        } else if(!strcmp(value, RX_PIN_32_NAME)) {
+            return RX_PIN_32_NUM;
+        }
+        return RX_PIN_22_NUM;
+    }
+
+    /** Returns DAC value for RX comparator*/
+    float rx_sensitivity() {
+        const char* value = custom_rx_sens.getValue();
+        if(!strcmp(value, RX_SENS_LOW_NAME)) {
+            return RX_SENS_LOW_NUM;
+        } else if(!strcmp(value, RX_SENS_MED_NAME)) {
+            return RX_SENS_MED_NUM;
+        } else if(!strcmp(value, RX_SENS_HIGH_NAME)) {
+            return RX_SENS_HIGH_NUM;
+        }
+        return RX_SENS_MED_NUM;
+    }
+
     void setup() {
         String filevalue;
 
@@ -269,6 +301,14 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
                 custom_debug.setValue(filevalue.c_str(), 10);
             }
 
+            if (read_config_file("/custom_rx_pin", &filevalue) && filevalue.length() > 0 ) {
+                custom_rx_pin.setValue(filevalue.c_str(), 40);
+            }
+
+            if (read_config_file("/custom_rx_sens", &filevalue) && filevalue.length() > 0 ) {
+                custom_rx_sens.setValue(filevalue.c_str(), 40);
+            }
+
             LittleFS.end();
         } else {
             JSONPRINT("Could not mount filesystem on load");
@@ -283,8 +323,11 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         wifiManager.addParameter(&custom_mqtt_password);
         wifiManager.addParameter(&custom_mqtt_topic_bus_rx);
         wifiManager.addParameter(&custom_mqtt_topic_bus_tx);
-
+        
         wifiManager.addParameter(&custom_debug);
+
+        wifiManager.addParameter(&custom_rx_pin);
+        wifiManager.addParameter(&custom_rx_sens);
 
         wifiManager.setSaveConfigCallback(on_save);
         wifiManager.setSaveParamsCallback(on_save);
@@ -316,6 +359,8 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
                 save_config_file("/custom_mqtt_topic_bus_rx", custom_mqtt_topic_bus_rx.getValue());
                 save_config_file("/custom_mqtt_topic_bus_tx", custom_mqtt_topic_bus_tx.getValue());
                 save_config_file("/custom_debug", custom_debug.getValue());
+                save_config_file("/custom_rx_pin", custom_rx_pin.getValue());
+                save_config_file("/custom_rx_sens", custom_rx_sens.getValue());
                 LittleFS.end();
                 ESP.restart();
             } else {

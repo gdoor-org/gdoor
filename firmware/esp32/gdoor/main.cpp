@@ -67,7 +67,7 @@ void setup() {
     Serial.begin(115200);
     Serial.setTimeout(1);
     JSONDEBUG("GDOOR Setup start");
-    GDOOR::setup(PIN_TX, PIN_TX_EN, PIN_RX);
+    
     WIFI_HELPER::setup();
     MQTT_HELPER::setup(WIFI_HELPER::mqtt_server(),
                        WIFI_HELPER::mqtt_port(),
@@ -76,10 +76,17 @@ void setup() {
                        WIFI_HELPER::mqtt_topic_bus_tx(),
                        WIFI_HELPER::mqtt_topic_bus_rx());
 
+    GDOOR::setRxThreshold(PIN_RX_THRESH, WIFI_HELPER::rx_sensitivity());
+    GDOOR::setup(PIN_TX, PIN_TX_EN, WIFI_HELPER::rx_pin());
+
     mqtt_topic_bus_rx = WIFI_HELPER::mqtt_topic_bus_rx();
     debug = WIFI_HELPER::debug();
 
     JSONDEBUG("GDOOR Setup done");
+    JSONDEBUG("RX Pin: ");
+    JSONDEBUG(WIFI_HELPER::rx_pin());
+    JSONDEBUG("RX Sensitivity: ");
+    JSONDEBUG(WIFI_HELPER::rx_sensitivity());
 }
 
 void loop() {
