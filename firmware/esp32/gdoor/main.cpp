@@ -112,10 +112,10 @@ void loop() {
         String str_received("");
         if (Serial.available() > 0) { // let's check the serial port if something is in buffer
             str_received = Serial.readString();
-            str_received.trim();    
         } else {
             str_received = MQTT_HELPER::receive();
         }
+        str_received.trim();    
 
         if(str_received.length() > 0) {
             if(!parse(str_received)) { //Check if received string is a command
