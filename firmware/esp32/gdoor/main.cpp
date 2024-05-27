@@ -20,10 +20,6 @@
 #include "src/wifi_helper.h"
 #include "src/printer_helper.h"
 
-#define PIN_RX 12
-#define PIN_TX 25
-#define PIN_TX_EN 27
-
 GDOOR_DATA_PROTOCOL gdoor_data_idle(NULL, true);
 
 boolean debug = false; // Global variable to indicate if we are in debug mode (true)
