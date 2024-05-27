@@ -68,4 +68,12 @@ namespace GDOOR {
     bool active() {
         return (GDOOR_TX::tx_state != 0 || GDOOR_RX::rx_state != 0);
     }
+
+    /** Set RX Threshold (Sensitivity) to a certain level,
+     * only working for IO22 rx input on v3.1 hardware
+    */
+   void setRxThreshold(uint8_t pin, float sensitivity) {
+        uint8_t value =  (uint8_t)((sensitivity/3.3)*255);
+        dacWrite(pin, value);
+   }
 }
