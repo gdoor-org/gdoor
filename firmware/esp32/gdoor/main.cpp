@@ -73,6 +73,10 @@ void setup() {
     debug = WIFI_HELPER::debug();
 
     JSONDEBUG("GDOOR Setup done");
+    JSONDEBUG("RX Pin: ");
+    JSONDEBUG(WIFI_HELPER::rx_pin());
+    JSONDEBUG("RX Sensitivity: ");
+    JSONDEBUG(WIFI_HELPER::rx_sensitivity());
 }
 
 void loop() {

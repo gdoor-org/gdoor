@@ -252,7 +252,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         } else if(!strcmp(value, RX_PIN_32_NAME)) {
             return RX_PIN_32_NUM;
         }
-        return RX_PIN_12_NUM;
+        return RX_PIN_22_NUM;
     }
 
     /** Returns DAC value for RX comparator*/
@@ -265,7 +265,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         } else if(!strcmp(value, RX_SENS_HIGH_NAME)) {
             return RX_SENS_HIGH_NUM;
         }
-        return RX_SENS_HIGH_NUM;
+        return RX_SENS_MED_NUM;
     }
 
     void setup() {
@@ -302,11 +302,11 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
             }
 
             if (read_config_file("/custom_rx_pin", &filevalue) && filevalue.length() > 0 ) {
-                custom_rx_pin.setValue(filevalue.c_str(), 10);
+                custom_rx_pin.setValue(filevalue.c_str(), 40);
             }
 
             if (read_config_file("/custom_rx_sens", &filevalue) && filevalue.length() > 0 ) {
-                custom_rx_sens.setValue(filevalue.c_str(), 10);
+                custom_rx_sens.setValue(filevalue.c_str(), 40);
             }
 
             LittleFS.end();
@@ -323,8 +323,11 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         wifiManager.addParameter(&custom_mqtt_password);
         wifiManager.addParameter(&custom_mqtt_topic_bus_rx);
         wifiManager.addParameter(&custom_mqtt_topic_bus_tx);
-
+        
         wifiManager.addParameter(&custom_debug);
+
+        wifiManager.addParameter(&custom_rx_pin);
+        wifiManager.addParameter(&custom_rx_sens);
 
         wifiManager.setSaveConfigCallback(on_save);
         wifiManager.setSaveParamsCallback(on_save);
