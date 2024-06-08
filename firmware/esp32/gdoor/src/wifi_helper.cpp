@@ -1,6 +1,6 @@
 /* 
- * This file is part of the GDOOR distribution (https://github.com/gdoor-org).
- * Copyright (c) 2024 GDOOR Authors.
+ * This file is part of the GDoor distribution (https://github.com/gdoor-org).
+ * Copyright (c) 2024 GDoor authors.
  * 
  * This program is free software: you can redistribute it and/or modify  
  * it under the terms of the GNU General Public License as published by  
@@ -332,7 +332,7 @@ namespace WIFI_HELPER { //Namespace as we can only use it once
         wifiManager.setSaveConfigCallback(on_save);
         wifiManager.setSaveParamsCallback(on_save);
 
-        wifiManager.setHostname("GDOOR");
+        wifiManager.setHostname("GDoor");
         wifiManager.setShowPassword(true);
         
         wifiManager.setBreakAfterConfig(true);

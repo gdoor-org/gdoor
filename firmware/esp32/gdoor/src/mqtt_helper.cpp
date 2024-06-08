@@ -1,6 +1,6 @@
 /* 
- * This file is part of the GDOOR distribution (https://github.com/gdoor-org).
- * Copyright (c) 2024 GDOOR Authors.
+ * This file is part of the GDoor distribution (https://github.com/gdoor-org).
+ * Copyright (c) 2024 GDoor authors.
  * 
  * This program is free software: you can redistribute it and/or modify  
  * it under the terms of the GNU General Public License as published by  
@@ -104,9 +104,9 @@ namespace MQTT_HELPER { //Namespace as we can only use it once
      *  "uniq_id": "gdoor_data_mac",
      *  "device": {
      *      "sw_version": "3.0",
-     *      "name": "GDOOR Adapter",
+     *      "name": "GDoor Adapter",
      *      "model": "ESP32 (de:ad:be:ef)",
-     *      "manufacturer": "GDOOR Project",
+     *      "manufacturer": "GDoor Project",
      *      "configuration_url": "http://127.0.0.1",
      *      "ids": "gdoor_mac",
      *      "availability_topic": "homeassistant/sensor/gdoor/data/config/mac"
@@ -132,8 +132,8 @@ R"""(
 "value_template": "{{ value_json.action }}",
 "device": {
 "sw_version": "3.0",
-"name": "GDOOR Adapter",
-"manufacturer": "GDOOR Project",
+"name": "GDoor Adapter",
+"manufacturer": "GDoor Project",
 )"""
 "";
 

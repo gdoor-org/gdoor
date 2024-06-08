@@ -1,6 +1,6 @@
 /* 
- * This file is part of the GDOOR distribution (https://github.com/gdoor-org).
- * Copyright (c) 2024 GDOOR Authors.
+ * This file is part of the GDoor distribution (https://github.com/gdoor-org).
+ * Copyright (c) 2024 GDoor authors.
  * 
  * This program is free software: you can redistribute it and/or modify  
  * it under the terms of the GNU General Public License as published by  
@@ -17,7 +17,7 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-// GDOOR
+// GDoor
 #define MAX_WORDLEN 25
 
 // RX Statemachine
@@ -40,7 +40,7 @@
 #define STATE_SENDING 0x01
 
 // WIFI
-#define DEFAULT_WIFI_SSID     "GDOOR"
+#define DEFAULT_WIFI_SSID     "GDoor"
 #define DEFAULT_WIFI_PASSWORD "12345678"
 
 // MQTT

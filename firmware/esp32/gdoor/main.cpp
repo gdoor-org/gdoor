@@ -1,6 +1,6 @@
 /* 
- * This file is part of the GDOOR distribution (https://github.com/gdoor-org).
- * Copyright (c) 2024 GDOOR Authors.
+ * This file is part of the GDoor distribution (https://github.com/gdoor-org).
+ * Copyright (c) 2024 GDoor authors.
  * 
  * This program is free software: you can redistribute it and/or modify  
  * it under the terms of the GNU General Public License as published by  
@@ -62,7 +62,7 @@ void output(GDOOR_DATA_PROTOCOL &busmessage, const char* topic, bool force=false
 void setup() {
     Serial.begin(115200);
     Serial.setTimeout(1);
-    JSONDEBUG("GDOOR Setup start");
+    JSONDEBUG("GDoor Setup start");
     
     WIFI_HELPER::setup();
     MQTT_HELPER::setup(WIFI_HELPER::mqtt_server(),
@@ -78,7 +78,7 @@ void setup() {
     mqtt_topic_bus_rx = WIFI_HELPER::mqtt_topic_bus_rx();
     debug = WIFI_HELPER::debug();
 
-    JSONDEBUG("GDOOR Setup done");
+    JSONDEBUG("GDoor Setup done");
     JSONDEBUG("RX Pin: ");
     JSONDEBUG(WIFI_HELPER::rx_pin());
     JSONDEBUG("RX Sensitivity: ");
