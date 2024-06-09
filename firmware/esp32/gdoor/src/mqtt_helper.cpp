@@ -131,12 +131,12 @@ R"""(
 "icon": "mdi:door",
 "value_template": "{{ value_json.action }}",
 "device": {
-"sw_version": "3.0",
 "name": "GDoor Adapter",
 "manufacturer": "GDoor Project",
 )"""
 "";
-
+        
+        message += "\"sw_version\": \"" + String(GDOOR_VERSION) + "\",";
         message += "\"model\": \"ESP32 (" + mac + ")\",";
         message += "\"configuration_url\": \"http://" + ip + "\",";
         message += "\"ids\": \"gdoor_" + mac_clean + "\"";
