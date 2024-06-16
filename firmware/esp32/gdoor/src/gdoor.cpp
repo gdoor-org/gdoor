@@ -1,6 +1,6 @@
 /* 
- * This file is part of the GDOOR distribution (https://github.com/gdoor-org).
- * Copyright (c) 2024 GDOOR Authors.
+ * This file is part of the GDoor distribution (https://github.com/gdoor-org).
+ * Copyright (c) 2024 GDoor authors.
  * 
  * This program is free software: you can redistribute it and/or modify  
  * it under the terms of the GNU General Public License as published by  
@@ -18,7 +18,7 @@
 
 namespace GDOOR {
     /*
-    * Setup everything needed for GDOOR.
+    * Setup everything needed for GDoor.
     * @param int txpin Pin number where PWM is created when sending out data
     * @param int txenpin Pin number where output buffer is turned on/off
     * @param int rxpin Pin number where pulses from bus are received

@@ -1,7 +1,7 @@
 
 /* 
- * This file is part of the GDOOR distribution (https://github.com/gdoor-org).
- * Copyright (c) 2024 GDOOR Authors.
+ * This file is part of the GDoor distribution (https://github.com/gdoor-org).
+ * Copyright (c) 2024 GDoor authors.
  * 
  * This program is free software: you can redistribute it and/or modify  
  * it under the terms of the GNU General Public License as published by  
@@ -59,7 +59,7 @@ class GDOOR_DATA_PROTOCOL : public Printable { // Class/Struct to collect bus hi
         uint8_t source[3];
         uint8_t destination[3];
 
-        GDOOR_DATA_PROTOCOL(GDOOR_DATA* data);
+        GDOOR_DATA_PROTOCOL(GDOOR_DATA* data, bool idle = false);
 
         virtual size_t printTo(Print& p) const {
             size_t r = 0;

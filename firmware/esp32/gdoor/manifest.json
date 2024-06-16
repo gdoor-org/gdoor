@@ -1,0 +1,15 @@
+{
+    "name": "GDoor",
+    "version": "dev",
+    "builds": [
+        {
+            "chipFamily": "ESP32",
+            "parts": [
+                {
+                    "path": "firmware_merged.bin",
+                    "offset": 0
+                }
+            ]
+        }
+    ]
+}

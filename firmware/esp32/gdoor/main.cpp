@@ -1,6 +1,6 @@
 /* 
- * This file is part of the GDOOR distribution (https://github.com/gdoor-org).
- * Copyright (c) 2024 GDOOR Authors.
+ * This file is part of the GDoor distribution (https://github.com/gdoor-org).
+ * Copyright (c) 2024 GDoor authors.
  * 
  * This program is free software: you can redistribute it and/or modify  
  * it under the terms of the GNU General Public License as published by  
@@ -19,6 +19,8 @@
 #include "src/mqtt_helper.h"
 #include "src/wifi_helper.h"
 #include "src/printer_helper.h"
+
+GDOOR_DATA_PROTOCOL gdoor_data_idle(NULL, true);
 
 boolean debug = false; // Global variable to indicate if we are in debug mode (true)
 const char* mqtt_topic_bus_rx = NULL;
@@ -48,8 +50,8 @@ boolean parse(String  &input) {
  * outputs valid bus messages.
  * @param busmessage The bus message to be send out to the user.
 */
-void output(GDOOR_DATA_PROTOCOL &busmessage, const char* topic) {
-    if(debug || busmessage.raw->valid) {
+void output(GDOOR_DATA_PROTOCOL &busmessage, const char* topic, bool force=false) {
+    if(force || debug || (busmessage.raw != NULL && busmessage.raw->valid)) {
         MQTT_HELPER::printer.print("{");
         MQTT_HELPER::printer.print(busmessage);
         MQTT_HELPER::printer.println("}");
@@ -60,19 +62,23 @@ void output(GDOOR_DATA_PROTOCOL &busmessage, const char* topic) {
 void setup() {
     Serial.begin(115200);
     Serial.setTimeout(1);
-    JSONDEBUG("GDOOR Setup start");
+    JSONDEBUG("GDoor Setup start");
     
     WIFI_HELPER::setup();
+    MQTT_HELPER::setup(WIFI_HELPER::mqtt_server(),
+                       WIFI_HELPER::mqtt_port(),
+                       WIFI_HELPER::mqtt_user(),
+                       WIFI_HELPER::mqtt_password(),
+                       WIFI_HELPER::mqtt_topic_bus_tx(),
+                       WIFI_HELPER::mqtt_topic_bus_rx());
 
     GDOOR::setRxThreshold(PIN_RX_THRESH, WIFI_HELPER::rx_sensitivity());
     GDOOR::setup(PIN_TX, PIN_TX_EN, WIFI_HELPER::rx_pin());
 
-    MQTT_HELPER::setup(WIFI_HELPER::mqtt_server(), WIFI_HELPER::mqtt_port(), WIFI_HELPER::mqtt_user(), WIFI_HELPER::mqtt_password(), WIFI_HELPER::mqtt_topic_bus_tx());
-
     mqtt_topic_bus_rx = WIFI_HELPER::mqtt_topic_bus_rx();
     debug = WIFI_HELPER::debug();
 
-    JSONDEBUG("GDOOR Setup done");
+    JSONDEBUG("GDoor Setup done");
     JSONDEBUG("RX Pin: ");
     JSONDEBUG(WIFI_HELPER::rx_pin());
     JSONDEBUG("RX Sensitivity: ");
@@ -84,19 +90,28 @@ void loop() {
     MQTT_HELPER::loop();
     GDOOR::loop();
     GDOOR_DATA* rx_data = GDOOR::read();
+
+    // Output bus idle message on new MQTT connections to set a defined state
+    if(MQTT_HELPER::isNewConnection()) {
+        output(gdoor_data_idle, mqtt_topic_bus_rx, true);
+    }
     if(rx_data != NULL) {
         JSONDEBUG("Received data from bus");
         GDOOR_DATA_PROTOCOL busmessage = GDOOR_DATA_PROTOCOL(rx_data);
         output(busmessage, mqtt_topic_bus_rx);
-        JSONDEBUG("Output bus data via Serial and MQTT, done");        
+        JSONDEBUG("Output bus data via Serial and MQTT, done");
+        // Output idle message after bus message, to reset values so that
+        //home automation can trigger again
+        output(gdoor_data_idle, mqtt_topic_bus_rx, true);
+
     } else if (!GDOOR::active()) { // Neither RX nor TX active,
         String str_received("");
         if (Serial.available() > 0) { // let's check the serial port if something is in buffer
             str_received = Serial.readString();
-            str_received.trim();    
         } else {
             str_received = MQTT_HELPER::receive();
         }
+        str_received.trim();    
 
         if(str_received.length() > 0) {
             if(!parse(str_received)) { //Check if received string is a command

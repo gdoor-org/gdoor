@@ -1,7 +1,7 @@
 
 /* 
- * This file is part of the GDOOR distribution (https://github.com/gdoor-org).
- * Copyright (c) 2024 GDOOR Authors.
+ * This file is part of the GDoor distribution (https://github.com/gdoor-org).
+ * Copyright (c) 2024 GDoor authors.
  * 
  * This program is free software: you can redistribute it and/or modify  
  * it under the terms of the GNU General Public License as published by  
@@ -38,10 +38,10 @@ class MQTT_PRINTER : public Print { // Class/Struct to collect bus related infos
 namespace MQTT_HELPER { //Namespace as we can only use it once
     extern MQTT_PRINTER printer;
 
-    void setup(const char* server, int port, const char* username, const char* pw, const char* rx_topic);
+    void setup(const char* server, int port, const char* username, const char* pw, const char* rx_topic, const char* tx_topic);
     String& receive();
     void loop();
-
+    bool isNewConnection();
 };
 
 #endif
