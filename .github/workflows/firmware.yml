@@ -24,6 +24,12 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.12'
+      - name: Declare version variable
+        shell: bash
+        run: |
+          echo "SHA_SHORT=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
+          echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> "$GITHUB_ENV"
+          echo "GDOOR_VERSION=\"$(echo ${BRANCH}) ($(echo ${SHA_SHORT}))\"" >> "$GITHUB_ENV"
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
       - name: Build PlatformIO Project
@@ -32,4 +38,20 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gdoor_firmware
-          path: ./firmware/esp32/gdoor/.pio/build/GDOOR_ESP32MINI/*.bin
+          path: |
+            ./firmware/esp32/gdoor/.pio/build/GDOOR_ESP32MINI/*.bin
+            ./firmware/esp32/gdoor/.pio/build/GDOOR_ESP32MINI/web
+
+      # on main branch: push firmware to web flasher
+      - name: Push firmware to website repo for web flasher
+        if: github.ref == 'refs/heads/main'
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        with:
+          source-directory: './firmware/esp32/gdoor/.pio/build/GDOOR_ESP32MINI/web'
+          target-directory: 'assets/firmware'
+          destination-repository-name: 'gdoor-org.github.io'
+          target-branch: main
+          user-name: 'github-actions[bot]'
+          commit-message: 'Latest firmware for web flasher via ORIGIN_COMMIT'
