@@ -29,7 +29,7 @@ jobs:
         run: |
           echo "SHA_SHORT=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
           echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> "$GITHUB_ENV"
-          echo "GDOOR_VERSION=\"$(echo ${BRANCH}) ($(echo ${SHA_SHORT}))\"" >> "$GITHUB_ENV"
+          echo 'GDOOR_VERSION="${BRANCH} (${SHA_SHORT})"' >> "$GITHUB_ENV"
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
       - name: Build PlatformIO Project
