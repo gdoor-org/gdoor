@@ -39,7 +39,7 @@ def merge_bin(source, target, env):
     # build web flasher manifest
     with open(MANIFEST_JSON, 'r', encoding='utf-8') as json_file:
         manifest = json.load(json_file)
-        manifest["version"] = env.get("GDOOR_VERSION", "dev")
+        manifest["version"] = os.environ.get("GDOOR_VERSION", "dev")
 
     with open(MANIFEST_JSON_RESULT, 'w', encoding='utf-8') as json_file:
         json.dump(manifest, json_file)

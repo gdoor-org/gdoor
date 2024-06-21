@@ -51,6 +51,7 @@ jobs:
         with:
           source-directory: './firmware/esp32/gdoor/.pio/build/GDOOR_ESP32MINI/web'
           target-directory: 'assets/firmware'
+          destination-github-username: 'gdoor-org'
           destination-repository-name: 'gdoor-org.github.io'
           target-branch: main
           user-name: 'github-actions[bot]'
