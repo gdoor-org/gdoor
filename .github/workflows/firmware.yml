@@ -61,10 +61,13 @@ jobs:
         with:
           name: gdoor_firmware
 
+      - name: Set GDOOR_VERSION environment variable
+        run: echo "GDOOR_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          name: "Firmware ${{ github.ref.replace('refs/tags/', '') }}"
+          name: "Firmware ${{ env.GDOOR_VERSION }}"
           files: ./*.bin
           draft: true
 
