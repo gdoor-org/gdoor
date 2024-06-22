@@ -64,7 +64,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          name: Firmware ${GITHUB_REF#refs/tags/}
+          name: "Firmware ${GITHUB_REF#refs/tags/}"
           files: ./*.bin
 
       - name: Push firmware to website repo for web installer
