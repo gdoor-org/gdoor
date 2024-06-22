@@ -24,16 +24,23 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-      - name: Declare version variable
-        shell: bash
+
+      - name: Set GDOOR_VERSION environment variable
         run: |
-          echo "SHA_SHORT=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
-          echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> "$GITHUB_ENV"
-          echo "GDOOR_VERSION=\"${BRANCH} (${SHA_SHORT})\"" >> "$GITHUB_ENV"
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          else
+            VERSION=${GITHUB_REF#refs/heads/}
+          fi
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "GDOOR_VERSION=${VERSION}+${SHORT_SHA}" >> $GITHUB_ENV
+
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
+
       - name: Build PlatformIO Project
         run: pio run
+        
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
