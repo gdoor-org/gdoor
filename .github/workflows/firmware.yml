@@ -33,14 +33,16 @@ jobs:
             VERSION=${GITHUB_REF#refs/heads/}
           fi
           SHORT_SHA=$(git rev-parse --short HEAD)
-          echo "GDOOR_VERSION=${VERSION}+${SHORT_SHA}" >> $GITHUB_ENV
+          GDOOR_VERSION=${VERSION}+${SHORT_SHA}
+          echo "GDOOR_VERSION=${GDOOR_VERSION}" >> $GITHUB_ENV
+          echo GDOOR_VERSION=${GDOOR_VERSION}
 
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
       - name: Build PlatformIO Project
         run: pio run
-        
+
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -49,8 +51,8 @@ jobs:
             ./firmware/esp32/gdoor/.pio/build/GDOOR_ESP32MINI/*.bin
             ./firmware/esp32/gdoor/.pio/build/GDOOR_ESP32MINI/web
 
-      # on main branch: push firmware to web flasher
-      - name: Push firmware to website repo for web flasher
+      # on main branch: push firmware to web installer
+      - name: Push firmware to website repo for web installer
         if: github.ref == 'refs/heads/main'
         uses: cpina/github-action-push-to-another-repository@main
         env:
@@ -62,4 +64,4 @@ jobs:
           destination-repository-name: 'gdoor-org.github.io'
           target-branch: main
           user-name: 'github-actions[bot]'
-          commit-message: 'Latest firmware for web flasher via ORIGIN_COMMIT'
+          commit-message: 'Latest firmware for web installer via ORIGIN_COMMIT'
