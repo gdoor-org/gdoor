@@ -18,7 +18,10 @@
 #define DEFINES_H
 
 // GDoor
+#ifndef GDOOR_VERSION
 #define GDOOR_VERSION "dev"
+#endif
+
 #define MAX_WORDLEN 25
 
 // RX Statemachine
