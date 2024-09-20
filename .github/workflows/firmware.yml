@@ -34,7 +34,8 @@ jobs:
           fi
           SHORT_SHA=$(git rev-parse --short HEAD)
           GDOOR_VERSION=${VERSION}+${SHORT_SHA}
-          echo "GDOOR_VERSION=${GDOOR_VERSION}" >> $GITHUB_ENV
+          echo GDOOR_VERSION=${GDOOR_VERSION} >> $GITHUB_ENV
+          echo PLATFORMIO_BUILD_FLAGS="-DGDOOR_VERSION=\\\"${GDOOR_VERSION}\\\"" >> $GITHUB_ENV
           echo GDOOR_VERSION=${GDOOR_VERSION}
 
       - name: Install PlatformIO Core
