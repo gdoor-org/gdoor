@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser(description='Listen to MQTT Server for GDoor me
 parser.add_argument('-s','--server', help='MQTT Server', default="127.0.0.1")
 parser.add_argument('-p','--port', help='MQTT Port', default=1883)
 parser.add_argument('-t','--topic', help='MQTT Topic', default="/gdoor/bus_rx")
-parser.add_argument('-u','--unique', help='Show only unique', default=True)
+parser.add_argument('-u','--unique', help='Show only unique', default=True, type=bool)
 args = parser.parse_args()
 
 table = Table(show_header=True, header_style="bold magenta")
