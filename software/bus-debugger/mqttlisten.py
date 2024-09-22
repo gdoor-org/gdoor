@@ -46,7 +46,7 @@ with Live(table, refresh_per_second=4):  # update 4 times a second to feel fluid
         data = json.loads(message.payload)
         elem = gdoor.GDOOR(data["busdata"])
 
-        if args.unique and check_uinque(data["busdata"]):
+        if args.unique == True and check_uinque(data["busdata"]):
             prependRow([data["event_id"], data["action"], data["source"], data["destination"], data["parameters"], data["busdata"][0:2], data["busdata"][2:4], data["type"], data["busdata"]])
 
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id="mqttlisten.py", clean_session=True)
