@@ -21,9 +21,15 @@
 
 // Map the HW Type field between bus value and human readable string
 std::map<int, const char*>GDOOR_DATA_HWTYPE = {
-    { 0xA1, "INDOOR"},
     { 0xA0, "OUTDOOR"},
-    { 0xA3, "CONTROLLER"}
+    { 0xA1, "INDOOR"},
+    { 0xA2, "INDOOR_RECEIVER"},
+    { 0xA3, "CONTROLLER"},
+    { 0xA4, "ACTUATOR"},
+    { 0xA5, "GATEWAY_TK"},
+    { 0xA6, "CHIME"},
+    { 0xA7, "BUTTON_IF"},
+    { 0xA8, "GATEWAY_IP"},
 };
 
 // Map the Action field between bus value and human readable string
