@@ -70,7 +70,7 @@
 
 # clearance
 (rule "hole to hole clearance (different nets)"
-	(constraint hole_to_hole (min 0.5mm))
+	(constraint hole_to_hole (min 0.3mm))
 	(condition "A.Net != B.Net"))
 
 (rule "via to track clearance"

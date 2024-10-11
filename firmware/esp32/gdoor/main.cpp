@@ -19,6 +19,7 @@
 #include "src/mqtt_helper.h"
 #include "src/wifi_helper.h"
 #include "src/printer_helper.h"
+#include "src/udp_transmitter.h"
 
 GDOOR_DATA_PROTOCOL gdoor_data_idle(NULL, true);
 
@@ -77,6 +78,8 @@ void setup() {
 
     mqtt_topic_bus_rx = WIFI_HELPER::mqtt_topic_bus_rx();
     debug = WIFI_HELPER::debug();
+
+    UDP_TRANSMITTER::setup();
 
     JSONDEBUG("GDoor Setup done");
     JSONDEBUG("RX Pin: ");
