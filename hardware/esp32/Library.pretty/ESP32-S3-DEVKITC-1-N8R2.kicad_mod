@@ -125,4 +125,9 @@
     (stroke (width 0.127) (type solid)) (layer "F.Fab") (tstamp 6c69cc6b-78ba-45c1-85af-e175d7da437b))
   (fp_circle (center -13.716 -29.972) (end -13.616 -29.972)
     (stroke (width 0.2) (type solid)) (fill none) (layer "F.Fab") (tstamp 314bd6bc-beb4-482c-b0b3-e8c27e274899))
+  (model "${KIPRJMOD}/3dmodels/ESP32-S3-DEVKITC-1-N8R2.step"
+    (offset (xyz 0 0 5))
+    (scale (xyz 1 1 1))
+    (rotate (xyz -90 0 0))
+  )
 )
